@@ -6,7 +6,7 @@ import * as foundations from "./foundations";
 
 // 2. Add your color mode config
 const config: ThemeConfig = {
-  initialColorMode: "light",
+  initialColorMode: "dark",
   cssVarPrefix: "xims",
   useSystemColorMode: false,
 };

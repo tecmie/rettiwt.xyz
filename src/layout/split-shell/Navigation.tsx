@@ -40,6 +40,8 @@ import {
 } from "react-icons/fi";
 import { ColumnHeader, ColumnIconButton } from "./Column";
 import { HiOutlineHome } from "react-icons/hi";
+import XLogo from "@/components/logo";
+import { MdHome, MdHouse, MdLogin, MdPerson, MdPerson2, MdPerson3, MdPersonOutline } from "react-icons/md";
 
 interface NavbarProps extends FlexProps {
   onClose?: () => void;
@@ -68,16 +70,16 @@ export const Navbar = (props: NavbarProps) => {
               display={{ base: "inline-flex", lg: "none" }}
             />
             <Text fontWeight="bold" fontSize="sm" lineHeight="1.25rem">
-              X
+              <XLogo />
             </Text>
           </HStack>
         </ColumnHeader>
 
         <Stack pt={[4, 8]} px="3" spacing="6">
           <Stack spacing="1">
-            <NavLink icon={HiOutlineHome}>Home</NavLink>
-            <NavLink icon={FiBookOpen} aria-current="page">
-              Writing
+            <NavLink icon={MdHome}>Home</NavLink>
+            <NavLink icon={MdPersonOutline} aria-current="page">
+              Profile
             </NavLink>
           </Stack>
 
@@ -128,7 +130,7 @@ export const Navbar = (props: NavbarProps) => {
         <Box borderTopWidth="0">
           {/* <Divider ml={-24} w={'23rem'} position={'fixed'}  /> */}
           <NavButton leftIcon={<Icon as={FiLock} boxSize={4} />}>
-            Sign In
+            Create a Profile
           </NavButton>
         </Box>
       </Stack>

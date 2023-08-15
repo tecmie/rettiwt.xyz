@@ -64,12 +64,14 @@ export const SplitShell = () => {
         </ColumnHeader>
 
         <PostCard />
+        <PostCard />
       </Box>
 
       <Box
         borderLeftWidth="1px"
-        ml={6}
-        mr={48}
+        pl={6}
+        mr={[4, 12, 32]}
+        flex={0.5}
         width={{ md: "20rem", xl: "24rem" }}
         display={{ base: "none", md: "initial" }}
         overflowY="auto"
@@ -96,7 +98,7 @@ export const SplitShell = () => {
           </HStack>
         </ColumnHeader>
 
-        <Timeline maxW="3xl" mx="auto" py="8" px={{ base: "4", md: "8" }} />
+        <Timeline maxW="3xl" mx="auto" py="8" px={{ base: "2", md: "4" }} />
       </Box>
     </Flex>
   );

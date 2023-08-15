@@ -3,7 +3,7 @@
 
 ## Resources
 - <https://github.com/iway1/trpc-panel>
-- 
+- <https://trpc.io/docs/client/nextjs/server-side-helpers> Prefetching a Query from the Server before the Client Renders
 
 ## How do I deploy this?
 
