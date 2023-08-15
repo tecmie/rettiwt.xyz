@@ -6,7 +6,6 @@ const EmptyPage = ({ message = "", account = false }) => {
   const router = useRouter();
 
   return (
-    <>
       <Stack overflow={"hidden"} justifyContent="space-between" mt="12">
         <Center>
           <EmptyPageImg />
@@ -55,7 +54,6 @@ const EmptyPage = ({ message = "", account = false }) => {
                 </Button>
               </Stack> */}
       </Stack>
-    </>
   );
 };
 

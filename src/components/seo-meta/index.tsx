@@ -2,7 +2,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-const SITE_URL = "https://epicresume.com";
+const SITE_URL = "https://xims.tecmie.africa";
 export type OpenGraphType = {
   siteName: string;
   description: string;
@@ -26,11 +26,11 @@ export interface SchemaOrgJLD {
 }
 
 const defaultMeta = {
-  title: "Epic Resume",
-  siteName: "Your Career Assistant",
-  description: "Epic Resume Assistant",
+  title: "Twitter Simulation",
+  siteName: "A Generative Simulation of Twitter Interactions",
+  description: "A Generative Simulation of Twitter Interactions",
   url: `${SITE_URL}`,
-  image: `https://epicresume.com/favicon/EpicResume-meta-image.png`,
+  image: `https://xims.tecmie.africa/favicon/EpicResume-meta-image.png`,
   type: "website",
   robots: "follow, index",
 };
@@ -142,7 +142,7 @@ export default function SeoMeta(props: SeoProps) {
       <meta name="image" property="og:image" content={meta.image} />
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:site" content="@koolamusic" />
+      <meta name="twitter:site" content="@0xalzzy" />
       <meta name="twitter:title" content={meta.title} />
       <meta name="twitter:image" content={meta.image} />
       <meta name="twitter:description" content={meta.description} />
@@ -164,7 +164,7 @@ export default function SeoMeta(props: SeoProps) {
           <meta
             name="author"
             property="article:author"
-            content="Tecmie Ventures"
+            content="Tecmie Corporation"
           />
         </>
       )}

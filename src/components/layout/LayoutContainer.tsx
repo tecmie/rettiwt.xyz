@@ -7,7 +7,7 @@ interface LayoutProps {
   topNav?: boolean;
   pageName?: string;
 }
-export const ViewLayout = (props: LayoutProps) => {
+export const LayoutContainer = (props: LayoutProps) => {
   return (
     <Box
       minH={"100vh"}

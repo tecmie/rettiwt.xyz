@@ -1,13 +1,13 @@
-import { ThemeConfig, extendBaseTheme } from "@chakra-ui/react";
-import base from "@chakra-ui/theme";
 import "focus-visible/dist/focus-visible";
+import base from "@chakra-ui/theme";
+import { ThemeConfig, extendBaseTheme } from "@chakra-ui/react";
 import * as components from "./components";
 import * as foundations from "./foundations";
 
 // 2. Add your color mode config
 const config: ThemeConfig = {
   initialColorMode: "light",
-  cssVarPrefix: "ss",
+  cssVarPrefix: "xims",
   useSystemColorMode: false,
 };
 
