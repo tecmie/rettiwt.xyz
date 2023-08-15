@@ -7,25 +7,33 @@ import {
   HStack,
   useColorModeValue,
   useDisclosure,
-} from '@chakra-ui/react'
-import { useState } from 'react'
-import { FiArrowLeft, FiHeart, FiMenu, FiRss } from 'react-icons/fi'
-import { ColumnButton, ColumnHeader, ColumnHeading, ColumnIconButton } from './Column'
-import { Main } from './Main'
-import { Navbar } from './Navigation'
-import { Sidebar } from './Sidebar'
+} from "@chakra-ui/react";
+import { useState } from "react";
+import { FiArrowLeft, FiHeart, FiMenu, FiRss } from "react-icons/fi";
+import {
+  ColumnButton,
+  ColumnHeader,
+  ColumnHeading,
+  ColumnIconButton,
+} from "./Column";
+import { Timeline } from "./Timeline";
+import { Navbar } from "./Navigation";
+import { PostCard } from "./PostCard";
 
 export const SplitShell = () => {
-  const [sidebarIsScrolled, setSidebarIsScrolled] = useState(false)
-  const [mainIsScrolled, setmMainIsScrolled] = useState(false)
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [sidebarIsScrolled, setSidebarIsScrolled] = useState(false);
+  const [mainIsScrolled, setmMainIsScrolled] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Flex height="100vh">
       <Box
         height="full"
-        width={{ md: '14rem', xl: '18rem' }}
-        display={{ base: 'none', lg: 'initial' }}
+        ml={48}
+        pr={6}
+        position="relative"
+        width={{ md: "14rem", xl: "18rem" }}
+        display={{ base: "none", lg: "initial" }}
         overflowY="auto"
         borderRightWidth="1px"
       >
@@ -33,44 +41,48 @@ export const SplitShell = () => {
       </Box>
 
       <Box
-        bg={useColorModeValue('white', 'gray.900')}
+        bg={useColorModeValue("gray.50", "gray.900")}
         flex="1"
+        alignItems={"center"}
         overflowY="auto"
         onScroll={(x) => setmMainIsScrolled(x.currentTarget.scrollTop > 32)}
       >
-        <ColumnHeader shadow={mainIsScrolled ? 'base' : 'none'}>
+        <ColumnHeader shadow={mainIsScrolled ? "base" : "none"}>
           <HStack justify="space-between" width="full">
             <HStack spacing="3">
               <ColumnIconButton
                 aria-label="Navigate back"
                 icon={<FiArrowLeft />}
-                display={{ base: 'inline-flex', md: 'none' }}
+                display={{ base: "inline-flex", md: "none" }}
               />
-              {mainIsScrolled && <ColumnHeading>The shape of a cupcake</ColumnHeading>}
+              {mainIsScrolled && (
+                <ColumnHeading>The shape of a cupcake</ColumnHeading>
+              )}
             </HStack>
             <ColumnButton leftIcon={<FiHeart />}>12</ColumnButton>
           </HStack>
         </ColumnHeader>
-        <Main maxW="3xl" mx="auto" py="8" px={{ base: '4', md: '8' }} />
-        <Main maxW="3xl" mx="auto" py="8" px={{ base: '4', md: '8' }} />
+
+        <PostCard />
       </Box>
 
-
       <Box
-        borderRightWidth="1px"
-        width={{ md: '20rem', xl: '24rem' }}
-        display={{ base: 'none', md: 'initial' }}
+        borderLeftWidth="1px"
+        ml={6}
+        mr={48}
+        width={{ md: "20rem", xl: "24rem" }}
+        display={{ base: "none", md: "initial" }}
         overflowY="auto"
         onScroll={(x) => setSidebarIsScrolled(x.currentTarget.scrollTop > 32)}
       >
-        <ColumnHeader shadow={sidebarIsScrolled ? 'base' : 'none'}>
+        <ColumnHeader shadow={sidebarIsScrolled ? "base" : "none"}>
           <HStack justify="space-between" width="full">
             <HStack spacing="3">
               <ColumnIconButton
                 onClick={onOpen}
                 aria-label="Open Navigation"
                 icon={<FiMenu />}
-                display={{ md: 'inline-flex', lg: 'none' }}
+                display={{ md: "inline-flex", lg: "none" }}
               />
               <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
                 <DrawerOverlay />
@@ -83,8 +95,9 @@ export const SplitShell = () => {
             <ColumnButton leftIcon={<FiRss />}>Customize</ColumnButton>
           </HStack>
         </ColumnHeader>
-        <Sidebar />
+
+        <Timeline maxW="3xl" mx="auto" py="8" px={{ base: "4", md: "8" }} />
       </Box>
     </Flex>
-  )
-}
+  );
+};

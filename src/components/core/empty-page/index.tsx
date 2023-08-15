@@ -6,36 +6,36 @@ const EmptyPage = ({ message = "", account = false }) => {
   const router = useRouter();
 
   return (
-      <Stack overflow={"hidden"} justifyContent="space-between" mt="12">
-        <Center>
-          <EmptyPageImg />
-        </Center>
+    <Stack overflow={"hidden"} justifyContent="space-between" mt="12">
+      <Center>
+        <EmptyPageImg />
+      </Center>
 
-        <Center>
-          <Text
-            fontSize={"md"}
-            fontWeight="300"
-            w="80%"
-            mt="6"
-            textAlign="center"
+      <Center>
+        <Text
+          fontSize={"md"}
+          fontWeight="300"
+          w="80%"
+          mt="6"
+          textAlign="center"
+        >
+          {message}
+        </Text>
+      </Center>
+
+      {account && (
+        <Stack pt="2">
+          <Button
+            variant="gradient"
+            rounded={"3xl"}
+            style={{ borderRadius: "100px" }}
+            onClick={() => router.push("/link-account")}
           >
-            {message}
-          </Text>
-        </Center>
-
-        {account && (
-          <Stack pt="2">
-            <Button
-              variant="gradient"
-              rounded={"3xl"}
-              style={{ borderRadius: "100px" }}
-              onClick={() => router.push("/link-account")}
-            >
-              Link account now
-            </Button>
-          </Stack>
-        )}
-        {/* <Stack alignItems={"center"} spacing="4">
+            Link account now
+          </Button>
+        </Stack>
+      )}
+      {/* <Stack alignItems={"center"} spacing="4">
                 <Button
                   variant={"gradient"}
                   borderRadius="100px"
@@ -53,7 +53,7 @@ const EmptyPage = ({ message = "", account = false }) => {
                   Okay
                 </Button>
               </Stack> */}
-      </Stack>
+    </Stack>
   );
 };
 
