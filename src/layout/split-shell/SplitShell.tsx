@@ -20,7 +20,11 @@ import { Timeline } from "./Timeline";
 import { Navbar } from "./Navigation";
 import { PostCard } from "./PostCard";
 
-export const SplitShell = () => {
+type SplitShellProps = {
+  children: React.ReactNode;
+};
+
+export const SplitShell = ({ children }: SplitShellProps) => {
   const [sidebarIsScrolled, setSidebarIsScrolled] = useState(false);
   const [mainIsScrolled, setmMainIsScrolled] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -63,8 +67,7 @@ export const SplitShell = () => {
           </HStack>
         </ColumnHeader>
 
-        <PostCard />
-        <PostCard />
+{children}
       </Box>
 
       <Box
@@ -99,6 +102,7 @@ export const SplitShell = () => {
         </ColumnHeader>
 
         <Timeline maxW="3xl" mx="auto" py="8" px={{ base: "2", md: "4" }} />
+        
       </Box>
     </Flex>
   );

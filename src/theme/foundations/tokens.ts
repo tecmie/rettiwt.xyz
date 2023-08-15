@@ -25,7 +25,7 @@ export default {
       _dark: "gray.900",
     },
     emphasized: {
-      default: "gray.700",
+      default: "gray.800",
       _dark: "gray.100",
     },
     muted: {

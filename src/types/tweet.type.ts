@@ -18,7 +18,7 @@ export interface ITweetAuthor {
      * @memberof ITweetAuthor
      * @description The profile picture URL of the author.
      */
-    avatar: boolean;
+    avatar: string;
     /** 
      * @memberof ITweetAuthor
      * @description The bio of the author.
@@ -52,6 +52,13 @@ export interface ITweetAuthor {
      * @description The string content of the tweet.
      */
     content: string;
+
+    /**
+     * @memberof ITweet
+     * @description The timestamp of the tweet.
+     */
+    timestamp: Date | string;
+
     /** 
      * @memberof ITweet
      * @description The number of times the tweet has been quoted.
@@ -82,29 +89,6 @@ export interface ITweetAuthor {
      * @description The author of the tweet.
      */
     author: ITweetAuthor;
-  }
-  
-  export interface ITimelineTweet extends ITweet {
-    /** 
-     * @memberof ITimelineTweet
-     * @description The type of interaction with the tweet.
-     */
-    type: ITweetInteraction;
-    /** 
-     * @memberof ITimelineTweet
-     * @description Whether the tweet is pinned.
-     */
-    is_pinned: boolean;
-    /** 
-     * @memberof ITimelineTweet
-     * @description Whether the tweet is a quote tweet.
-     */
-    is_quote_tweet: boolean;
-    /** 
-     * @memberof ITimelineTweet
-     * @description Whether the tweet is a retweet.
-     */
-    is_retweet: boolean;
   }
   
   export enum ITweetInteraction {

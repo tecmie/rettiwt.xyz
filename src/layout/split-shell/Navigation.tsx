@@ -77,36 +77,12 @@ export const Navbar = (props: NavbarProps) => {
 
         <Stack pt={[4, 8]} px="3" spacing="6">
           <Stack spacing="1">
-            <NavLink icon={MdHome}>Home</NavLink>
-            <NavLink icon={MdPersonOutline} aria-current="page">
+            <NavLink icon={MdHome}  aria-current="page">Home</NavLink>
+            <NavLink icon={MdPersonOutline}>
               Profile
             </NavLink>
           </Stack>
 
-          {/*         
-        <Stack spacing="3">
-          <NavHeading>Me</NavHeading>
-          <Stack spacing="1">
-            <NavLink icon={FiBookmark}>BookMarks</NavLink>
-            <NavLink icon={FiCamera}>Photography</NavLink>
-            <NavLink icon={FiMessageCircle}>Chat</NavLink>
-          </Stack>
-        </Stack> */}
-
-          {/* <Stack spacing="3">
-          <NavHeading>Projects</NavHeading>
-          <Stack spacing="1">
-            <NavLink icon={FiMic} isExternal>
-              Podcasts
-            </NavLink>
-            <NavLink icon={FiFigma} isExternal>
-              Figma Plugins
-            </NavLink>
-            <NavLink icon={FiShield}>Security Checklist</NavLink>
-            <NavLink icon={FiMessageSquare}>Hacker News</NavLink>
-            <NavLink icon={FiFilm}>Movie Guide</NavLink>
-          </Stack>
-        </Stack> */}
         </Stack>
       </Stack>
 
@@ -121,15 +97,15 @@ export const Navbar = (props: NavbarProps) => {
               GitHub
             </NavLink>
 
-            <NavLink icon={ToggleIcon} onClick={toggleColorMode}>
+            <NavButton fontWeight={'normal'} color="emphasized"    pl={2} size={'sm'} leftIcon={<Icon mr={1} as={ToggleIcon} />} onClick={toggleColorMode}>
               {toggleText}
-            </NavLink>
+            </NavButton>
           </Stack>
         </Stack>
 
-        <Box borderTopWidth="0">
+        <Box borderTopWidth="0" mb={4}>
           {/* <Divider ml={-24} w={'23rem'} position={'fixed'}  /> */}
-          <NavButton leftIcon={<Icon as={FiLock} boxSize={4} />}>
+          <NavButton variant={'outline'} leftIcon={<Icon as={FiLock} boxSize={4} />}>
             Create a Profile
           </NavButton>
         </Box>
@@ -141,8 +117,9 @@ export const Navbar = (props: NavbarProps) => {
 const NavButton = (props: ButtonProps) => (
   <Button
     width="full"
+
     justifyContent="flex-start"
-    borderRadius="0"
+    // borderRadius="0"
     variant="tertiary"
     size="lg"
     fontSize="sm"
@@ -169,7 +146,7 @@ export const NavLink = (props: NavLinkProps) => {
       _activeLink={{
         bg:  mode("blackAlpha.200", "whiteAlpha.100") ,
         fontWeight: "bold",
-        color:  mode("gray.700", "gray.100") ,
+        color:  'emphasized' ,
       }}
       {...linkProps}
     >
