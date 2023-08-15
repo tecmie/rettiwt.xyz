@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
@@ -21,6 +22,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
+      <Suspense fallback={<div>Loading...</div>}>
+
       <ChakraBaseProvider theme={theme}>
         <NextProgressRouter router={router} />
         <MetaSeo />
@@ -28,6 +31,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <Component {...pageProps} />
         <Analytics />
       </ChakraBaseProvider>
+      </Suspense>
     </SessionProvider>
   );
 };

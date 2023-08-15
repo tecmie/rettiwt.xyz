@@ -144,7 +144,7 @@ const NavButton = (props: ButtonProps) => (
     variant="tertiary"
     size="lg"
     fontSize="sm"
-    _hover={{ bg: mode("gray.100", "gray.700") }}
+    _hover={{ bg: mode("blackAlpha.200", "whiteAlpha.200") }}
     _active={{ bg: mode("gray.200", "gray.600") }}
     _focus={{ boxShadow: "none" }}
     _focusVisible={{ boxShadow: "outline" }}
@@ -163,10 +163,11 @@ export const NavLink = (props: NavLinkProps) => {
       px="2"
       py="1.5"
       borderRadius="md"
-      _hover={{ bg: mode("gray.100", "gray.700") }}
+      _hover={{ bg: mode("blackAlpha.200", "whiteAlpha.200") }}
       _activeLink={{
-        bg: "gray.700",
-        color: "white",
+        bg:  mode("blackAlpha.200", "whiteAlpha.100") ,
+        fontWeight: "bold",
+        color:  mode("gray.700", "gray.100") ,
       }}
       {...linkProps}
     >
