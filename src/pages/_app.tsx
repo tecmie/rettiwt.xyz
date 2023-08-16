@@ -14,27 +14,24 @@ import { theme } from "@/theme/index";
 import { Analytics } from "@vercel/analytics/react";
 /* -------- Analytics ---------- */
 
-import type { NextAppProps, NextPageView } from 'next/page'
-
-
+import type { NextAppProps, NextPageView } from "next/page";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   router,
   pageProps: { session, ...pageProps },
 }: NextAppProps) => {
-  const renderGetLayout = Component.getLayout || ((page: NextPageView) => page)
+  const renderGetLayout = Component.getLayout || ((page: NextPageView) => page);
   return (
     <SessionProvider session={session}>
       <Suspense fallback={<div>Loading...</div>}>
-
-      <ChakraBaseProvider theme={theme}>
-        <NextProgressRouter router={router} />
-        <MetaSeo />
-        {/* <GoogleAnalytics strategy="lazyOnload" trackPageViews /> */}
-        {renderGetLayout(<Component {...pageProps} />)}
-        <Analytics />
-      </ChakraBaseProvider>
+        <ChakraBaseProvider theme={theme}>
+          <NextProgressRouter router={router} />
+          <MetaSeo />
+          {/* <GoogleAnalytics strategy="lazyOnload" trackPageViews /> */}
+          {renderGetLayout(<Component {...pageProps} />)}
+          <Analytics />
+        </ChakraBaseProvider>
       </Suspense>
     </SessionProvider>
   );

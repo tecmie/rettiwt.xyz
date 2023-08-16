@@ -1,32 +1,35 @@
 import {
-    Link,
-    Stack,
-    StackProps,
-    Text,
-    useColorModeValue as mode,
-  } from "@chakra-ui/react";
+  Link,
+  Stack,
+  StackProps,
+  Text,
+  useColorModeValue as mode,
+} from "@chakra-ui/react";
 import { api } from "@/utils/api";
 import { useState } from "react";
 
-  
-  export const TimelineView = (props: StackProps) => {
-
- const [currCursor, setCurrCursor] = useState(0);
+export const TimelineView = (props: StackProps) => {
+  const [currCursor, setCurrCursor] = useState(0);
   const tweets = api.timeline.list.useInfiniteQuery(
     {
-        id: "1",
-        limit: 10,
-      },
-      {
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
-        initialCursor: currCursor, // <-- optional you can pass an initialCursor
-      },
-    )
+      id: "1",
+      limit: 10,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      initialCursor: currCursor, // <-- optional you can pass an initialCursor
+    }
+  );
 
-    console.log(tweets.data?.pages[0])
+  console.log(tweets.data?.pages[0]);
 
-    return(
-    <Stack spacing={{ base: "1px", lg: "1" }} px={{ lg: "3" }} py="3" {...props}>
+  return (
+    <Stack
+      spacing={{ base: "1px", lg: "1" }}
+      px={{ lg: "3" }}
+      py="3"
+      {...props}
+    >
       {tweets.data?.pages[currCursor]?.tweets.map((post) => (
         <Link
           key={post.id}
@@ -49,5 +52,5 @@ import { useState } from "react";
         </Link>
       ))}
     </Stack>
-  )
-      }
+  );
+};

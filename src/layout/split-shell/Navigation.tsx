@@ -41,7 +41,15 @@ import {
 import { ColumnHeader, ColumnIconButton } from "./Column";
 import { HiOutlineHome } from "react-icons/hi";
 import XLogo from "@/components/logo";
-import { MdHome, MdHouse, MdLogin, MdPerson, MdPerson2, MdPerson3, MdPersonOutline } from "react-icons/md";
+import {
+  MdHome,
+  MdHouse,
+  MdLogin,
+  MdPerson,
+  MdPerson2,
+  MdPerson3,
+  MdPersonOutline,
+} from "react-icons/md";
 
 interface NavbarProps extends FlexProps {
   onClose?: () => void;
@@ -77,12 +85,11 @@ export const Navbar = (props: NavbarProps) => {
 
         <Stack pt={[4, 8]} px="3" spacing="6">
           <Stack spacing="1">
-            <NavLink icon={MdHome}  aria-current="page">Home</NavLink>
-            <NavLink icon={MdPersonOutline}>
-              Profile
+            <NavLink icon={MdHome} aria-current="page">
+              Home
             </NavLink>
+            <NavLink icon={MdPersonOutline}>Profile</NavLink>
           </Stack>
-
         </Stack>
       </Stack>
 
@@ -97,7 +104,14 @@ export const Navbar = (props: NavbarProps) => {
               GitHub
             </NavLink>
 
-            <NavButton fontWeight={'normal'} color="emphasized"    pl={2} size={'sm'} leftIcon={<Icon mr={1} as={ToggleIcon} />} onClick={toggleColorMode}>
+            <NavButton
+              fontWeight={"normal"}
+              color="emphasized"
+              pl={2}
+              size={"sm"}
+              leftIcon={<Icon mr={1} as={ToggleIcon} />}
+              onClick={toggleColorMode}
+            >
               {toggleText}
             </NavButton>
           </Stack>
@@ -105,7 +119,10 @@ export const Navbar = (props: NavbarProps) => {
 
         <Box borderTopWidth="0" mb={4}>
           {/* <Divider ml={-24} w={'23rem'} position={'fixed'}  /> */}
-          <NavButton variant={'outline'} leftIcon={<Icon as={FiLock} boxSize={4} />}>
+          <NavButton
+            variant={"outline"}
+            leftIcon={<Icon as={FiLock} boxSize={4} />}
+          >
             Create a Profile
           </NavButton>
         </Box>
@@ -117,7 +134,6 @@ export const Navbar = (props: NavbarProps) => {
 const NavButton = (props: ButtonProps) => (
   <Button
     width="full"
-
     justifyContent="flex-start"
     // borderRadius="0"
     variant="tertiary"
@@ -144,14 +160,14 @@ export const NavLink = (props: NavLinkProps) => {
       borderRadius="md"
       _hover={{ bg: mode("blackAlpha.200", "whiteAlpha.200") }}
       _activeLink={{
-        bg:  mode("blackAlpha.200", "whiteAlpha.100") ,
+        bg: mode("blackAlpha.200", "whiteAlpha.100"),
         fontWeight: "bold",
-        color:  'emphasized' ,
+        color: "emphasized",
       }}
       {...linkProps}
     >
       <HStack justify="space-between">
-        <HStack as="a" spacing="3">
+        <HStack as="button" spacing="3">
           <Icon as={icon} />
           <Text as="span" fontSize="sm" lineHeight="1.25rem">
             {props.children}
