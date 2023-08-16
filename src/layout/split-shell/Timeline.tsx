@@ -5,7 +5,7 @@ import {
   Stack,
   Text,
   useColorModeValue,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
 export const Timeline = (props: BoxProps) => (
   <Box as="main" {...props}>
@@ -14,11 +14,11 @@ export const Timeline = (props: BoxProps) => (
         <Heading
           as="h1"
           size="md"
-          color={useColorModeValue("gray.700", "white")}
+          color={useColorModeValue('gray.700', 'white')}
         >
           The shape of a cupcake
         </Heading>
-        <Text color={useColorModeValue("blackAlpha.600", "whiteAlpha.600")}>
+        <Text color={useColorModeValue('blackAlpha.600', 'whiteAlpha.600')}>
           October 23, 2021
         </Text>
       </Stack>
@@ -26,7 +26,7 @@ export const Timeline = (props: BoxProps) => (
         spacing="5"
         lineHeight="1.75"
         maxW="65ch"
-        color={useColorModeValue("blackAlpha.800", "whiteAlpha.800")}
+        color={useColorModeValue('blackAlpha.800', 'whiteAlpha.800')}
       >
         <Text>
           Muffin cupcake sweet roll cake candy dragée jujubes toffee icing.

@@ -1,19 +1,19 @@
-import { Button, Stack, Center, Text } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import { EmptyPageImg } from "./ProviderIcons";
+import { Button, Stack, Center, Text } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import { EmptyPageImg } from './ProviderIcons';
 
-const EmptyPage = ({ message = "", account = false }) => {
+const EmptyPage = ({ message = '', account = false }) => {
   const router = useRouter();
 
   return (
-    <Stack overflow={"hidden"} justifyContent="space-between" mt="12">
+    <Stack overflow={'hidden'} justifyContent="space-between" mt="12">
       <Center>
         <EmptyPageImg />
       </Center>
 
       <Center>
         <Text
-          fontSize={"md"}
+          fontSize={'md'}
           fontWeight="300"
           w="80%"
           mt="6"
@@ -27,9 +27,9 @@ const EmptyPage = ({ message = "", account = false }) => {
         <Stack pt="2">
           <Button
             variant="gradient"
-            rounded={"3xl"}
-            style={{ borderRadius: "100px" }}
-            onClick={() => router.push("/link-account")}
+            rounded={'3xl'}
+            style={{ borderRadius: '100px' }}
+            onClick={() => router.push('/link-account')}
           >
             Link account now
           </Button>

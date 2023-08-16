@@ -26,16 +26,16 @@ yarn add @fontsource/inter # or npm install @fontsource/inter
 Now import the font in a convenient place, for example in your app.
 
 ```tsx
-import { ChakraProvider } from "@chakra-ui/react";
-import { theme } from "@chakra-ui/pro-theme";
-import "@fontsource/inter/variable.css";
+import { ChakraProvider } from '@chakra-ui/react';
+import { theme } from '@chakra-ui/pro-theme';
+import '@fontsource/inter/variable.css';
 
 export const App = () => {
   const myTheme = extendTheme(
     {
       colors: { ...theme.colors, brand: theme.colors.purple },
     },
-    theme
+    theme,
   );
   return (
     <ChakraProvider theme={myTheme}>
@@ -48,18 +48,18 @@ export const App = () => {
 To use a different font (e.g Roboto) proceed as follows.
 
 ```tsx
-import { ChakraProvider } from "@chakra-ui/react";
-import { theme as proTheme } from "@chakra-ui/pro-theme";
-import "@fontsource/roboto";
+import { ChakraProvider } from '@chakra-ui/react';
+import { theme as proTheme } from '@chakra-ui/pro-theme';
+import '@fontsource/roboto';
 
 const theme = extendTheme(
   {
     fonts: {
-      heading: "Roboto, -apple-system, system-ui, sans-serif",
-      body: "Roboto, -apple-system, system-ui, sans-serif",
+      heading: 'Roboto, -apple-system, system-ui, sans-serif',
+      body: 'Roboto, -apple-system, system-ui, sans-serif',
     },
   },
-  proTheme
+  proTheme,
 );
 
 export const App = () => {

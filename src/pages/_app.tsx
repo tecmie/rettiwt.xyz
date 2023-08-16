@@ -1,20 +1,20 @@
-import { Suspense } from "react";
-import { type Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
-import { type AppType } from "next/app";
-import { api } from "@/utils/api";
-import "@/styles/globals.css";
+import { Suspense } from 'react';
+import { type Session } from 'next-auth';
+import { SessionProvider } from 'next-auth/react';
+import { type AppType } from 'next/app';
+import { api } from '@/utils/api';
+import '@/styles/globals.css';
 
-import MetaSeo from "@/components/seo-meta";
-import { NextProgressRouter } from "@/components/progress-router";
-import { ChakraBaseProvider } from "@chakra-ui/react";
-import { theme } from "@/theme/index";
+import MetaSeo from '@/components/seo-meta';
+import { NextProgressRouter } from '@/components/progress-router';
+import { ChakraBaseProvider } from '@chakra-ui/react';
+import { theme } from '@/theme/index';
 
 /* -------- Analytics ---------- */
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from '@vercel/analytics/react';
 /* -------- Analytics ---------- */
 
-import type { NextAppProps, NextPageView } from "next/page";
+import type { NextAppProps, NextPageView } from 'next/page';
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,

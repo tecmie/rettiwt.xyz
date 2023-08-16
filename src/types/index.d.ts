@@ -1,5 +1,5 @@
 /* Support layouts */
-declare module "next/page" {
+declare module 'next/page' {
   export type NextPageView =
     | string
     | number
@@ -14,7 +14,7 @@ declare module "next/page" {
   export type NextPageWithLayout<P = unknown> = NextPage<P> & {
     getLayout?: (page: NextPageView) => React.ReactElement;
     getLayout?: (
-      page: React.ReactElement<any, string | React.JSXElementConstructor<any>>
+      page: React.ReactElement<any, string | React.JSXElementConstructor<any>>,
     ) => page;
   };
 
@@ -28,14 +28,14 @@ declare module "next/page" {
    * @todo Add support for i18n and locales
    * @example <Page query={query} params={params} locale={locale} />
    */
-  import { type GetServerSidePropsContext } from "next";
+  import { type GetServerSidePropsContext } from 'next';
 
   export type NextQueryPage<P = unknown> = NextPageWithLayout<P> & {
     getServerSideProps?: GetServerSideProps<P, { query: P }>;
   };
 
   export type ParamsPageProps<P = unknown> = P & {
-    params?: GetServerSidePropsContext["params"];
-    query?: GetServerSidePropsContext["query"];
+    params?: GetServerSidePropsContext['params'];
+    query?: GetServerSidePropsContext['query'];
   };
 }

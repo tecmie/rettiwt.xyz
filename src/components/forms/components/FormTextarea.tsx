@@ -1,13 +1,13 @@
-import { FormControl, FormLabel } from "@chakra-ui/form-control";
+import { FormControl, FormLabel } from '@chakra-ui/form-control';
 import {
   Flex,
   FormErrorMessage,
   Textarea,
   type TextareaProps,
-} from "@chakra-ui/react";
-import type { ComponentPropsWithoutRef, PropsWithoutRef } from "react";
-import { forwardRef } from "react";
-import { useFormContext } from "react-hook-form";
+} from '@chakra-ui/react';
+import type { ComponentPropsWithoutRef, PropsWithoutRef } from 'react';
+import { forwardRef } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 export interface LabeledTextFieldProps extends TextareaProps {
   /** Field name. */
@@ -15,8 +15,8 @@ export interface LabeledTextFieldProps extends TextareaProps {
   /** Field label. */
   label?: string;
   /** Field type. Doesn't include radio buttons and checkboxes */
-  outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>;
-  labelProps?: ComponentPropsWithoutRef<"label">;
+  outerProps?: PropsWithoutRef<JSX.IntrinsicElements['div']>;
+  labelProps?: ComponentPropsWithoutRef<'label'>;
 }
 
 export const FormTextarea = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
@@ -45,7 +45,7 @@ export const FormTextarea = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
           size="lg"
           fontSize="sm"
           borderRadius="lg"
-          _placeholder={{ fontSize: "sm" }}
+          _placeholder={{ fontSize: 'sm' }}
           disabled={isSubmitting}
           {...register(name)}
           {...props}
@@ -57,9 +57,9 @@ export const FormTextarea = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
         )}
       </FormControl>
     );
-  }
+  },
 );
 
-FormTextarea.displayName = "FormTextarea";
+FormTextarea.displayName = 'FormTextarea';
 
 export default FormTextarea;

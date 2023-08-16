@@ -1,15 +1,11 @@
-import {
-  Box,
-  Flex,
-} from "@chakra-ui/react";
-import { Navbar } from "./Navigation";
+import { Box, Flex } from '@chakra-ui/react';
+import { Navbar } from './Navigation';
 
 type SplitShellProps = {
   children: React.ReactNode;
 };
 
 export const SplitShell = ({ children }: SplitShellProps) => {
-
   return (
     <Flex height="100vh" marginX="auto">
       <Box
@@ -19,7 +15,7 @@ export const SplitShell = ({ children }: SplitShellProps) => {
         position="relative"
         w={'full'}
         maxW={'xl'}
-        display={{ base: "none", lg: "initial" }}
+        display={{ base: 'none', lg: 'initial' }}
         overflowY="auto"
         borderRightWidth="1px"
       >

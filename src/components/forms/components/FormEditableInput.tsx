@@ -1,7 +1,7 @@
-import * as React from "react";
-import type { FormControlProps } from "@chakra-ui/form-control";
-import { FormControl } from "@chakra-ui/form-control";
-import { Input } from "@chakra-ui/input";
+import * as React from 'react';
+import type { FormControlProps } from '@chakra-ui/form-control';
+import { FormControl } from '@chakra-ui/form-control';
+import { Input } from '@chakra-ui/input';
 import {
   ComponentWithAs,
   EditableInputProps,
@@ -11,10 +11,10 @@ import {
   EditablePreview,
   FormErrorMessage,
   ScaleFade,
-} from "@chakra-ui/react";
-import type { ComponentPropsWithoutRef, PropsWithoutRef } from "react";
-import { forwardRef } from "react";
-import { useFormContext } from "react-hook-form";
+} from '@chakra-ui/react';
+import type { ComponentPropsWithoutRef, PropsWithoutRef } from 'react';
+import { forwardRef } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 export interface LabeledTextFieldProps extends EditableInputProps {
   /** Field name. */
@@ -22,9 +22,9 @@ export interface LabeledTextFieldProps extends EditableInputProps {
   /** Field label. */
   label?: string;
   /** Field type. Doesn't include radio buttons and checkboxes */
-  type?: "text" | "password" | "email" | "number" | "tel" | "date" | "file";
+  type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'date' | 'file';
   outerProps?: PropsWithoutRef<FormControlProps>;
-  labelProps?: ComponentPropsWithoutRef<"label">;
+  labelProps?: ComponentPropsWithoutRef<'label'>;
   leftElement?: boolean;
   rightElement?: boolean;
   textSize?: string;
@@ -43,7 +43,7 @@ export const FormEditableInput = forwardRef<
       textSize,
       // ...props
     },
-    ref
+    ref,
   ) => {
     const {
       register,
@@ -55,25 +55,25 @@ export const FormEditableInput = forwardRef<
       : errors[name]?.message?.toString();
     const isErrorInField = errors[name] ? true : false;
 
-    const baseBorderColor = "gray.100";
-    const baseBorder = "0.25px solid";
+    const baseBorderColor = 'gray.100';
+    const baseBorder = '0.25px solid';
 
     return (
       <FormControl
-        display={"inline"}
+        display={'inline'}
         ref={ref}
         {...outerProps}
         isInvalid={isErrorInField}
       >
         <Editable
-          color={"gray.700"}
+          color={'gray.700'}
           pr={1}
-          display={"inline"}
+          display={'inline'}
           defaultValue={label}
         >
           <EditablePreview
-            w={"fit-content"}
-            textDecoration={"underline"}
+            w={'fit-content'}
+            textDecoration={'underline'}
             // borderBottom={"1px solid"}
             // borderRadius={'none'}
           />
@@ -81,37 +81,37 @@ export const FormEditableInput = forwardRef<
             as={EditableInput}
             {...register(name)}
             // {...props}
-            outline={"none"}
-            fontSize={"inherit"}
-            variant={"flushed"}
+            outline={'none'}
+            fontSize={'inherit'}
+            variant={'flushed'}
             _focus={{
               // border: "0px",
               border: baseBorder,
               borderColor: baseBorderColor,
-              outline: "none",
+              outline: 'none',
             }}
             _focusVisible={{
               px: 2,
               py: 2,
               border: baseBorder,
-              transition: "all 0.1s ease-in-out",
+              transition: 'all 0.1s ease-in-out',
 
               borderColor: baseBorderColor,
-              borderRadius: "lg",
-              outline: "none",
+              borderRadius: 'lg',
+              outline: 'none',
               // borderBottom: "1px solid",
               // boxShadow: "none",
-              boxShadow: "30px 30px 60px #d9d9d9, -30px -30px 60px #ffffff",
+              boxShadow: '30px 30px 60px #d9d9d9, -30px -30px 60px #ffffff',
             }}
             _active={{
               // border: "0px",
               border: baseBorder,
               borderColor: baseBorderColor,
-              outline: "none",
+              outline: 'none',
             }}
-            maxW={textSize ?? "132px"}
-            w={"max-content"}
-            display={"inline"}
+            maxW={textSize ?? '132px'}
+            w={'max-content'}
+            display={'inline'}
             name={name}
           />
         </Editable>
@@ -121,9 +121,9 @@ export const FormEditableInput = forwardRef<
         </FormErrorMessage>
       </FormControl>
     );
-  }
+  },
 );
 
-FormEditableInput.displayName = "FormEditableInput";
+FormEditableInput.displayName = 'FormEditableInput';
 
 export default FormEditableInput;

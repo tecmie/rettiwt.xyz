@@ -1,9 +1,9 @@
 const baseStyle = {
   _focus: {
-    boxShadow: "none",
+    boxShadow: 'none',
   },
   _focusVisible: {
-    boxShadow: "outline",
+    boxShadow: 'outline',
   },
 };
 

@@ -1,16 +1,16 @@
-import * as React from "react";
-import type { FormControlProps } from "@chakra-ui/form-control";
-import { FormControl, FormLabel } from "@chakra-ui/form-control";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
+import * as React from 'react';
+import type { FormControlProps } from '@chakra-ui/form-control';
+import { FormControl, FormLabel } from '@chakra-ui/form-control';
+import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';
 import type {
   ComponentWithAs,
   IconProps,
   InputElementProps,
-} from "@chakra-ui/react";
-import { FormErrorMessage, Icon, InputLeftElement } from "@chakra-ui/react";
-import type { ComponentPropsWithoutRef, PropsWithoutRef } from "react";
-import { forwardRef } from "react";
-import { useFormContext } from "react-hook-form";
+} from '@chakra-ui/react';
+import { FormErrorMessage, Icon, InputLeftElement } from '@chakra-ui/react';
+import type { ComponentPropsWithoutRef, PropsWithoutRef } from 'react';
+import { forwardRef } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 export interface LabeledTextFieldProps extends InputElementProps {
   /** Field name. */
@@ -18,12 +18,12 @@ export interface LabeledTextFieldProps extends InputElementProps {
   /** Field label. */
   label?: string;
   /** Field type. Doesn't include radio buttons and checkboxes */
-  type?: "text" | "password" | "email" | "number" | "tel" | "date" | "file";
+  type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'date' | 'file';
   outerProps?: PropsWithoutRef<FormControlProps>;
-  labelProps?: ComponentPropsWithoutRef<"label">;
+  labelProps?: ComponentPropsWithoutRef<'label'>;
   leftElement?: boolean;
   rightElement?: boolean;
-  icon?: ComponentWithAs<"svg", IconProps>;
+  icon?: ComponentWithAs<'svg', IconProps>;
   props?: ComponentPropsWithoutRef<typeof Input>;
 }
 
@@ -40,7 +40,7 @@ export const FormInput = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
       rightElement,
       ...props
     },
-    ref
+    ref,
   ) => {
     const {
       register,
@@ -68,12 +68,12 @@ export const FormInput = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
           <Input
             isDisabled={isSubmitting}
             {...register(
-              name
+              name,
               //   {
               //   valueAsNumber: type === "number",
               // }
             )}
-            _placeholder={{ fontSize: "sm" }}
+            _placeholder={{ fontSize: 'sm' }}
             fontSize="sm"
             {...props}
           />
@@ -88,9 +88,9 @@ export const FormInput = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
         </FormErrorMessage>
       </FormControl>
     );
-  }
+  },
 );
 
-FormInput.displayName = "FormInput";
+FormInput.displayName = 'FormInput';
 
 export default FormInput;

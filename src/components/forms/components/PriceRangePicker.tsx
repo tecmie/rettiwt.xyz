@@ -1,10 +1,10 @@
-import type { RangeSliderProps } from "@chakra-ui/react";
+import type { RangeSliderProps } from '@chakra-ui/react';
 import {
   RangeSlider,
   RangeSliderFilledTrack,
   RangeSliderThumb,
   RangeSliderTrack,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
 export const PriceRangePicker = (props: RangeSliderProps) => {
   const value = props.defaultValue || props.value;
@@ -13,7 +13,7 @@ export const PriceRangePicker = (props: RangeSliderProps) => {
       colorScheme="blue"
       step={10}
       // eslint-disable-next-line jsx-a11y/aria-proptypes
-      aria-label={["minimum price", "maximum price"]}
+      aria-label={['minimum price', 'maximum price']}
       {...props}
     >
       <RangeSliderTrack>

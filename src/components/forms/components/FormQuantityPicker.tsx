@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { FC } from "react";
-import React from "react";
+import type { FC } from 'react';
+import React from 'react';
 import type {
   FormControlProps,
   IconButtonProps,
   UseControllableStateProps,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 import {
   Center,
   Flex,
@@ -15,12 +15,12 @@ import {
   IconButton,
   Text,
   useControllableState,
-} from "@chakra-ui/react";
-import { FiMinus, FiPlus } from "react-icons/fi";
+} from '@chakra-ui/react';
+import { FiMinus, FiPlus } from 'react-icons/fi';
 
 /* Hook into react hook forms */
-import type { Control } from "react-hook-form";
-import { useFormContext, useController } from "react-hook-form";
+import type { Control } from 'react-hook-form';
+import { useFormContext, useController } from 'react-hook-form';
 
 interface FieldErrorProps {
   name?: string;
@@ -28,11 +28,11 @@ interface FieldErrorProps {
 
 const QuantityPickerButton = (props: IconButtonProps) => (
   <IconButton
-    colorScheme={"orange"}
+    colorScheme={'orange'}
     size="md"
     fontSize="md"
-    _focus={{ boxShadow: "none" }}
-    _focusVisible={{ boxShadow: "outline" }}
+    _focus={{ boxShadow: 'none' }}
+    _focusVisible={{ boxShadow: 'outline' }}
     {...props}
   />
 );
@@ -138,6 +138,6 @@ export const FormQuantityPicker: FC<FormQuantityPickerProps> = (props) => {
   );
 };
 
-FormQuantityPicker.displayName = "FormQuantityPicker";
+FormQuantityPicker.displayName = 'FormQuantityPicker';
 
 export default FormQuantityPicker;

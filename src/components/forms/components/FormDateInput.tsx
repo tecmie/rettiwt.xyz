@@ -1,16 +1,16 @@
-import * as React from "react";
-import type { PropsWithoutRef, ComponentPropsWithoutRef } from "react";
-import { forwardRef } from "react";
-import { useFormContext } from "react-hook-form";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
-import type { FormControlProps } from "@chakra-ui/form-control";
-import { FormControl, FormLabel } from "@chakra-ui/form-control";
+import * as React from 'react';
+import type { PropsWithoutRef, ComponentPropsWithoutRef } from 'react';
+import { forwardRef } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';
+import type { FormControlProps } from '@chakra-ui/form-control';
+import { FormControl, FormLabel } from '@chakra-ui/form-control';
 import type {
   ComponentWithAs,
   IconProps,
   InputElementProps,
-} from "@chakra-ui/react";
-import { FormErrorMessage, Icon, InputLeftElement } from "@chakra-ui/react";
+} from '@chakra-ui/react';
+import { FormErrorMessage, Icon, InputLeftElement } from '@chakra-ui/react';
 
 export interface LabeledTextFieldProps extends InputElementProps {
   /** Field name. */
@@ -18,10 +18,10 @@ export interface LabeledTextFieldProps extends InputElementProps {
   /** Field label. */
   label?: string;
   outerProps?: PropsWithoutRef<FormControlProps>;
-  labelProps?: ComponentPropsWithoutRef<"label">;
+  labelProps?: ComponentPropsWithoutRef<'label'>;
   leftElement?: boolean;
   rightElement?: boolean;
-  icon?: ComponentWithAs<"svg", IconProps>;
+  icon?: ComponentWithAs<'svg', IconProps>;
   props?: ComponentPropsWithoutRef<typeof Input>;
 }
 
@@ -40,7 +40,7 @@ export const FormDateInput = forwardRef<
       rightElement,
       ...props
     },
-    ref
+    ref,
   ) => {
     const {
       register,
@@ -54,7 +54,7 @@ export const FormDateInput = forwardRef<
     return (
       <FormControl ref={ref} {...outerProps} isInvalid={isErrorInField}>
         {label && (
-          <FormLabel color={"default"} fontSize="sm" {...labelProps}>
+          <FormLabel color={'default'} fontSize="sm" {...labelProps}>
             {label}
           </FormLabel>
         )}
@@ -65,14 +65,14 @@ export const FormDateInput = forwardRef<
             </InputLeftElement>
           )}
           <Input
-            size={"lg"}
+            size={'lg'}
             fontSize="md"
-            rounded={"3xl"}
-            _placeholder={{ fontSize: "sm" }}
-            _hover={{ borderColor: "primary" }}
-            _focus={{ borderColor: "primary" }}
+            rounded={'3xl'}
+            _placeholder={{ fontSize: 'sm' }}
+            _hover={{ borderColor: 'primary' }}
+            _focus={{ borderColor: 'primary' }}
             isDisabled={isSubmitting}
-            type={"datetime-local"}
+            type={'datetime-local'}
             {...register(name, {
               valueAsDate: true,
             })}
@@ -89,9 +89,9 @@ export const FormDateInput = forwardRef<
         </FormErrorMessage>
       </FormControl>
     );
-  }
+  },
 );
 
-FormDateInput.displayName = "FormDateInput";
+FormDateInput.displayName = 'FormDateInput';
 
 export default FormDateInput;

@@ -47,13 +47,13 @@ export interface ITweet {
    * @description The unique identifier of the tweet.
    */
   id: string | number;
-  
-    /**
+
+  /**
    * @optional
    * @memberof ITweetAuthor
    * @description The id of tweet the user is replying to
    */
-    parent_id?: string;
+  parent_id?: string;
 
   /**
    * @memberof ITweet
@@ -104,34 +104,34 @@ export enum ITweetInteraction {
    * @memberof ITweetInteraction
    * @description A direct tweet.
    */
-  TWEET = "tweet",
+  TWEET = 'tweet',
   /**
    * @memberof ITweetInteraction
    * @description A quote of another tweet.
    */
-  QUOTE_TWEET = "quote-tweet",
+  QUOTE_TWEET = 'quote-tweet',
   /**
    * @memberof ITweetInteraction
    * @description A retweet of another tweet.
    */
-  RETWEET = "retweet",
+  RETWEET = 'retweet',
   /**
    * @memberof ITweetInteraction
    * @description A favorite action on a tweet.
    */
-  LIKE = "like",
+  LIKE = 'like',
 
   /**
    * @memberof ITweetInteraction
    * @description A bookmark action on a tweet.
    * @since 1.1.0
    */
-  BOOKMARK = "bookmark",
+  BOOKMARK = 'bookmark',
 
   /**
    * @memberof ITweetInteraction
    * @description A reply to a tweet.
    * @since 1.1.0
    */
-  REPLY = "tweet-reply",
+  REPLY = 'tweet-reply',
 }

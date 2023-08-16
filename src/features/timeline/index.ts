@@ -1,1 +1,1 @@
-export * from "./timeline-view";
+export * from './timeline-view';

@@ -1,8 +1,8 @@
-import * as React from "react";
-import type { HTMLChakraProps } from "@chakra-ui/react";
-import { chakra } from "@chakra-ui/react";
+import * as React from 'react';
+import type { HTMLChakraProps } from '@chakra-ui/react';
+import { chakra } from '@chakra-ui/react';
 
-export const EmptyPageImg = (props: HTMLChakraProps<"svg">) => (
+export const EmptyPageImg = (props: HTMLChakraProps<'svg'>) => (
   <chakra.svg
     width={428}
     height={372}
@@ -143,7 +143,7 @@ export const EmptyPageImg = (props: HTMLChakraProps<"svg">) => (
   </chakra.svg>
 );
 
-export const ComingSoonImg = (props: HTMLChakraProps<"svg">) => (
+export const ComingSoonImg = (props: HTMLChakraProps<'svg'>) => (
   <chakra.svg
     width={416}
     height={313}

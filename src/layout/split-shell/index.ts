@@ -1,2 +1,2 @@
-export * from "./SplitShell";
-export * from "./PostCard";
+export * from './SplitShell';
+export * from './PostCard';

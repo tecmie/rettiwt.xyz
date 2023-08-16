@@ -1,23 +1,23 @@
-import * as React from "react";
-import type { FormControlProps } from "@chakra-ui/form-control";
-import { FormControl, FormLabel } from "@chakra-ui/form-control";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
+import * as React from 'react';
+import type { FormControlProps } from '@chakra-ui/form-control';
+import { FormControl, FormLabel } from '@chakra-ui/form-control';
+import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';
 import type {
   ComponentWithAs,
   IconProps,
   InputElementProps,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 import {
   FormErrorMessage,
   FormHelperText,
   Icon,
   IconButton,
   InputLeftElement,
-} from "@chakra-ui/react";
-import type { ComponentPropsWithoutRef, PropsWithoutRef } from "react";
-import { forwardRef } from "react";
-import { useFormContext } from "react-hook-form";
-import { FiEye, FiEyeOff } from "react-icons/fi";
+} from '@chakra-ui/react';
+import type { ComponentPropsWithoutRef, PropsWithoutRef } from 'react';
+import { forwardRef } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 export interface LabeledTextFieldProps extends InputElementProps {
   /** Field name. */
@@ -25,12 +25,12 @@ export interface LabeledTextFieldProps extends InputElementProps {
   /** Field label. */
   label?: string;
   /** Field type. Doesn't include radio buttons and checkboxes */
-  type?: "text" | "password" | "email" | "number" | "tel" | "date" | "file";
+  type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'date' | 'file';
   outerProps?: PropsWithoutRef<FormControlProps>;
-  labelProps?: ComponentPropsWithoutRef<"label">;
+  labelProps?: ComponentPropsWithoutRef<'label'>;
   leftElement?: boolean;
   rightElement?: boolean;
-  icon?: ComponentWithAs<"svg", IconProps>;
+  icon?: ComponentWithAs<'svg', IconProps>;
   props?: ComponentPropsWithoutRef<typeof Input>;
   required?: boolean;
   password?: boolean;
@@ -52,7 +52,7 @@ export const FormInputPassword = forwardRef<
       rightElement,
       ...props
     },
-    ref
+    ref,
   ) => {
     const {
       register,
@@ -81,10 +81,10 @@ export const FormInputPassword = forwardRef<
             </InputLeftElement>
           )}
           <Input
-            type={show ? "text" : "password"}
+            type={show ? 'text' : 'password'}
             isDisabled={isSubmitting}
             {...register(name, {
-              valueAsNumber: type === "number",
+              valueAsNumber: type === 'number',
             })}
             {...props}
           />
@@ -94,14 +94,14 @@ export const FormInputPassword = forwardRef<
               size="xs"
               mb={1}
               onClick={handleShowClick}
-              variant={"ghost"}
+              variant={'ghost'}
               icon={<Icon as={show ? FiEye : FiEyeOff} />}
-              _hover={{ bg: "none" }}
-              _focus={{ bg: "none" }}
+              _hover={{ bg: 'none' }}
+              _focus={{ bg: 'none' }}
             />
           </InputRightElement>
         </InputGroup>
-        <FormHelperText color="muted" fontSize={"xs"}>
+        <FormHelperText color="muted" fontSize={'xs'}>
           At least 8 characters long
         </FormHelperText>
 
@@ -110,9 +110,9 @@ export const FormInputPassword = forwardRef<
         </FormErrorMessage>
       </FormControl>
     );
-  }
+  },
 );
 
-FormInputPassword.displayName = "FormInputPassword";
+FormInputPassword.displayName = 'FormInputPassword';
 
 export default FormInputPassword;

@@ -1,11 +1,11 @@
-import styles from "./demo.module.css";
-import { signIn, signOut, useSession } from "next-auth/react";
-import Head from "next/head";
-import Link from "next/link";
-import { api } from "@/utils/api";
+import styles from './demo.module.css';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import Head from 'next/head';
+import Link from 'next/link';
+import { api } from '@/utils/api';
 
 export default function Home() {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const hello = api.example.hello.useQuery({ text: 'from tRPC' });
 
   return (
     <>
@@ -45,7 +45,7 @@ export default function Home() {
           </div>
           <div className={styles.showcaseContainer}>
             <p className={styles.showcaseText}>
-              {hello.data ? hello.data.greeting : "Loading tRPC query..."}
+              {hello.data ? hello.data.greeting : 'Loading tRPC query...'}
             </p>
             <AuthShowcase />
           </div>
@@ -60,7 +60,7 @@ function AuthShowcase() {
 
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
     undefined, // no input
-    { enabled: sessionData?.user !== undefined }
+    { enabled: sessionData?.user !== undefined },
   );
 
   return (
@@ -73,7 +73,7 @@ function AuthShowcase() {
         className={styles.loginButton}
         onClick={sessionData ? () => void signOut() : () => void signIn()}
       >
-        {sessionData ? "Sign out" : "Sign in"}
+        {sessionData ? 'Sign out' : 'Sign in'}
       </button>
     </div>
   );

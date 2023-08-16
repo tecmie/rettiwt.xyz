@@ -1,13 +1,13 @@
 /* eslint-disable import/default */
-import { FormControl } from "@chakra-ui/form-control";
+import { FormControl } from '@chakra-ui/form-control';
 import {
   Checkbox,
   FormErrorMessage,
   type InputProps,
   Text,
-} from "@chakra-ui/react";
-import React, { forwardRef } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+} from '@chakra-ui/react';
+import React, { forwardRef } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 
 export interface LabeledTextFieldProps {
   /** Field name. */
@@ -38,7 +38,7 @@ const FormCheckbox = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
               onChange={(e) => field.onChange(e.target.checked)}
             >
               <Text fontSize="sm">
-                {label ?? "I agree to the Terms of use and Privacy Policy"}
+                {label ?? 'I agree to the Terms of use and Privacy Policy'}
               </Text>
             </Checkbox>
           )}
@@ -50,9 +50,9 @@ const FormCheckbox = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
         )}
       </FormControl>
     );
-  }
+  },
 );
 
-FormCheckbox.displayName = "FormCheckbox";
+FormCheckbox.displayName = 'FormCheckbox';
 
 export default FormCheckbox;

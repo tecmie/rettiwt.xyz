@@ -1,12 +1,12 @@
 const baseStyle = {
   tab: {
-    fontWeight: "medium",
-    color: "muted",
+    fontWeight: 'medium',
+    color: 'muted',
     _focus: {
-      boxShadow: "none",
+      boxShadow: 'none',
     },
     _focusVisible: {
-      boxShadow: "base",
+      boxShadow: 'base',
     },
   },
 };
@@ -15,18 +15,18 @@ const variants = {
   line: {
     tab: {
       _selected: {
-        color: "accent",
-        borderColor: "accent",
+        color: 'accent',
+        borderColor: 'accent',
       },
       _active: {
-        bg: "transparent",
+        bg: 'transparent',
       },
     },
   },
   enclosed: {
     tab: {
       _selected: {
-        color: "accent",
+        color: 'accent',
       },
     },
   },
@@ -35,7 +35,7 @@ const variants = {
 const sizes = {
   md: {
     tab: {
-      fontSize: "sm",
+      fontSize: 'sm',
     },
   },
 };

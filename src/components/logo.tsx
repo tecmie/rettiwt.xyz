@@ -2,15 +2,15 @@ import {
   HTMLChakraProps,
   chakra,
   useColorModeValue as mode,
-} from "@chakra-ui/react";
-import * as React from "react";
+} from '@chakra-ui/react';
+import * as React from 'react';
 
-export function XLogo(props: HTMLChakraProps<"svg">) {
+export function XLogo(props: HTMLChakraProps<'svg'>) {
   return (
     <chakra.svg
       viewBox="0 0 24 24"
       width={6}
-      fill={mode("gray.800", "white")}
+      fill={mode('gray.800', 'white')}
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >

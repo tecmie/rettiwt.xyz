@@ -1,5 +1,5 @@
-import * as React from "react";
-import type { StackProps } from "@chakra-ui/react";
+import * as React from 'react';
+import type { StackProps } from '@chakra-ui/react';
 import {
   FormControl,
   FormErrorMessage,
@@ -7,20 +7,20 @@ import {
   Radio,
   RadioGroup,
   Stack,
-} from "@chakra-ui/react";
-import type { ComponentPropsWithoutRef, PropsWithoutRef } from "react";
-import { forwardRef } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+} from '@chakra-ui/react';
+import type { ComponentPropsWithoutRef, PropsWithoutRef } from 'react';
+import { forwardRef } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 
 export interface FormRadioProps {
   /** Field name. */
   name: string;
   /** Field label. */
   label?: string;
-  outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>;
-  labelProps?: ComponentPropsWithoutRef<"label">;
+  outerProps?: PropsWithoutRef<JSX.IntrinsicElements['div']>;
+  labelProps?: ComponentPropsWithoutRef<'label'>;
   options: string[];
-  direction?: StackProps["direction"];
+  direction?: StackProps['direction'];
 }
 
 const FormRadio = forwardRef<HTMLInputElement, FormRadioProps>(
@@ -33,7 +33,7 @@ const FormRadio = forwardRef<HTMLInputElement, FormRadioProps>(
       ? errors[name]?.message || Object.entries(errors[name]?.types || {})
       : errors[name]?.message?.toString();
     const isErrorInField = errors[name] ? true : false;
-    const flex = "flex-start";
+    const flex = 'flex-start';
 
     return (
       <FormControl
@@ -69,9 +69,9 @@ const FormRadio = forwardRef<HTMLInputElement, FormRadioProps>(
         )}
       </FormControl>
     );
-  }
+  },
 );
 
-FormRadio.displayName = "FormRadio";
+FormRadio.displayName = 'FormRadio';
 
 export default FormRadio;

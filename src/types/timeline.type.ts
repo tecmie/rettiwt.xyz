@@ -1,4 +1,4 @@
-import { ITweet, ITweetInteraction } from "./tweet.type";
+import { ITweet, ITweetInteraction } from './tweet.type';
 
 export interface ITimelineTweet extends ITweet {
   /**

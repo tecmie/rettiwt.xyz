@@ -2,20 +2,20 @@ import {
   FormControl,
   FormLabel,
   type FormLabelProps,
-} from "@chakra-ui/form-control";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
-import type { ComponentWithAs, IconProps, InputProps } from "@chakra-ui/react";
+} from '@chakra-ui/form-control';
+import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';
+import type { ComponentWithAs, IconProps, InputProps } from '@chakra-ui/react';
 import {
   Button,
   FormErrorMessage,
   Icon,
   InputLeftElement,
   Stack, // InputProps,
-} from "@chakra-ui/react";
-import type { PropsWithoutRef } from "react";
-import { forwardRef } from "react";
-import { useFieldArray, useFormContext } from "react-hook-form";
-import { CgClose } from "react-icons/cg";
+} from '@chakra-ui/react';
+import type { PropsWithoutRef } from 'react';
+import { forwardRef } from 'react';
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import { CgClose } from 'react-icons/cg';
 
 export interface InputFieldArrayProps {
   /** Field name. */
@@ -30,11 +30,11 @@ export interface InputFieldArrayProps {
   /** Field label. */
   label?: string;
   /** Field type. Doesn't include radio buttons and checkboxes */
-  type?: "text" | "password" | "email" | "number" | "tel" | "file";
-  outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>;
+  type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'file';
+  outerProps?: PropsWithoutRef<JSX.IntrinsicElements['div']>;
   labelProps?: FormLabelProps;
   leftElement?: boolean;
-  icon?: ComponentWithAs<"svg", IconProps>;
+  icon?: ComponentWithAs<'svg', IconProps>;
   props?: InputProps;
 }
 
@@ -59,7 +59,7 @@ export const FormInputArray = forwardRef<
       leftElement,
       ...props
     },
-    ref
+    ref,
   ) => {
     const {
       register,
@@ -72,7 +72,7 @@ export const FormInputArray = forwardRef<
     });
 
     const _handleArrayAppend = () =>
-      limit && fields.length < limit && append(" ");
+      limit && fields.length < limit && append(' ');
     const error = Array.isArray(errors)
       ? errors[name]?.message || Object.entries(errors[name]?.types || {})
       : errors[name]?.message?.toString();
@@ -97,7 +97,7 @@ export const FormInputArray = forwardRef<
                 <Input
                   size="lg"
                   fontSize="md"
-                  _placeholder={{ fontSize: "sm" }}
+                  _placeholder={{ fontSize: 'sm' }}
                   isDisabled={isSubmitting}
                   {...register(`${name}.${index}`)}
                   {...props}
@@ -127,7 +127,7 @@ export const FormInputArray = forwardRef<
             w="max-content"
             onClick={_handleArrayAppend}
           >
-            {addMoreText ?? "+"}
+            {addMoreText ?? '+'}
           </Button>
         </Stack>
         <FormErrorMessage fontSize="sm" role="alert">
@@ -135,9 +135,9 @@ export const FormInputArray = forwardRef<
         </FormErrorMessage>
       </FormControl>
     );
-  }
+  },
 );
 
-FormInputArray.displayName = "FormInputArray";
+FormInputArray.displayName = 'FormInputArray';
 
 export default FormInputArray;

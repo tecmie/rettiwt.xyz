@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import Head from "next/head";
-import { useRouter } from "next/router";
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 
-const SITE_URL = "https://xims.tecmie.africa";
+const SITE_URL = 'https://xims.tecmie.africa';
 export type OpenGraphType = {
   siteName: string;
   description: string;
@@ -11,8 +11,8 @@ export type OpenGraphType = {
 };
 
 export interface SchemaOrgJLD {
-  "@context": string;
-  "@type": string;
+  '@context': string;
+  '@type': string;
   url?: string;
   name?: string;
   alternateName?: string;
@@ -20,19 +20,19 @@ export interface SchemaOrgJLD {
   itemListElement?: any;
   description?: string;
   image?: {
-    "@type": "ImageObject";
+    '@type': 'ImageObject';
     url: string;
   };
 }
 
 const defaultMeta = {
-  title: "Twitter Simulation",
-  siteName: "A Generative Simulation of Twitter Interactions",
-  description: "A Generative Simulation of Twitter Interactions",
+  title: 'Twitter Simulation',
+  siteName: 'A Generative Simulation of Twitter Interactions',
+  description: 'A Generative Simulation of Twitter Interactions',
   url: `${SITE_URL}`,
   image: `https://xims.tecmie.africa/favicon/EpicResume-meta-image.png`,
-  type: "website",
-  robots: "follow, index",
+  type: 'website',
+  robots: 'follow, index',
 };
 
 type SeoProps = {
@@ -47,7 +47,7 @@ export default function SeoMeta(props: SeoProps) {
     ...defaultMeta,
     ...props,
   };
-  meta["title"] = props.pageTitle
+  meta['title'] = props.pageTitle
     ? `${props.pageTitle} | ${meta.siteName}`
     : meta.title;
 
@@ -64,43 +64,43 @@ export default function SeoMeta(props: SeoProps) {
   /* JSON Schema Specs */
   const schemaOrgJSONLD: SchemaOrgJLD[] = [
     {
-      "@context": "http://schema.org",
-      "@type": "WebSite",
+      '@context': 'http://schema.org',
+      '@type': 'WebSite',
       url: `${SITE_URL}`,
-      name: "EpicResume",
-      alternateName: props.pageTitle ? props.title : "",
+      name: 'EpicResume',
+      alternateName: props.pageTitle ? props.title : '',
     },
   ];
   if (props.isCredentialPage) {
     schemaOrgJSONLD.push(
       {
-        "@context": "http://schema.org",
-        "@type": "BreadcrumbList",
+        '@context': 'http://schema.org',
+        '@type': 'BreadcrumbList',
         itemListElement: [
           {
-            "@type": "ListItem",
+            '@type': 'ListItem',
             position: 1,
             item: {
-              "@id": `${SITE_URL}`,
-              name: "Epic Resume",
+              '@id': `${SITE_URL}`,
+              name: 'Epic Resume',
               image: props.image,
             },
           },
         ],
       },
       {
-        "@context": "http://schema.org",
-        "@type": "BlogPosting",
+        '@context': 'http://schema.org',
+        '@type': 'BlogPosting',
         url: props.url,
         name: props.title,
-        alternateName: props.title ? props.pageTitle : "",
+        alternateName: props.title ? props.pageTitle : '',
         headline: props.title,
         image: {
-          "@type": "ImageObject",
+          '@type': 'ImageObject',
           url: props.image as string,
         },
         description: props.description,
-      }
+      },
     );
   }
 
@@ -194,76 +194,76 @@ type Favicons = {
 // then replace the whole /public/favicon folder
 const favicons: Array<Favicons> = [
   {
-    rel: "apple-touch-icon",
-    sizes: "57x57",
-    href: "/favicon/apple-icon-57x57.png",
+    rel: 'apple-touch-icon',
+    sizes: '57x57',
+    href: '/favicon/apple-icon-57x57.png',
   },
   {
-    rel: "apple-touch-icon",
-    sizes: "60x60",
-    href: "/favicon/apple-icon-60x60.png",
+    rel: 'apple-touch-icon',
+    sizes: '60x60',
+    href: '/favicon/apple-icon-60x60.png',
   },
   {
-    rel: "apple-touch-icon",
-    sizes: "72x72",
-    href: "/favicon/favicon-96x96.png",
+    rel: 'apple-touch-icon',
+    sizes: '72x72',
+    href: '/favicon/favicon-96x96.png',
   },
   {
-    rel: "apple-touch-icon",
-    sizes: "128x128",
-    href: "/favicon/apple-touch-icon.png",
+    rel: 'apple-touch-icon',
+    sizes: '128x128',
+    href: '/favicon/apple-touch-icon.png',
   },
   {
-    rel: "apple-touch-icon",
-    sizes: "144x144",
-    href: "/favicon/android-icon-144x144.png",
+    rel: 'apple-touch-icon',
+    sizes: '144x144',
+    href: '/favicon/android-icon-144x144.png',
   },
   {
-    rel: "apple-touch-icon",
-    sizes: "152x152",
-    href: "/favicon/apple-icon-152x152.png",
+    rel: 'apple-touch-icon',
+    sizes: '152x152',
+    href: '/favicon/apple-icon-152x152.png',
   },
   {
-    rel: "apple-touch-icon",
-    sizes: "192x192",
-    href: "/favicon/android-chrome-192x192.png",
+    rel: 'apple-touch-icon',
+    sizes: '192x192',
+    href: '/favicon/android-chrome-192x192.png',
   },
   {
-    rel: "apple-touch-icon",
-    sizes: "256x256",
-    href: "/favicon/icon-256x256.png",
+    rel: 'apple-touch-icon',
+    sizes: '256x256',
+    href: '/favicon/icon-256x256.png',
   },
   {
-    rel: "icon",
-    type: "image/png",
-    sizes: "384x384",
-    href: "/favicon/icon-384x384.png",
+    rel: 'icon',
+    type: 'image/png',
+    sizes: '384x384',
+    href: '/favicon/icon-384x384.png',
   },
   {
-    rel: "apple-touch-icon",
-    sizes: "512x512",
-    href: "/favicon/android-chrome-512x512.png",
+    rel: 'apple-touch-icon',
+    sizes: '512x512',
+    href: '/favicon/android-chrome-512x512.png',
   },
   {
-    rel: "icon",
-    type: "image/png",
-    sizes: "32x32",
-    href: "/favicon/favicon-32x32.png",
+    rel: 'icon',
+    type: 'image/png',
+    sizes: '32x32',
+    href: '/favicon/favicon-32x32.png',
   },
   {
-    rel: "icon",
-    type: "image/png",
-    sizes: "96x96",
-    href: "/favicon/favicon-96x96.png",
+    rel: 'icon',
+    type: 'image/png',
+    sizes: '96x96',
+    href: '/favicon/favicon-96x96.png',
   },
   {
-    rel: "icon",
-    type: "image/png",
-    sizes: "16x16",
-    href: "/favicon/favicon-16x16.png",
+    rel: 'icon',
+    type: 'image/png',
+    sizes: '16x16',
+    href: '/favicon/favicon-16x16.png',
   },
   {
-    rel: "manifest",
-    href: "/manifest.json",
+    rel: 'manifest',
+    href: '/manifest.json',
   },
 ];

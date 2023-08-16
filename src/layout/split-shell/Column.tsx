@@ -8,7 +8,7 @@ import {
   IconButton,
   IconButtonProps,
   useColorModeValue,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
 export const ColumnHeader = (props: FlexProps) => (
   <Flex
@@ -18,11 +18,11 @@ export const ColumnHeader = (props: FlexProps) => (
     top="0"
     px="3"
     align="center"
-    blur={"blur(100px)"}
+    blur={'blur(100px)'}
     opacity={0.8}
-    backdropFilter={"blur(100px)"}
-    bg={"inherit"}
-    color={useColorModeValue("gray.700", "white")}
+    backdropFilter={'blur(100px)'}
+    bg={'inherit'}
+    color={useColorModeValue('gray.700', 'white')}
     {...props}
   />
 );
@@ -36,10 +36,10 @@ export const ColumnButton = (props: ButtonProps) => (
     variant="tertiary"
     size="sm"
     fontSize="xs"
-    _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}
-    _active={{ bg: useColorModeValue("gray.200", "gray.600") }}
-    _focus={{ boxShadow: "none" }}
-    _focusVisible={{ boxShadow: "outline" }}
+    _hover={{ bg: useColorModeValue('gray.100', 'gray.700') }}
+    _active={{ bg: useColorModeValue('gray.200', 'gray.600') }}
+    _focus={{ boxShadow: 'none' }}
+    _focusVisible={{ boxShadow: 'outline' }}
     {...props}
   />
 );
@@ -49,10 +49,10 @@ export const ColumnIconButton = (props: IconButtonProps) => (
     size="sm"
     fontSize="md"
     variant="tertiary"
-    _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}
-    _active={{ bg: useColorModeValue("gray.200", "gray.600") }}
-    _focus={{ boxShadow: "none" }}
-    _focusVisible={{ boxShadow: "outline" }}
+    _hover={{ bg: useColorModeValue('gray.100', 'gray.700') }}
+    _active={{ bg: useColorModeValue('gray.200', 'gray.600') }}
+    _focus={{ boxShadow: 'none' }}
+    _focusVisible={{ boxShadow: 'outline' }}
     {...props}
   />
 );

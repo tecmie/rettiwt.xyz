@@ -16,7 +16,7 @@ import {
   useColorModeValue as mode,
   useColorMode,
   useColorModeValue,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 import {
   FiArrowUpRight,
   FiBookOpen,
@@ -37,10 +37,10 @@ import {
   FiTwitter,
   FiUser,
   FiX,
-} from "react-icons/fi";
-import { ColumnHeader, ColumnIconButton } from "./Column";
-import { HiOutlineHome } from "react-icons/hi";
-import XLogo from "@/components/logo";
+} from 'react-icons/fi';
+import { ColumnHeader, ColumnIconButton } from './Column';
+import { HiOutlineHome } from 'react-icons/hi';
+import XLogo from '@/components/logo';
 import {
   MdHome,
   MdHouse,
@@ -49,7 +49,7 @@ import {
   MdPerson2,
   MdPerson3,
   MdPersonOutline,
-} from "react-icons/md";
+} from 'react-icons/md';
 
 interface NavbarProps extends FlexProps {
   onClose?: () => void;
@@ -58,7 +58,7 @@ interface NavbarProps extends FlexProps {
 export const Navbar = (props: NavbarProps) => {
   const { toggleColorMode } = useColorMode();
   const ToggleIcon = useColorModeValue(FiMoon, FiSun);
-  const toggleText = `${useColorModeValue("Dark", "Light")} Theme`;
+  const toggleText = `${useColorModeValue('Dark', 'Light')} Theme`;
 
   return (
     <Flex
@@ -78,7 +78,7 @@ export const Navbar = (props: NavbarProps) => {
               onClick={props.onClose}
               aria-label="Close navigation"
               icon={<FiX />}
-              display={{ base: "inline-flex", lg: "none" }}
+              display={{ base: 'inline-flex', lg: 'none' }}
             />
             <Text fontWeight="bold" fontSize="sm" lineHeight="1.25rem">
               <XLogo />
@@ -108,10 +108,10 @@ export const Navbar = (props: NavbarProps) => {
             </NavLink>
 
             <NavButton
-              fontWeight={"normal"}
+              fontWeight={'normal'}
               color="emphasized"
               pl={2}
-              size={"sm"}
+              size={'sm'}
               leftIcon={<Icon mr={1} as={ToggleIcon} />}
               onClick={toggleColorMode}
             >
@@ -123,7 +123,7 @@ export const Navbar = (props: NavbarProps) => {
         <Box borderTopWidth="0" mb={4}>
           {/* <Divider ml={-24} w={'23rem'} position={'fixed'}  /> */}
           <NavButton
-            variant={"outline"}
+            variant={'outline'}
             leftIcon={<Icon as={FiLock} boxSize={4} />}
           >
             Create a Profile
@@ -142,10 +142,10 @@ const NavButton = (props: ButtonProps) => (
     variant="tertiary"
     size="lg"
     fontSize="sm"
-    _hover={{ bg: mode("blackAlpha.200", "whiteAlpha.200") }}
-    _active={{ bg: mode("gray.200", "gray.600") }}
-    _focus={{ boxShadow: "none" }}
-    _focusVisible={{ boxShadow: "outline" }}
+    _hover={{ bg: mode('blackAlpha.200', 'whiteAlpha.200') }}
+    _active={{ bg: mode('gray.200', 'gray.600') }}
+    _focus={{ boxShadow: 'none' }}
+    _focusVisible={{ boxShadow: 'outline' }}
     {...props}
   />
 );
@@ -161,11 +161,11 @@ export const NavLink = (props: NavLinkProps) => {
       px="2"
       py="1.5"
       borderRadius="md"
-      _hover={{ bg: mode("blackAlpha.200", "whiteAlpha.200") }}
+      _hover={{ bg: mode('blackAlpha.200', 'whiteAlpha.200') }}
       _activeLink={{
-        bg: mode("blackAlpha.200", "whiteAlpha.100"),
-        fontWeight: "bold",
-        color: "emphasized",
+        bg: mode('blackAlpha.200', 'whiteAlpha.100'),
+        fontWeight: 'bold',
+        color: 'emphasized',
       }}
       {...linkProps}
     >
@@ -180,7 +180,7 @@ export const NavLink = (props: NavLinkProps) => {
           <Icon
             as={FiArrowUpRight}
             boxSize="4"
-            color={mode("gray.600", "gray.400")}
+            color={mode('gray.600', 'gray.400')}
           />
         )}
       </HStack>
@@ -195,7 +195,7 @@ export const NavHeading = (props: TextProps) => (
     fontWeight="semibold"
     px="2"
     lineHeight="1.25"
-    color={mode("gray.600", "gray.400")}
+    color={mode('gray.600', 'gray.400')}
     {...props}
   />
 );

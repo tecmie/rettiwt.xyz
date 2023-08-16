@@ -3,10 +3,10 @@ import {
   FormErrorMessage,
   FormLabel,
   Select,
-} from "@chakra-ui/react";
-import type { ComponentPropsWithoutRef, PropsWithoutRef } from "react";
-import { forwardRef } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+} from '@chakra-ui/react';
+import type { ComponentPropsWithoutRef, PropsWithoutRef } from 'react';
+import { forwardRef } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 
 interface OptionProps {
   readonly value: string;
@@ -18,8 +18,8 @@ export interface FormNativeSelectProps {
   name: string;
   /** Field label. */
   label?: string;
-  outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>;
-  labelProps?: ComponentPropsWithoutRef<"label">;
+  outerProps?: PropsWithoutRef<JSX.IntrinsicElements['div']>;
+  labelProps?: ComponentPropsWithoutRef<'label'>;
   options: OptionProps[];
 }
 
@@ -35,7 +35,7 @@ const FormNativeSelect = forwardRef<HTMLInputElement, FormNativeSelectProps>(
       : errors[name]?.message?.toString();
     const isErrorInField = errors[name] ? true : false;
 
-    const flex = "flex-start";
+    const flex = 'flex-start';
 
     return (
       <FormControl
@@ -47,7 +47,7 @@ const FormNativeSelect = forwardRef<HTMLInputElement, FormNativeSelectProps>(
         justifyContent={flex}
         {...outerProps}
       >
-        <FormLabel {...labelProps} fontSize={"sm"}>
+        <FormLabel {...labelProps} fontSize={'sm'}>
           {label}
         </FormLabel>
         <Controller
@@ -56,8 +56,8 @@ const FormNativeSelect = forwardRef<HTMLInputElement, FormNativeSelectProps>(
           render={({ field }) => (
             <Select
               fontSize="sm"
-              bg={"bg-surface"}
-              _placeholder={{ fontSize: "sm" }}
+              bg={'bg-surface'}
+              _placeholder={{ fontSize: 'sm' }}
               {...field}
             >
               {options.map((option) => (
@@ -73,9 +73,9 @@ const FormNativeSelect = forwardRef<HTMLInputElement, FormNativeSelectProps>(
         </FormErrorMessage>
       </FormControl>
     );
-  }
+  },
 );
 
-FormNativeSelect.displayName = "FormNativeSelect";
+FormNativeSelect.displayName = 'FormNativeSelect';
 
 export default FormNativeSelect;

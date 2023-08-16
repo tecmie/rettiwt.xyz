@@ -1,8 +1,8 @@
 /* eslint-disable */
 
-import React, { FormEvent } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { DevTool } from "@hookform/devtools";
+import React, { FormEvent } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { DevTool } from '@hookform/devtools';
 
 import {
   useForm as useFormReactHookForm,
@@ -16,9 +16,9 @@ import {
   UseFormProps,
   FieldValues,
   SubmitErrorHandler,
-} from "react-hook-form";
-import { CriteriaMode, Mode } from "react-hook-form/dist/types/form";
-import { z, ZodTypeAny, ZodSchema, ZodObject } from "zod";
+} from 'react-hook-form';
+import { CriteriaMode, Mode } from 'react-hook-form/dist/types/form';
+import { z, ZodTypeAny, ZodSchema, ZodObject } from 'zod';
 
 type FormProps = {
   onSubmit?: Function;
@@ -27,24 +27,24 @@ type FormProps = {
 type TSetErrorFunc = (
   name: string,
   error: ErrorOption,
-  options?: { shouldFocus: boolean } | undefined
+  options?: { shouldFocus: boolean } | undefined,
 ) => void;
 
 interface HookResponse<T extends FieldValues> extends UseFormReturn<T> {
   submitForm?: UseFormHandleSubmit<T>;
   formErrors: any;
-  resetForm: UseFormReturn<T>["reset"];
+  resetForm: UseFormReturn<T>['reset'];
   // resetForm: UseFormReset<{ [x: string]: {} | undefined }>;
   // setFormValue: (name: string, value: T, config?: Record<string, unknown>) => void;
-  setFormValue: UseFormReturn<T>["setValue"];
-  getFormValues: UseFormReturn<T>["getValues"];
+  setFormValue: UseFormReturn<T>['setValue'];
+  getFormValues: UseFormReturn<T>['getValues'];
   validateForm: () => Promise<boolean>;
   // unregister: (name: string) => void;
   // setFocus: (name: string) => void;
 
   renderForm: (children: any, formProps?: FormProps) => any;
-  watchForm: UseFormReturn<T>["watch"];
-  setFormError: UseFormReturn<T>["setError"];
+  watchForm: UseFormReturn<T>['watch'];
+  setFormError: UseFormReturn<T>['setError'];
 }
 
 interface HookParams<T extends FieldValues> extends UseFormProps {
@@ -55,7 +55,7 @@ interface HookParams<T extends FieldValues> extends UseFormProps {
 
   defaultValues?: Partial<T>;
   mode?: Mode;
-  reValidateMode?: Exclude<Mode, "onTouched" | "all">;
+  reValidateMode?: Exclude<Mode, 'onTouched' | 'all'>;
   criteriaMode?: CriteriaMode;
   schema?: ZodTypeAny | any;
 }
@@ -73,20 +73,20 @@ const setFormErrorFactory = (setError: {
   (
     name: string,
     error: ErrorOption,
-    options?: { shouldFocus: boolean } | undefined
+    options?: { shouldFocus: boolean } | undefined,
   ): void;
   (
     name: string,
     error: ErrorOption,
-    options?: { shouldFocus: boolean } | undefined
+    options?: { shouldFocus: boolean } | undefined,
   ): void;
   (arg0: string, arg1: { type: string; message: any }): void;
 }) => {
   return (fieldName: string, err: any) => {
-    if (typeof err === "string") {
-      setError(fieldName, { type: "manual", message: err });
+    if (typeof err === 'string') {
+      setError(fieldName, { type: 'manual', message: err });
     } else if (Array.isArray(err)) {
-      setError(fieldName, { type: "manual", message: err[0] });
+      setError(fieldName, { type: 'manual', message: err[0] });
     } else {
       setError(fieldName, err);
     }
@@ -115,13 +115,13 @@ const setFormErrorFactory = (setError: {
 };
 
 const defaultFormParams = {
-  mode: "onBlur" as Mode,
-  reValidateMode: "onBlur" as Exclude<Mode, "onTouched" | "all">,
-  criteriaMode: "all" as CriteriaMode,
+  mode: 'onBlur' as Mode,
+  reValidateMode: 'onBlur' as Exclude<Mode, 'onTouched' | 'all'>,
+  criteriaMode: 'all' as CriteriaMode,
 };
 
 export default function useForm<T extends FieldValues>(
-  params: HookParams<T> = {}
+  params: HookParams<T> = {},
 ): HookResponse<T> {
   const [withDevTool, useDevTool] = React.useState(false);
   const {
@@ -133,7 +133,7 @@ export default function useForm<T extends FieldValues>(
   } = params;
 
   React.useEffect(() => {
-    if (process.env.NODE_ENV != "production") {
+    if (process.env.NODE_ENV != 'production') {
       useDevTool(true);
     }
 
@@ -170,7 +170,7 @@ export default function useForm<T extends FieldValues>(
     : // Would be undefined traditionally, but let's make this more developer friendly
       () =>
         console.error(
-          "You tried calling `submitForm` but forgot to set `onSubmit` callback for it"
+          'You tried calling `submitForm` but forgot to set `onSubmit` callback for it',
         );
 
   // pair with calling submit manually to prevent default form behaviour
