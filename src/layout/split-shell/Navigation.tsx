@@ -63,12 +63,15 @@ export const Navbar = (props: NavbarProps) => {
   return (
     <Flex
       as="nav"
+      // w={'max-content'}
+      align={'flex-end'}
+      // minW={{ md: "18rem", xl: "18rem" }}
       height="full"
       direction="column"
       justify="space-between"
       {...props}
     >
-      <Stack spacing="3">
+      <Stack spacing="3" w={'xs'}>
         <ColumnHeader>
           <HStack spacing="3">
             <ColumnIconButton
@@ -93,7 +96,7 @@ export const Navbar = (props: NavbarProps) => {
         </Stack>
       </Stack>
 
-      <Stack spacing={6}>
+      <Stack spacing={6} w={'xs'}>
         <Stack spacing="3" px="3">
           <NavHeading>Online</NavHeading>
           <Stack spacing="1">

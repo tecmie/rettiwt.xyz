@@ -7,7 +7,7 @@ import {
   DrawerContent,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { FiMenu, FiRss } from "react-icons/fi";
+import { FiMenu } from "react-icons/fi";
 import {
   ColumnHeader,
   ColumnIconButton,
@@ -15,6 +15,7 @@ import {
   ColumnButton,
 } from "../split-shell/Column";
 import { Navbar } from "../split-shell/Navigation";
+import { MdCheckBoxOutlineBlank } from "react-icons/md";
 
 interface SidebarSlotProps {
   title?: string;
@@ -29,9 +30,9 @@ const SidebarSlot: React.FC<SidebarSlotProps> = ({ children }) => {
     <Box
       borderLeftWidth="1px"
       pl={6}
-      mr={[4, 12, 32]}
       flex={0.5}
-      width={{ md: "20rem", xl: "24rem" }}
+      w={'full'}
+      maxW={'sm'}
       display={{ base: "none", md: "initial" }}
       overflowY="auto"
       onScroll={(x) => setSidebarIsScrolled(x.currentTarget.scrollTop > 32)}
@@ -51,9 +52,9 @@ const SidebarSlot: React.FC<SidebarSlotProps> = ({ children }) => {
                 <Navbar onClose={onClose} />
               </DrawerContent>
             </Drawer>
-            <ColumnHeading>Timeline</ColumnHeading>
+            {/* <ColumnHeading>Audience</ColumnHeading> */}
           </HStack>
-          <ColumnButton leftIcon={<FiRss />}>Customize</ColumnButton>
+          <ColumnButton leftIcon={<MdCheckBoxOutlineBlank />}>Customize</ColumnButton>
         </HStack>
       </ColumnHeader>
       {children}

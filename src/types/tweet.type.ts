@@ -47,6 +47,14 @@ export interface ITweet {
    * @description The unique identifier of the tweet.
    */
   id: string | number;
+  
+    /**
+   * @optional
+   * @memberof ITweetAuthor
+   * @description The id of tweet the user is replying to
+   */
+    parent_id?: string;
+
   /**
    * @memberof ITweet
    * @description The string content of the tweet.
@@ -112,4 +120,18 @@ export enum ITweetInteraction {
    * @description A favorite action on a tweet.
    */
   LIKE = "like",
+
+  /**
+   * @memberof ITweetInteraction
+   * @description A bookmark action on a tweet.
+   * @since 1.1.0
+   */
+  BOOKMARK = "bookmark",
+
+  /**
+   * @memberof ITweetInteraction
+   * @description A reply to a tweet.
+   * @since 1.1.0
+   */
+  REPLY = "tweet-reply",
 }

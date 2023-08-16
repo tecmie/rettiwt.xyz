@@ -13,13 +13,12 @@ export default function RouterPage() {
 
       <TimelineSlot>
         <TimelineView />
-        <TimelineView />
       </TimelineSlot>
 
       <SidebarSlot>
         <SidebarRow maxW="3xl" mx="auto" py="8" px={{ base: "2", md: "4" }} />
       </SidebarSlot>
-      
+
     </Fragment>
   );
 }
