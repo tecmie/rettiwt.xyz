@@ -1,11 +1,8 @@
 import {
   Box,
   Flex,
-  useDisclosure,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { Navbar } from "./Navigation";
-import { PostCard } from "./PostCard";
 
 type SplitShellProps = {
   children: React.ReactNode;

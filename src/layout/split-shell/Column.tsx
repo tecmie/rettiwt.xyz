@@ -18,7 +18,9 @@ export const ColumnHeader = (props: FlexProps) => (
     top="0"
     px="3"
     align="center"
-    // bg={useColorModeValue('white', 'gray.800')}
+    blur={"blur(100px)"}
+    opacity={0.8}
+    backdropFilter={"blur(100px)"}
     bg={"inherit"}
     color={useColorModeValue("gray.700", "white")}
     {...props}
