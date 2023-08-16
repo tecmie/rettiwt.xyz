@@ -44,7 +44,7 @@ export const TimelineView = (props: StackProps) => {
       {...props}
     >
       {tweets.data?.pages[currCursor]?.tweets.map((post) => (
-        <HStack align="start" px={4} py={2}>
+        <HStack align="start" px={4} pt={2}>
           <Box w={'40px'}>
 
                       <Avatar src={post.author.avatar} boxSize="9">
@@ -131,6 +131,7 @@ export const TimelineView = (props: StackProps) => {
         </HStack>
 
       ))}
+      <StackDivider />
     </Stack>
   );
 };
