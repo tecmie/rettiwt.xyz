@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   HStack,
+  Icon,
   IconButton,
   Input,
   Link,
@@ -16,20 +17,21 @@ import {
   useColorModeValue as mode,
 } from '@chakra-ui/react';
 import { api } from '@/utils/api';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { format } from 'timeago.js';
 import { ColumnIconButton } from '@/layout/split-shell/Column';
 
-import { AiOutlineHeart } from 'react-icons/ai';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import {
   CommentIcon,
   ImpressionIcon,
   RetweetIcon,
   ShareIcon,
 } from '@/components/icons';
-import { BsRecycle } from 'react-icons/bs';
-import { FiRefreshCw } from 'react-icons/fi';
+import { BsChevronRight } from 'react-icons/bs';
 import { HiRefresh } from 'react-icons/hi';
+import { ITimelineTweet } from '@/types/timeline.type';
+import { ITweetInteraction } from '@/types/tweet.type';
 
 export const TimelineView = (props: StackProps) => {
   const [currCursor, setCurrCursor] = useState(0);
@@ -55,11 +57,9 @@ export const TimelineView = (props: StackProps) => {
     >
       {tweets.data?.pages[currCursor]?.tweets.map((post) => {
         return (
-          <HStack align="start" px={4} pt={2}>
+          <HStack align="start" px={4} pt={3}>
             <Box w={'40px'} mr={1} px={2}>
-              <Avatar src={post.author.avatar} boxSize="9">
-                {/* <AvatarBadge boxSize="4" bg={post.is_pinned ? 'success' : 'subtle'} /> */}
-              </Avatar>
+              <Avatar src={post.author.avatar} boxSize="9"></Avatar>
             </Box>
 
             <Link
@@ -70,95 +70,11 @@ export const TimelineView = (props: StackProps) => {
                 // bg: mode("blackAlpha.50", "whiteAlpha.50")
               }}
               w={'full'}
-              // _activeLink={{ bg: "gray.700", color: "white" }}
               borderRadius={{ lg: 'lg' }}
             >
-              <HStack spacing="1">
-                <Text size="sm" fontWeight="bold" color="emphasized">
-                  {post.author.name}
-                </Text>
-                <Text size="sm" opacity={0.6} color="muted">
-                  @{post.author.handle}
-                </Text>
-                <Text opacity={0.6} color={'muted'} fontSize={'sm'}>
-                  {' '}
-                  • {post.timestamp && format(post.timestamp)}
-                </Text>
-              </HStack>
+              <TimelineDeckBody post={post} />
 
-              <Stack
-                spacing="1"
-                py={{ base: '3', lg: '2' }}
-                fontSize="sm"
-                lineHeight="1.25rem"
-              >
-                <RenderContentText text={post.content} />
-              </Stack>
-
-              <HStack justify={'space-between'}>
-                <HStack>
-                  <ColumnIconButton
-                    aria-label="Comment"
-                    rounded={'full'}
-                    color={'muted'}
-                    opacity={0.7}
-                    icon={<CommentIcon />}
-                  />
-                  <Text color="muted" fontSize={'sm'} opacity={0.7}>
-                    {post.reply_count}
-                  </Text>
-                </HStack>
-
-                <HStack>
-                  <ColumnIconButton
-                    aria-label="Retweet"
-                    rounded={'full'}
-                    color={'muted'}
-                    opacity={0.7}
-                    icon={<RetweetIcon />}
-                  />
-
-                  <Text color="muted" fontSize={'sm'} opacity={0.7}>
-                    {post.repost_count}
-                  </Text>
-                </HStack>
-
-                <HStack>
-                  <ColumnIconButton
-                    aria-label="Favorite"
-                    rounded={'full'}
-                    colorScheme="green"
-                    color={'muted'}
-                    opacity={0.7}
-                    icon={<AiOutlineHeart />}
-                  />
-                  <Text color="muted" fontSize={'sm'} opacity={0.7}>
-                    {post.favorite_count}
-                  </Text>
-                </HStack>
-
-                <HStack>
-                  <ColumnIconButton
-                    aria-label="Favorite"
-                    rounded={'full'}
-                    colorScheme="green"
-                    color={'muted'}
-                    opacity={0.7}
-                    icon={<ImpressionIcon />}
-                  />
-                  <Text color="muted" fontSize={'sm'} opacity={0.7}>
-                    23
-                  </Text>
-                </HStack>
-                <ColumnIconButton
-                  aria-label="Share and Save"
-                  rounded={'full'}
-                  colorScheme="green"
-                  color={'muted'}
-                  opacity={0.7}
-                  icon={<ShareIcon />}
-                />
-              </HStack>
+              <TimelineDeckFooter post={post} />
             </Link>
           </HStack>
         );
@@ -185,7 +101,7 @@ const RenderContentText = ({ text }: { text: string }) => {
         parts.push(text.slice(lastIndex, index));
         parts.push(
           <chakra.a
-            color={'blue.400'}
+            color={'link'}
             href={`https://x.com/hashtag/${hashtag}`}
             key={index}
           >
@@ -221,9 +137,9 @@ export const NewTimelinePost = (props: any) => {
               colorScheme="blue"
             >
               <HStack>
-                <Avatar src={name} name={name} size={'xs'}>
-                </Avatar>
+                <Avatar src={name} name={name} size={'xs'}></Avatar>
                 <Text>{`Viewing as ${name}`}</Text>
+                <Icon as={BsChevronRight} fontSize={'xs'} />
               </HStack>
             </Badge>
             <Textarea
@@ -258,5 +174,195 @@ export const NewTimelinePost = (props: any) => {
         </HStack>
       </Stack>
     </Box>
+  );
+};
+
+type TimelineDeckProps = {
+  post: ITimelineTweet
+}
+
+
+
+// import React from 'react';
+// import TweetDeck from './TweetDeck'; // Import TweetDeck component
+// import Retweet from './Retweet'; // Import Retweet component
+// import Quote from './Quote'; // Import Quote component
+// import Like from './Like'; // Import Like component
+// import Reply from './Reply'; // Import Reply component
+
+
+export const TweetDeckComponent = ({ post }: TimelineDeckProps) => {
+
+  return (
+    <Fragment>
+      <HStack spacing="1">
+      <Text fontSize="sm" fontWeight="bold" color="emphasized">
+          {post.author.name}
+        </Text>
+        <Text fontSize="sm" opacity={0.6} color="muted">
+          @{post.author.handle}
+        </Text>
+        <Text opacity={0.6} color={'muted'} fontSize={'sm'}>
+          {' '}
+          • {post.timestamp && format(post.timestamp)}
+        </Text>
+      </HStack>
+
+      <Stack
+        spacing="1"
+        py={{ base: '3', lg: '2' }}
+        fontSize="sm"
+        lineHeight="1.25rem"
+      >
+        <RenderContentText text={post.content} />
+      </Stack>
+    </Fragment>
+  );
+}
+
+
+export const LikeDeckComponent = ({ post }: TimelineDeckProps) => {
+
+  return (
+    <Fragment>
+  
+
+      <HStack spacing="1">
+        <Text fontSize="sm" fontWeight="bold" color="emphasized">
+          {post.author.name}
+        </Text>
+
+        <Text fontSize="sm" opacity={0.6} color="muted">
+          @{post.author.handle}
+        </Text>
+        <Text opacity={0.6} color={'muted'} fontSize={'sm'}>
+          {' '}
+          • {post.timestamp && format(post.timestamp)}
+        </Text>
+      </HStack>
+
+      <HStack fontSize="xs" fontWeight="medium" color="muted">
+        <Icon as={AiFillHeart} color={'red.500'} />
+        <Text>
+          <chakra.span>
+            {post.author.name} liked
+            </chakra.span>
+              <chakra.a px={1} color={'link'} href={`https://twitter.com/${post.id}`}>@{post.author.handle}&apos;s</chakra.a>
+<chakra.span>
+  tweet
+</chakra.span>
+        </Text>
+      </HStack>
+
+
+
+      <Stack
+        spacing="1"
+        py={{ base: '3', lg: '2' }}
+        fontSize="sm"
+        lineHeight="1.25rem"
+      >
+        <RenderContentText text={post.content} />
+      </Stack>
+    </Fragment>
+  );
+}
+
+const Retweet = TweetDeckComponent;
+const Quote = TweetDeckComponent;
+const Reply = TweetDeckComponent;
+
+
+export const TimelineDeckBody =  ({ post }: TimelineDeckProps) => {
+
+  const __render__ = post.type
+  switch (__render__) {
+    case ITweetInteraction.RETWEET:
+      return <Retweet post={post} />;
+    case ITweetInteraction.QUOTE_TWEET:
+      return <Quote  post={post} />;
+    case ITweetInteraction.LIKE:
+      return <LikeDeckComponent post={post} />;
+    case ITweetInteraction.REPLY:
+      return <Reply  post={post} />;
+    default:
+      return <TweetDeckComponent post={post} />;
+  }
+};
+
+
+
+
+
+
+
+
+
+export const TimelineDeckFooter = ({ post }: { post: ITimelineTweet }) => {
+  return (
+    <HStack justify={'space-between'}>
+      <HStack>
+        <ColumnIconButton
+          aria-label="Comment"
+          rounded={'full'}
+          color={'muted'}
+          opacity={0.7}
+          icon={<CommentIcon />}
+        />
+        <Text color="muted" fontSize={'sm'} opacity={0.7}>
+          {post.reply_count}
+        </Text>
+      </HStack>
+
+      <HStack>
+        <ColumnIconButton
+          aria-label="Retweet"
+          rounded={'full'}
+          color={'muted'}
+          opacity={0.7}
+          icon={<RetweetIcon />}
+        />
+
+        <Text color="muted" fontSize={'sm'} opacity={0.7}>
+          {post.repost_count}
+        </Text>
+      </HStack>
+
+      <HStack>
+        <ColumnIconButton
+          aria-label="Favorite"
+          rounded={'full'}
+          colorScheme="green"
+          color={'muted'}
+          opacity={0.7}
+          icon={<AiOutlineHeart />}
+        />
+        <Text color="muted" fontSize={'sm'} opacity={0.7}>
+          {post.favorite_count}
+        </Text>
+      </HStack>
+
+      <HStack>
+        <ColumnIconButton
+          aria-label="Favorite"
+          rounded={'full'}
+          colorScheme="green"
+          color={'muted'}
+          opacity={0.7}
+          icon={<ImpressionIcon />}
+        />
+        <Text color="muted" fontSize={'sm'} opacity={0.7}>
+          23
+        </Text>
+      </HStack>
+      <ColumnIconButton
+        aria-label="Share and Save"
+        rounded={'full'}
+        colorScheme="green"
+        color={'muted'}
+        opacity={0.7}
+        icon={<ShareIcon />}
+      />
+    </HStack>
   );
 };

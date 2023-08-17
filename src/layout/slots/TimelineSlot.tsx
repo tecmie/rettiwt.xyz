@@ -33,7 +33,11 @@ const TimelineSlot: React.FC<TimelineSlotProps> = ({ children }) => {
               icon={<FiArrowLeft />}
               display={{ base: 'inline-flex', md: 'none' }}
             />
-            {mainIsScrolled && <ColumnHeading><strong>Home</strong></ColumnHeading>}
+            {mainIsScrolled && (
+              <ColumnHeading>
+                <strong>Home</strong>
+              </ColumnHeading>
+            )}
           </HStack>
           <ColumnButton leftIcon={<FiHeart />}>12 Followers</ColumnButton>
         </HStack>

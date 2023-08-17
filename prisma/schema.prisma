@@ -66,17 +66,28 @@ model VerificationToken {
 }
 
 model Author {
-  id                   String    @id @default(cuid())
-  handle               String
+  id                   String      @id @default(cuid())
+  handle               String      @unique
   name                 String
   avatar               Boolean
   bio                  String?
-  has_custom_timelines Boolean  @default(false)
-  url                  String
-  verified             Boolean  @default(false)
-  tweets               Tweet[]  @relation(name: "AuthorTweets")
+  has_custom_timelines Boolean   @default(false)
+  url                  String?
+  verified             Boolean   @default(false)
+  following            Follow[]  @relation("Following")
+  followers            Follow[]  @relation("Followers")
+  tweets               Tweet[]   @relation(name: "AuthorTweets")
   retweets             Retweet[]
   likes                Like[]
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  follower    Author   @relation("Followers", fields: [followerId], references: [id])
+  followerId  String
+  following   Author   @relation("Following", fields: [followingId], references: [id])
+  followingId String
+  createdAt   DateTime @default(now()) // Optional: timestamp of when the follow occurred
 }
 
 model Tweet {

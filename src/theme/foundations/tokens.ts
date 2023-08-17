@@ -36,6 +36,10 @@ export default {
       default: 'gray.500',
       _dark: 'gray.400',
     },
+    link: {
+      default: 'blue.500',
+      _dark: 'color(srgb 0.1072 0.5585 0.8638)',
+    },
     border: {
       default: 'gray.200',
       _dark: 'gray.700',

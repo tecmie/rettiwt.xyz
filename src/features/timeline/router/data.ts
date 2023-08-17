@@ -73,7 +73,7 @@ export const timelineTweets: ITimelineTweet[] = [
     favorite_count: 150,
     bookmark_count: 8,
     author: tweetAuthor,
-    type: ITweetInteraction.TWEET,
+    type: ITweetInteraction.LIKE,
     timestamp: '2021-07-20T15:00:00.000Z',
     is_pinned: false,
     is_quote_tweet: false,
