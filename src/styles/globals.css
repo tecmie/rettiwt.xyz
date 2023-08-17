@@ -1,26 +1,26 @@
 @font-face {
   font-family: 'Google Sans';
-  src: url('https://fonts.gstatic.com/s/googlesans/v14/4UabrENHsxJlGDuGo1OIlLU94YtzCwM.ttf') format('truetype');
+  src: url('https://fonts.gstatic.com/s/googlesans/v14/4UabrENHsxJlGDuGo1OIlLU94YtzCwM.ttf')
+    format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Chirp';
-  src: url('https://abs.twimg.com/responsive-web/client-web/Chirp-Bold.ebb56aba.woff2') format('woff2');
+  src: url('https://abs.twimg.com/responsive-web/client-web/Chirp-Bold.ebb56aba.woff2')
+    format('woff2');
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Chirp';
-  src: url('https://abs.twimg.com/responsive-web/client-web/Chirp-Regular.80fda27a.woff2') format('woff2');
+  src: url('https://abs.twimg.com/responsive-web/client-web/Chirp-Regular.80fda27a.woff2')
+    format('woff2');
   font-weight: normal;
   font-style: normal;
 }
-
-
-
 
 html,
 body {

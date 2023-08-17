@@ -3,6 +3,7 @@ import {
   ButtonProps,
   Flex,
   FlexProps,
+  HStack,
   Heading,
   HeadingProps,
   IconButton,

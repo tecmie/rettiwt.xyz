@@ -123,7 +123,9 @@ export const Navbar = (props: NavbarProps) => {
         <Box borderTopWidth="0" mb={4}>
           {/* <Divider ml={-24} w={'23rem'} position={'fixed'}  /> */}
           <NavButton
+            rounded={'full'}
             variant={'outline'}
+            w={'max-content'}
             leftIcon={<Icon as={FiLock} boxSize={4} />}
           >
             Create a Profile
