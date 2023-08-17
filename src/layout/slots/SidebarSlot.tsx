@@ -30,9 +30,8 @@ const SidebarSlot: React.FC<SidebarSlotProps> = ({ children }) => {
     <Box
       borderLeftWidth="1px"
       pl={6}
-      flex={0.5}
       w={'full'}
-      maxW={'sm'}
+      maxW={'md'}
       display={{ base: 'none', md: 'initial' }}
       overflowY="auto"
       onScroll={(x) => setSidebarIsScrolled(x.currentTarget.scrollTop > 32)}

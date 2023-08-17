@@ -63,9 +63,8 @@ export const Navbar = (props: NavbarProps) => {
   return (
     <Flex
       as="nav"
-      // w={'max-content'}
       align={'flex-end'}
-      // minW={{ md: "18rem", xl: "18rem" }}
+      // flex={1}
       height="full"
       direction="column"
       justify="space-between"

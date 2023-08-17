@@ -42,7 +42,7 @@ export interface ITimelineTweet extends ITweet {
   /**
    * @optional
    * @memberof ITimelineTweet
-   * @description The tweet that is replied to
+   * @description The tweet that is replied or quoted
    * @see {@link ITweet}
    */
   parent_tweet?: ITweet;

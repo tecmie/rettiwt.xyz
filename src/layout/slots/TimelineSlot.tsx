@@ -22,6 +22,7 @@ const TimelineSlot: React.FC<TimelineSlotProps> = ({ children }) => {
       alignItems={'center'}
       overflowY="auto"
       maxW={'2xl'}
+      minW={['md', '2xl']}
       onScroll={(x) => setmMainIsScrolled(x.currentTarget.scrollTop > 32)}
     >
       <ColumnHeader shadow={mainIsScrolled ? 'base' : 'none'}>
@@ -32,7 +33,7 @@ const TimelineSlot: React.FC<TimelineSlotProps> = ({ children }) => {
               icon={<FiArrowLeft />}
               display={{ base: 'inline-flex', md: 'none' }}
             />
-            {mainIsScrolled && <ColumnHeading>20 Following</ColumnHeading>}
+            {mainIsScrolled && <ColumnHeading><strong>Home</strong></ColumnHeading>}
           </HStack>
           <ColumnButton leftIcon={<FiHeart />}>12 Followers</ColumnButton>
         </HStack>

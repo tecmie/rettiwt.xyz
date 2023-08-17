@@ -1,9 +1,10 @@
 import SeoMeta from '@/components/seo-meta';
-import { TimelineView } from '@/features/timeline';
+import { NewTimelinePost, TimelineView } from '@/features/timeline';
 import SidebarSlot from '@/layout/slots/SidebarSlot';
 import TimelineSlot from '@/layout/slots/TimelineSlot';
 import { SplitShell } from '@/layout/split-shell';
 import { Timeline as SidebarRow } from '@/layout/split-shell/Timeline';
+import { Box } from '@chakra-ui/react';
 import { Fragment } from 'react';
 
 export default function RouterPage() {
@@ -12,6 +13,7 @@ export default function RouterPage() {
       <SeoMeta />
 
       <TimelineSlot>
+        <NewTimelinePost />
         <TimelineView />
       </TimelineSlot>
 

@@ -35,7 +35,9 @@
     "@trpc/react-query": "^10.26.0",
     "@trpc/server": "^10.26.0",
     "@vercel/analytics": "^1.0.1",
+    "archiver": "^5.3.2",
     "boring-avatars": "^1.7.0",
+    "eventemitter3": "^5.0.1",
     "focus-visible": "^5.2.0",
     "framer-motion": "^10.12.18",
     "immer": "^10.0.2",
@@ -61,6 +63,7 @@
   },
   "devDependencies": {
     "@hookform/devtools": "^4.2.3",
+    "@types/archiver": "^5.3.2",
     "@types/eslint": "^8.37.0",
     "@types/node": "^18.16.0",
     "@types/nprogress": "^0.2.0",
