@@ -9,3 +9,4 @@ export { default as FormInputArray } from './components/FormInputArray';
 export { default as FormTextarea } from './components/FormTextarea';
 export { default as FormCheckbox } from './components/FormCheckbox';
 export { default as FormEditableInput } from './components/FormEditableInput';
+export { default as FormRadioCard } from './components/FormRadioCard';

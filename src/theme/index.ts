@@ -11,19 +11,6 @@ const config: ThemeConfig = {
   useSystemColorMode: false,
 };
 
-const brand = {
-  '50': '#EAFBF4',
-  '100': '#BFF3DD',
-  '200': '#94EAC6',
-  '300': '#69E2AF',
-  '400': '#3FDA99',
-  '500': '#25C07F',
-  '600': '#1D9663',
-  '700': '#156B47',
-  '800': '#0C402A',
-  '900': '#04150E',
-};
-
 export const theme: Record<string, any> = extendBaseTheme(
   {
     config,
@@ -32,8 +19,7 @@ export const theme: Record<string, any> = extendBaseTheme(
     colors: {
       ...base.colors,
       black: '#414141',
-      brand: brand,
-      green: brand,
+      brand: base.colors.twitter,
       gray: {
         '50': '#F2F2F2',
         '100': '#DBDBDB',

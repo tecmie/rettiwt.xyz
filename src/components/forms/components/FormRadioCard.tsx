@@ -40,7 +40,9 @@ export interface FormRadioCardOptionProps {
   name: string;
   value: string;
   /** optional metadata for radio card  */
-  metadata?: string | number;
+  extra?: React.ReactNode;
+  metadata?: any;
+  // metadata?: React.ReactNode
 }
 
 export interface FormRadioCardProps {
@@ -117,8 +119,8 @@ export const RadioCard = (props: RadioCardProps) => {
       <Box sx={styles} {...checkboxProps} {...rest}>
         <Stack direction="row">
           {state.isChecked ? (
-            <Circle bg="emphasized" size="4">
-              <Icon as={CheckCircleIcon} boxSize="2.5" color="inverted" />
+            <Circle size="4">
+              <Icon as={CheckCircleIcon} boxSize="4" color="link" />
             </Circle>
           ) : (
             <Circle borderWidth="2px" size="4" />
@@ -171,8 +173,8 @@ const FormRadioCard = forwardRef<HTMLInputElement, FormRadioCardProps>(
                     {option.name}
                   </Text>
                   <Text color="emphasized" fontWeight="medium" fontSize="sm">
-                    {/* We are stubbing the stakes value for demo purposes */}
-                    {option.metadata || 0} stakes
+                    {/* Metadata is a React component, can be a react node to allow for flexibility */}
+                    {option.extra}
                   </Text>
                 </RadioCard>
               ))}
