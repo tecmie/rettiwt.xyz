@@ -156,6 +156,8 @@ export const NewTimelinePost = (props: any) => {
             placeholder={`What should ${name} tweet about`}
             style={{ resize: 'none' }}
             variant={'flushed'}
+            borderWidth={'.1px'}
+            border={'none'}
           />
 
           <HStack spacing={3}>

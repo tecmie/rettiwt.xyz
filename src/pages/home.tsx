@@ -1,10 +1,10 @@
 import { useForm } from '@/components/forms';
 import SeoMeta from '@/components/seo-meta';
+import { WhoToFollow } from '@/components/who-to-follow';
 import { NewTimelinePost, TimelineView } from '@/features/timeline';
 import SidebarSlot from '@/layout/slots/SidebarSlot';
 import TimelineSlot from '@/layout/slots/TimelineSlot';
 import { SplitShell } from '@/layout/split-shell';
-import { Timeline as SidebarRow } from '@/layout/split-shell/Timeline';
 import { Fragment } from 'react';
 
 import { z } from 'zod';
@@ -41,7 +41,7 @@ export default function RouterPage() {
       </TimelineSlot>
 
       <SidebarSlot>
-        <SidebarRow maxW="3xl" mx="auto" py="8" px={{ base: '2', md: '4' }} />
+        <WhoToFollow />
       </SidebarSlot>
     </Fragment>
   );
