@@ -1,7 +1,7 @@
 import {
   getColor,
   mode,
-  StyleFunctionProps,
+  type StyleFunctionProps,
   transparentize,
 } from '@chakra-ui/theme-tools';
 

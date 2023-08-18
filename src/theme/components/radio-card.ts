@@ -1,6 +1,6 @@
 import {
   mode,
-  StyleFunctionProps,
+  type StyleFunctionProps,
   transparentize,
 } from '@chakra-ui/theme-tools';
 

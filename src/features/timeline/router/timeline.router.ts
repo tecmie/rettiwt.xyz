@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
-import { ITimelineTweet } from '@/types/timeline.type';
+import { type ITimelineTweet } from '@/types/timeline.type';
 import { timelineTweets } from './data';
 
 const queryTimelineSchema = z.object({

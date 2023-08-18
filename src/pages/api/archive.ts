@@ -10,7 +10,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
  * @param {NextApiRequest} req - The HTTP request object.
  * @param {NextApiResponse} res - The HTTP response object.
  */
-export default (req: NextApiRequest, res: NextApiResponse) => {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {
     return res.status(405).end(); // Method Not Allowed
   }
@@ -39,7 +39,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
   archive.directory(folderToZip, false);
 
   // Finalize the archive
-  archive.finalize();
+  await archive.finalize();
 
   // Handle errors
   archive.on('error', (err) => {

@@ -1,5 +1,5 @@
-import { ITimelineTweet } from '@/types/timeline.type';
-import { ITweetAuthor, ITweetInteraction } from '@/types/tweet.type';
+import { type ITimelineTweet } from '@/types/timeline.type';
+import { type ITweetAuthor, ITweetInteraction } from '@/types/tweet.type';
 
 const tweetAuthor: ITweetAuthor = {
   id: '1',

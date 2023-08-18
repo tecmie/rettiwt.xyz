@@ -1,6 +1,6 @@
 import 'focus-visible/dist/focus-visible';
 import base from '@chakra-ui/theme';
-import { ThemeConfig, extendBaseTheme } from '@chakra-ui/react';
+import { type ThemeConfig, extendBaseTheme } from '@chakra-ui/react';
 import * as components from './components';
 import * as foundations from './foundations';
 

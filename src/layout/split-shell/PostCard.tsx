@@ -1,7 +1,7 @@
 import {
   Link,
   Stack,
-  StackProps,
+  type StackProps,
   Text,
   useColorModeValue as mode,
 } from '@chakra-ui/react';

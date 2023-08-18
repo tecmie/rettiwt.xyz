@@ -10,7 +10,7 @@ import {
   Link,
   Stack,
   StackDivider,
-  StackProps,
+  type StackProps,
   Text,
   Textarea,
   chakra,
@@ -30,7 +30,7 @@ import {
 } from '@/components/icons';
 import { BsChevronRight } from 'react-icons/bs';
 import { HiRefresh } from 'react-icons/hi';
-import { ITimelineTweet } from '@/types/timeline.type';
+import { type ITimelineTweet } from '@/types/timeline.type';
 import { ITweetInteraction } from '@/types/tweet.type';
 
 export const TimelineView = (props: StackProps) => {
@@ -57,7 +57,7 @@ export const TimelineView = (props: StackProps) => {
     >
       {tweets.data?.pages[currCursor]?.tweets.map((post) => {
         return (
-          <HStack align="start" px={4} pt={3}>
+          <HStack align="start" key={post.id} px={4} pt={2}>
             <Box w={'40px'} mr={1} px={2}>
               <Avatar src={post.author.avatar} boxSize="9"></Avatar>
             </Box>

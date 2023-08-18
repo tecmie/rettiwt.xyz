@@ -1,4 +1,4 @@
-import { mode, StyleFunctionProps } from '@chakra-ui/theme-tools';
+import { mode, type StyleFunctionProps } from '@chakra-ui/theme-tools';
 
 export default {
   global: (props: StyleFunctionProps) => ({

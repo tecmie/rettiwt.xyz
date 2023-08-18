@@ -1,13 +1,13 @@
 import {
   Button,
-  ButtonProps,
+  type ButtonProps,
   Flex,
-  FlexProps,
+  type FlexProps,
   HStack,
   Heading,
-  HeadingProps,
+  type HeadingProps,
   IconButton,
-  IconButtonProps,
+  type IconButtonProps,
   useColorModeValue,
 } from '@chakra-ui/react';
 

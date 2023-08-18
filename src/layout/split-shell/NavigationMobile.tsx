@@ -75,7 +75,7 @@ class HomeNavOptionProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const HomeNav = (_props: HomeNavOptionProps) => {
+export const NavigationMobile = (_props: HomeNavOptionProps) => {
   /* do nothing */
   // JSON.stringify(props)
 
@@ -198,5 +198,3 @@ const HomeNav = (_props: HomeNavOptionProps) => {
     </>
   );
 };
-
-export default HomeNav;

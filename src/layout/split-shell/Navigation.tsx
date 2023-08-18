@@ -1,55 +1,33 @@
 import {
-  As,
+  type As,
   Box,
   Button,
-  ButtonProps,
-  Divider,
+  type ButtonProps,
   Flex,
-  FlexProps,
+  type FlexProps,
   HStack,
   Icon,
   Link,
-  LinkProps,
+  type LinkProps,
   Stack,
   Text,
-  TextProps,
+  type TextProps,
   useColorModeValue as mode,
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
 import {
   FiArrowUpRight,
-  FiBookOpen,
-  FiBookmark,
-  FiCamera,
-  FiFigma,
-  FiFilm,
   FiGithub,
-  FiHome,
-  FiKey,
   FiLock,
-  FiMessageCircle,
-  FiMessageSquare,
-  FiMic,
   FiMoon,
-  FiShield,
   FiSun,
   FiTwitter,
-  FiUser,
   FiX,
 } from 'react-icons/fi';
 import { ColumnHeader, ColumnIconButton } from './Column';
-import { HiOutlineHome } from 'react-icons/hi';
 import XLogo from '@/components/logo';
-import {
-  MdHome,
-  MdHouse,
-  MdLogin,
-  MdPerson,
-  MdPerson2,
-  MdPerson3,
-  MdPersonOutline,
-} from 'react-icons/md';
+import { MdHome, MdPersonOutline } from 'react-icons/md';
 
 interface NavbarProps extends FlexProps {
   onClose?: () => void;

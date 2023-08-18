@@ -1,5 +1,5 @@
 import {
-  HTMLChakraProps,
+  type HTMLChakraProps,
   chakra,
   useColorModeValue as mode,
 } from '@chakra-ui/react';
