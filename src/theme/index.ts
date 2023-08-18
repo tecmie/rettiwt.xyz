@@ -1,6 +1,6 @@
 import 'focus-visible/dist/focus-visible';
 import base from '@chakra-ui/theme';
-import { type ThemeConfig, extendBaseTheme } from '@chakra-ui/react';
+import { type ThemeConfig, extendTheme } from '@chakra-ui/react';
 import * as components from './components';
 import * as foundations from './foundations';
 
@@ -11,7 +11,7 @@ const config: ThemeConfig = {
   useSystemColorMode: false,
 };
 
-export const theme: Record<string, any> = extendBaseTheme(
+export const theme: Record<string, any> = extendTheme(
   {
     config,
     ...foundations,
@@ -35,5 +35,4 @@ export const theme: Record<string, any> = extendBaseTheme(
       },
     },
   },
-  base,
 );

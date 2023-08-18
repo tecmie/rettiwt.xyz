@@ -91,27 +91,6 @@ const setFormErrorFactory = (setError: {
       setError(fieldName, err);
     }
   };
-  // return (fieldName, err) => {
-  //   let errorPayload = err;
-  //
-  //   /*
-  //    * Function overloading
-  //    */
-  //   if (typeof err === "string") {
-  //     errorPayload = {
-  //       types: {
-  //         manual: err,
-  //       },
-  //     };
-  //   }
-  //   if (Array.isArray(err)) {
-  //     errorPayload = {
-  //       types: _.fromPairs(err.map((e, idx) => [`manual${idx}`, e])),
-  //     };
-  //   }
-  //
-  //   setError(fieldName, errorPayload);
-  // };
 };
 
 const defaultFormParams = {
