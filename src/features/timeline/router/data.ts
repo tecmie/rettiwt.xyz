@@ -138,7 +138,7 @@ export const timelineTweets: ITimelineTweet[] = [
     favorite_count: 239,
     bookmark_count: 11,
     author: tweetAuthor,
-    type: ITweetInteraction.TWEET,
+    type: ITweetInteraction.QUOTE_TWEET,
     is_pinned: false,
     is_quote_tweet: false,
     is_retweet: false,

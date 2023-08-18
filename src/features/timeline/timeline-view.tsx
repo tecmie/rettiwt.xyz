@@ -178,10 +178,8 @@ export const NewTimelinePost = (props: any) => {
 };
 
 type TimelineDeckProps = {
-  post: ITimelineTweet
-}
-
-
+  post: ITimelineTweet;
+};
 
 // import React from 'react';
 // import TweetDeck from './TweetDeck'; // Import TweetDeck component
@@ -190,13 +188,11 @@ type TimelineDeckProps = {
 // import Like from './Like'; // Import Like component
 // import Reply from './Reply'; // Import Reply component
 
-
 export const TweetDeckComponent = ({ post }: TimelineDeckProps) => {
-
   return (
     <Fragment>
       <HStack spacing="1">
-      <Text fontSize="sm" fontWeight="bold" color="emphasized">
+        <Text fontSize="sm" fontWeight="bold" color="emphasized">
           {post.author.name}
         </Text>
         <Text fontSize="sm" opacity={0.6} color="muted">
@@ -208,24 +204,30 @@ export const TweetDeckComponent = ({ post }: TimelineDeckProps) => {
         </Text>
       </HStack>
 
-      <Stack
-        spacing="1"
-        py={{ base: '3', lg: '2' }}
-        fontSize="sm"
-        lineHeight="1.25rem"
-      >
+      <Stack spacing="1" pb={2} pt={0.5} fontSize="sm" lineHeight="1.25rem">
         <RenderContentText text={post.content} />
       </Stack>
     </Fragment>
   );
-}
-
+};
 
 export const LikeDeckComponent = ({ post }: TimelineDeckProps) => {
-
   return (
     <Fragment>
-  
+      <HStack opacity={0.8} fontSize="xs" fontWeight="medium" color="muted">
+        <Icon as={AiFillHeart} color={'red.500'} />
+        <Text>
+          <chakra.span>{post.author.name} liked</chakra.span>
+          <chakra.a
+            px={1}
+            color={'link'}
+            href={`https://twitter.com/${post.id}`}
+          >
+            @{post.author.handle}&apos;s
+          </chakra.a>
+          <chakra.span>tweet</chakra.span>
+        </Text>
+      </HStack>
 
       <HStack spacing="1">
         <Text fontSize="sm" fontWeight="bold" color="emphasized">
@@ -241,62 +243,152 @@ export const LikeDeckComponent = ({ post }: TimelineDeckProps) => {
         </Text>
       </HStack>
 
-      <HStack fontSize="xs" fontWeight="medium" color="muted">
-        <Icon as={AiFillHeart} color={'red.500'} />
-        <Text>
-          <chakra.span>
-            {post.author.name} liked
-            </chakra.span>
-              <chakra.a px={1} color={'link'} href={`https://twitter.com/${post.id}`}>@{post.author.handle}&apos;s</chakra.a>
-<chakra.span>
-  tweet
-</chakra.span>
-        </Text>
-      </HStack>
-
-
-
-      <Stack
-        spacing="1"
-        py={{ base: '3', lg: '2' }}
-        fontSize="sm"
-        lineHeight="1.25rem"
-      >
+      <Stack spacing="1" pb={2} pt={0.5} fontSize="sm" lineHeight="1.25rem">
         <RenderContentText text={post.content} />
       </Stack>
     </Fragment>
   );
-}
+};
 
-const Retweet = TweetDeckComponent;
-const Quote = TweetDeckComponent;
-const Reply = TweetDeckComponent;
+export const RetweetDeckComponent = ({ post }: TimelineDeckProps) => {
+  return (
+    <Fragment>
+      <HStack opacity={0.8} fontSize="xs" fontWeight="medium" color="muted">
+        <Icon as={RetweetIcon} color={'green.500'} />
+        <Text>
+          <chakra.span>{post.author.name} retweeted</chakra.span>
+          <chakra.a
+            px={1}
+            color={'link'}
+            href={`https://twitter.com/${post.id}`}
+          >
+            @{post.author.handle}&apos;s
+          </chakra.a>
+          <chakra.span>tweet</chakra.span>
+        </Text>
+      </HStack>
 
+      <HStack spacing="1">
+        <Text fontSize="sm" fontWeight="bold" color="emphasized">
+          {post.author.name}
+        </Text>
 
-export const TimelineDeckBody =  ({ post }: TimelineDeckProps) => {
+        <Text fontSize="sm" opacity={0.6} color="muted">
+          @{post.author.handle}
+        </Text>
+        <Text opacity={0.6} color={'muted'} fontSize={'sm'}>
+          {' '}
+          • {post.timestamp && format(post.timestamp)}
+        </Text>
+      </HStack>
 
-  const __render__ = post.type
+      <Stack spacing="1" pb={2} pt={0.5} fontSize="sm" lineHeight="1.25rem">
+        <RenderContentText text={post.content} />
+      </Stack>
+    </Fragment>
+  );
+};
+
+export const ReplyDeckComponent = ({ post }: TimelineDeckProps) => {
+  return (
+    <Fragment>
+      <HStack spacing="1">
+        <Text fontSize="sm" fontWeight="bold" color="emphasized">
+          {post.author.name}
+        </Text>
+
+        <Text fontSize="sm" opacity={0.6} color="muted">
+          @{post.author.handle}
+        </Text>
+        <Text opacity={0.6} color={'muted'} fontSize={'sm'}>
+          {' '}
+          • {post.timestamp && format(post.timestamp)}
+        </Text>
+      </HStack>
+
+      <HStack opacity={0.8} fontSize="xs" fontWeight="medium" color="muted">
+        <Icon as={CommentIcon} color={'blue.500'} />
+        <Text>
+          <chakra.span>Replying to</chakra.span>
+          <chakra.a
+            px={1}
+            color={'link'}
+            href={`https://twitter.com/${post.id}`}
+          >
+            @{post.author.handle}&apos;s
+          </chakra.a>
+          <chakra.span>tweet</chakra.span>
+        </Text>
+      </HStack>
+
+      <Stack spacing="1" pb={2} pt={0.5} fontSize="sm" lineHeight="1.25rem">
+        <RenderContentText text={post.content} />
+      </Stack>
+    </Fragment>
+  );
+};
+
+const InnerQuoteDeckComponent = ({ post }: TimelineDeckProps) => {
+  const __render__ = post.type;
   switch (__render__) {
-    case ITweetInteraction.RETWEET:
-      return <Retweet post={post} />;
-    case ITweetInteraction.QUOTE_TWEET:
-      return <Quote  post={post} />;
-    case ITweetInteraction.LIKE:
-      return <LikeDeckComponent post={post} />;
     case ITweetInteraction.REPLY:
-      return <Reply  post={post} />;
+      return <ReplyDeckComponent post={post} />;
     default:
       return <TweetDeckComponent post={post} />;
   }
 };
 
+export const QuoteDeckComponent = ({ post }: TimelineDeckProps) => {
+  return (
+    <Fragment>
+      <HStack spacing="1">
+        <Text fontSize="sm" fontWeight="bold" color="emphasized">
+          {post.author.name}
+        </Text>
 
+        <Text fontSize="sm" opacity={0.6} color="muted">
+          @{post.author.handle}
+        </Text>
+        <Text opacity={0.6} color={'muted'} fontSize={'sm'}>
+          {' '}
+          • {post.timestamp && format(post.timestamp)}
+        </Text>
+      </HStack>
 
+      <Stack spacing="1" pb={2} pt={0.5} fontSize="sm" lineHeight="1.25rem">
+        <RenderContentText text={post.content} />
+      </Stack>
 
+      <Stack
+        borderWidth={'1px'}
+        borderStyle={'solid'}
+        px={3}
+        pt={1.5}
+        rounded={'xl'}
+        mt={1}
+        mb={2}
+      >
+        <InnerQuoteDeckComponent post={post} />
+      </Stack>
+    </Fragment>
+  );
+};
 
-
-
-
+export const TimelineDeckBody = ({ post }: TimelineDeckProps) => {
+  const __render__ = post.type;
+  switch (__render__) {
+    case ITweetInteraction.RETWEET:
+      return <RetweetDeckComponent post={post} />;
+    case ITweetInteraction.QUOTE_TWEET:
+      return <QuoteDeckComponent post={post} />;
+    case ITweetInteraction.LIKE:
+      return <LikeDeckComponent post={post} />;
+    case ITweetInteraction.REPLY:
+      return <ReplyDeckComponent post={post} />;
+    default:
+      return <TweetDeckComponent post={post} />;
+  }
+};
 
 export const TimelineDeckFooter = ({ post }: { post: ITimelineTweet }) => {
   return (
