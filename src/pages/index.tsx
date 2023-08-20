@@ -2,7 +2,16 @@ import { useForm } from '@/components/forms';
 import { FormRadioCard } from '@/components/forms';
 import SeoMeta from '@/components/seo-meta';
 import { SplitShell } from '@/layout/split-shell';
-import { Text, Flex, Button, Stack, Container, Heading, Center } from '@chakra-ui/react';
+import {
+  Text,
+  Flex,
+  Button,
+  Stack,
+  Container,
+  Heading,
+  Center,
+} from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import { Fragment } from 'react';
 import { z } from 'zod';
 
@@ -63,8 +72,16 @@ const personaFormSchema = z.object({
 });
 
 export default function RouterPage() {
+  const router = useRouter();
+
+  const handleOnSubmit = (data: z.infer<typeof personaFormSchema>) => {
+    alert(JSON.stringify(data));
+
+    router.push('/home');
+  };
+
   const { renderForm } = useForm<z.infer<typeof personaFormSchema>>({
-    onSubmit: (data) => alert(JSON.stringify(data)),
+    onSubmit: handleOnSubmit,
     mode: 'onBlur',
     schema: personaFormSchema,
     defaultValues: {
@@ -93,10 +110,20 @@ export default function RouterPage() {
         />
       </Container>
 
-      <Flex justify={'center'} borderTopWidth={'2px'} w={'full'} right={0} position="absolute" bottom={0} h={16} bg={'bg-surface'}>
-        <Center minW={'200px'} >
-
-<Button w={'full'} variant={'solid'} type="submit" colorScheme='blue'>Continue</Button>
+      <Flex
+        justify={'center'}
+        borderTopWidth={'2px'}
+        w={'full'}
+        right={0}
+        position="absolute"
+        bottom={0}
+        h={16}
+        bg={'bg-surface'}
+      >
+        <Center minW={'200px'}>
+          <Button w={'full'} variant={'solid'} type="submit" colorScheme="blue">
+            Continue
+          </Button>
         </Center>
       </Flex>
     </Fragment>,
