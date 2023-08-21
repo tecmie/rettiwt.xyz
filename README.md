@@ -101,3 +101,11 @@ export const DateTime: React.FC<DateTimeProps> = (props) => {
 }
 
 ```
+
+
+## Team
+
+- Data Scientist: 
+- Frontend Engineer: 
+- Backend Engineer: 
+- AI Engineer: 

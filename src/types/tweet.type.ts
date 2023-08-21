@@ -133,5 +133,5 @@ export enum ITweetInteraction {
    * @description A reply to a tweet.
    * @since 1.1.0
    */
-  REPLY = 'tweet-reply',
+  REPLY = 'thread-tweet',
 }

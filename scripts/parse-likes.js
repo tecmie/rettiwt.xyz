@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-function transformJsonFile(filePath, tweetDetailsFilePath) {
+function transformJsonLikes(filePath, tweetDetailsFilePath) {
   // Read the JSON file with tweet details
   const tweetDetailsFileContent = fs.readFileSync(tweetDetailsFilePath, 'utf8');
   const tweetDetailsArray = JSON.parse(tweetDetailsFileContent);
@@ -46,4 +46,4 @@ function transformJsonFile(filePath, tweetDetailsFilePath) {
 // Example usage
 const filePath = 'data/likes/scrape_likes_19_8_23.json';
 const tweetDetailsFilePath = 'data/likes/dataset_twitter-scraper_2023-08-21_10-30-42-604.json';
-transformJsonFile(filePath, tweetDetailsFilePath);
+transformJsonLikes(filePath, tweetDetailsFilePath);
