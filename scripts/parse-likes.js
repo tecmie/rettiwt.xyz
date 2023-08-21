@@ -1,8 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 
-function transformJsonFile(filePath) {
-  // Read the JSON file
+function transformJsonFile(filePath, tweetDetailsFilePath) {
+  // Read the JSON file with tweet details
+  const tweetDetailsFileContent = fs.readFileSync(tweetDetailsFilePath, 'utf8');
+  const tweetDetailsArray = JSON.parse(tweetDetailsFileContent);
+
+  // Read the JSON file to transform
   const fileContent = fs.readFileSync(filePath, 'utf8');
   const jsonArray = JSON.parse(fileContent);
 
@@ -11,27 +15,35 @@ function transformJsonFile(filePath) {
     // Extract the username from the query URL
     const handle = item.query.split('/').pop();
 
-    // Return a new object with the required transformations
+    // Search for the tweet link in the tweet details array
+    const matchingTweet = tweetDetailsArray.find(
+      (tweet) => tweet.startUrl === item.tweetLink
+    );
+
+    const {user, ...restTweet} = matchingTweet || {};
+
+    // Return a new object with the required transformations and the matched tweet object
     return {
-      username: handle, // Added username key
-      name: item.name,
-      url: item.tweetLink, // Renamed from tweetLink
-      timestamp: item.timestamp,
-      created_at: item.timestamp, // This is a duplicate of timestamp
+      username: handle,
       type: item.type,
-      // Excluded profileUser, tweetDate, text, and profileUrl
+    //   name: item.name,
+      url: item.tweetLink,
+      timestamp: item.timestamp,
+    //   created_at: item.timestamp,
+      full_tweet: matchingTweet, // Add the matched tweet object
     };
   });
 
   // Define the output file path
-  const outputFilePath = path.join(path.dirname(filePath), 'parsed.json');
+  const outputFilePath = path.join(path.dirname(filePath), 'scrape_likes_19_8_23_parsed.json');
 
   // Write the transformed data to the new file
   fs.writeFileSync(outputFilePath, JSON.stringify(transformedArray, null, 2));
 
-  console.log(`Transformed data written to ${outputFilePath}`);
+  console.log(`Transformed data with tweetObjects written to ${outputFilePath}`);
 }
 
 // Example usage
-const filePath = 'data/likes/scrape_likes_full.json';
-transformJsonFile(filePath);
+const filePath = 'data/likes/scrape_likes_19_8_23.json';
+const tweetDetailsFilePath = 'data/likes/dataset_twitter-scraper_2023-08-21_10-30-42-604.json';
+transformJsonFile(filePath, tweetDetailsFilePath);
