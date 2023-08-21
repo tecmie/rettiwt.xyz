@@ -10,7 +10,7 @@ function extractTweetLinks(filePath) {
   const tweetLinks = jsonArray.map((item) => item.tweetLink);
 
   // Define the output file path
-  const outputFilePath = path.join(path.dirname(filePath), 'tweet-links.txt');
+  const outputFilePath = path.join(path.dirname(filePath), 'scrape_likes_19_8_23_links.txt');
 
   // Write the tweetLinks to the new text file
   fs.writeFileSync(outputFilePath, tweetLinks.join('\n'));
