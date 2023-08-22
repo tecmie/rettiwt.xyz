@@ -55,20 +55,22 @@ const vectorizeTweets = async (jsonFilePath) => {
                 
         Final notes, This ${type} post was created at ${created_at}, has been viewed a total of ${view_count}, retweeted ${retweet_count}, and has been quoted ${quote_count} times since after ${username} performed a ${type} ACTION on the tweet`;
 
-      } else if (type == 'thread-tweet' && tweetURLPattern.match(replying_to_tweet)) {
-        const [_tweetURL, replyToAuthor, statusId] = tweetURLPattern.match(pattern);
+      } else if (type == 'thread-tweet' && replying_to_tweet.match(tweetURLPattern)) {
+        const [_tweetURL, replyToAuthor, statusId] =  replying_to_tweet.match(tweetURLPattern);
 
-        /* Context style for reply tweets */
-        context = `At ${timestamp}, ${username} performed a ${type} ACTION connected to an earlier tweet from ${replyToAuthor} with "[parent.id]" ${statusId}.
-        The content of their post is: "${full_text}". 
-        This tweet has a ${mediaType} with a reply count of ${reply_count} and has been favorited for ${favorite_count} time.
-        We checked if ${username} used a hashtag and found ${hashtags.join(', ',)}.
-        We also checked if ${username} mentioned other authors and found ${JSON.stringify(user_mentions.join(', ',))}. 
-        The ${type} post was created at ${created_at}, has been viewed a total of ${view_count}, retweeted ${retweet_count}, and has been quoted ${quote_count} times since after ${username} performed a ${type} ACTION on the tweet`;
+        console.log({ statusId, replyToAuthor, username })
+
+            /* Context style for reply tweets */
+            context = `At ${created_at}, ${username} performed a ${type} ACTION connected to an earlier tweet from ${replyToAuthor} with "[parent.id]" ${statusId}.
+            The content of their post is: "${full_text}". 
+            This tweet has a ${mediaType} with a reply count of ${reply_count} and has been favorited for ${favorite_count} time.
+            We checked if ${username} used a hashtag and found ${hashtags.join(', ',)}.
+            We also checked if ${username} mentioned other authors and found ${JSON.stringify(user_mentions.join(', ',))}. 
+            The ${type} post was created at ${created_at}, has been viewed a total of ${view_count}, retweeted ${retweet_count}, and has been quoted ${quote_count} times since after ${username} performed a ${type} ACTION on the tweet`;
 
       } else {
 
-        context = `At ${timestamp}, ${username} performed a ${type} ACTION by writing a brand new post that says "${full_text}". 
+        context = `At ${created_at}, ${username} performed a ${type} ACTION by writing a brand new post that says "${full_text}". 
         This tweet has a ${mediaType} with a reply count of ${reply_count} and has been favorited for ${favorite_count} time.
         We checked if ${username} used a hashtag and found ${hashtags.join(', ',)}.
         We also checked if ${username} mentioned other authors and found ${JSON.stringify(user_mentions.join(', ',))}. 
@@ -82,6 +84,7 @@ const vectorizeTweets = async (jsonFilePath) => {
         type,
         text: context,
         username,
+        timestamp: created_at,
       };
   
       try {
@@ -97,7 +100,7 @@ const vectorizeTweets = async (jsonFilePath) => {
           console.log({ error, owner: data.username }, `A new table was born 🐣 <><><><><><><>><><><><<><><><><>>`);
         } else {
           console.error({ owner: data.username , error, embedFunction });
-          throw new Error({error, data });
+          throw new Error(JSON.stringify({error, data }));
         }
       }
     }
@@ -105,7 +108,7 @@ const vectorizeTweets = async (jsonFilePath) => {
     console.log('Tweets processed successfully! Unleash the fireworks! 🎆');
   };
   
-  const jsonFilePath = 'data/parsed/our_awesome_tweets.json';
+  const jsonFilePath = 'data/parsed/dataset_twitter_scraper_with_replies_parsed.json';
   
   vectorizeTweets(jsonFilePath).catch((err) =>
     console.error('The digital gnomes are at it again! 🧙‍♂️', err),
