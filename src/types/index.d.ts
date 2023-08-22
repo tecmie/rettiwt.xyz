@@ -4,7 +4,6 @@ declare module 'next/page' {
     | string
     | number
     | boolean
-    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
     | React.ReactFragment
     | React.ReactPortal
     | null
@@ -14,7 +13,7 @@ declare module 'next/page' {
   export type NextPageWithLayout<P = unknown> = NextPage<P> & {
     getLayout?: (page: NextPageView) => React.ReactElement;
     getLayout?: (
-      page: React.ReactElement<any, string | React.JSXElementConstructor<any>>,
+      page: React.ReactElement<string | React.JSXElementConstructor<any>>,
     ) => page;
   };
 

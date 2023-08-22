@@ -1,4 +1,4 @@
-import { Box, Center, Flex, FlexProps } from '@chakra-ui/react';
+import { Box, Center, Flex, type FlexProps } from '@chakra-ui/react';
 import { Navbar } from './Navigation';
 
 type SplitShellProps = {

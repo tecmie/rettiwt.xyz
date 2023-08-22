@@ -97,12 +97,12 @@ const vectorizeLikes = (likes: LikedTweet[]): VectorPayload[] => {
   });
 };
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {
     return res.status(405).end(); // Method Not Allowed
   }
 
-  const data = await vectorizeLikes(req.body as LikedTweet[]);
+  const data = vectorizeLikes(req.body as LikedTweet[]);
 
   res.json(data);
 };
