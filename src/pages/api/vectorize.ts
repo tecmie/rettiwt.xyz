@@ -13,7 +13,7 @@ interface Media {
 }
 
 interface Tweet {
-  type: "quote-tweet" | "thread-tweet" | "tweet";
+  type: 'quote-tweet' | 'thread-tweet' | 'tweet';
   username: string;
   user_id: string;
   id: string;

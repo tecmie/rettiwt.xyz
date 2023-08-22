@@ -69,7 +69,7 @@ model Author {
   id                   String      @id @default(cuid())
   handle               String      @unique
   name                 String
-  avatar               Boolean
+  avatar               String?
   bio                  String?
   has_custom_timelines Boolean   @default(false)
   url                  String?
@@ -82,7 +82,7 @@ model Author {
 }
 
 model Follow {
-  id          String   @id @default(cuid())
+  id          Int  @id @default(autoincrement())
   follower    Author   @relation("Followers", fields: [followerId], references: [id])
   followerId  String
   following   Author   @relation("Following", fields: [followingId], references: [id])

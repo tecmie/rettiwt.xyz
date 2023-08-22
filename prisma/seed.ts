@@ -1,67 +1,90 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-import shuffle from "lodash/shuffle";
+const profiles = require('./authors');
+const shuffle = require('lodash/shuffle');
 
+const createAuthors = async () => {
+  // Declare an array to store the IDs
+  const authorIds = [];
 
-async function main() {
-  // Create some authors with custom IDs
-  const author1 = await prisma.author.create({
-    data: {
-      id: 'custom-id-1',
-      handle: 'author1',
-      name: 'Author One',
-      avatar: false,
-      url: 'https://example.com/author1',
-    },
-  });
-
-  const author2 = await prisma.author.create({
-    data: {
-      id: 'custom-id-2',
-      handle: 'author2',
-      name: 'Author Two',
-      avatar: false,
-      url: 'https://example.com/author2',
-    },
-  });
-
-  // Create a following relationship between the authors
-  await prisma.follow.create({
-    data: {
-      followerId: author1.id,
-      followingId: author2.id,
-    },
-  });
-}
-
-
-  async function batchFollowOp(authorIds: string[]) {
-    if (authorIds.length !== 10) {
-      throw new Error('Expected exactly 10 author IDs');
-    }
-  
-    for (const authorId of authorIds) {
-      // Shuffle the array and exclude the current author ID
-      const shuffledIds = shuffle(authorIds.filter(id => id !== authorId));
-  
-      // Pick the first 6 IDs from the shuffled array
-      const followingIds = shuffledIds.slice(0, 6);
-  
-      // Construct the values for the INSERT INTO statement
-      const values = followingIds.map(id => `('${authorId}', '${id}')`).join(', ');
-  
-      // Execute the raw SQL query
-      await prisma.$executeRaw`INSERT INTO "Follow" ("followerId", "followingId") VALUES ${values}`;
+  for (const handle in profiles) {
+    const user = profiles[handle as '0x'];
+    try {
+      const createdAuthor = await prisma.author.create({
+        data: {
+          id: user.id_str,
+          handle: handle,
+          name: user.name,
+          bio: user.description,
+          avatar: user.profile_image_url_https,
+          has_custom_timelines: user.has_custom_timelines,
+          url: user.profile_banner_url,
+          verified: user.verified,
+        },
+      });
+      authorIds.push(createdAuthor.id); // Push the ID into the array
+      console.log(`Author ${handle} created successfully! 🎉`);
+    } catch (error) {
+      console.error(`Failed to create author ${handle}:`, error);
     }
   }
-  
-  // Example usage
-  const authorIds = [
-    'id1', 'id2', 'id3', 'id4', 'id5',
-    'id6', 'id7', 'id8', 'id9', 'id10'
-  ];
 
+  console.log('All author IDs:', authorIds);
+  return authorIds;
+};
+
+function generateId(seed: string) {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    const charCode = seed.charCodeAt(i);
+    hash = (hash << 5) - hash + charCode;
+    hash |= 0; // Convert to a 32-bit integer
+  }
+  return Math.abs(Math.floor(hash + Math.random() * 1e9)).toString();
+}
+
+async function executeBatchFollowers(authorIds: string[]) {
+  for (const authorId of authorIds) {
+    // Shuffle the array and exclude the current author ID
+    const shuffledIds = shuffle(authorIds.filter((id) => id !== authorId));
+
+    // Cross over permutation, so each author has at least 3 possible mutual relationships
+    const followingIds = shuffledIds.slice(0, 13);
+
+    // Construct the values for the INSERT INTO statement
+    const values = followingIds
+      .map(
+        (id: any) => `('${generateId(authorId + id)}', '${authorId}', '${id}')`,
+      ) // Generating IDs using seed value
+      .join(', ');
+
+    // Execute the raw SQL query, including the 'id' field in the column list
+    //   await prisma.$executeRaw`INSERT INTO "Follow" ("id", "followerId", "followingId") VALUES ${values}`;
+    // }
+
+    for (const followingId of followingIds) {
+      // Execute the raw SQL query for each followingId
+      const followId = generateId(authorId + followingId); // Generating ID using seed value
+
+      console.log({ followId, authorId, followingId });
+
+      // Execute the raw SQL query, including the 'id' field in the column list
+      await prisma.$executeRaw`INSERT INTO "Follow" ("id", "followerId", "followingId") VALUES (${followId}, ${authorId}, ${followingId})`;
+    }
+  }
+}
+
+async function main() {
+  const authors: string[] = await createAuthors();
+  // const authors = Object.keys(profiles)
+  // const aIds = authors.map(value => profiles[value].id_str)
+
+  // console.log(authors)
+
+  /* Use authors to create a batch follow operation */
+  await executeBatchFollowers(authors);
+}
 
 main()
   .catch((e) => {
