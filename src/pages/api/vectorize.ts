@@ -102,7 +102,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(405).end(); // Method Not Allowed
   }
 
-  const data = vectorizeLikes(req.body);
+  const data = await vectorizeLikes(req.body as LikedTweet[]);
 
   res.json(data);
 };

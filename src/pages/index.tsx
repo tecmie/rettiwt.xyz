@@ -74,10 +74,10 @@ const personaFormSchema = z.object({
 export default function RouterPage() {
   const router = useRouter();
 
-  const handleOnSubmit = (data: z.infer<typeof personaFormSchema>) => {
+  const handleOnSubmit = async (data: z.infer<typeof personaFormSchema>) => {
     alert(JSON.stringify(data));
 
-    router.push('/home');
+    await router.push('/home');
   };
 
   const { renderForm } = useForm<z.infer<typeof personaFormSchema>>({
