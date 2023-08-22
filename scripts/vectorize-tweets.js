@@ -56,9 +56,9 @@ const vectorizeTweets = async (jsonFilePath) => {
         Final notes, This ${type} post was created at ${created_at}, has been viewed a total of ${view_count}, retweeted ${retweet_count}, and has been quoted ${quote_count} times since after ${username} performed a ${type} ACTION on the tweet`;
 
       } else if (type == 'thread-tweet' && replying_to_tweet.match(tweetURLPattern)) {
-        const [_tweetURL, replyToAuthor, statusId] =  replying_to_tweet.match(tweetURLPattern);
+        const [tweetURL, replyToAuthor, statusId] =  replying_to_tweet.match(tweetURLPattern);
 
-        console.log({ statusId, replyToAuthor, username })
+        console.log({ tweetURL, statusId, replyToAuthor, username })
 
             /* Context style for reply tweets */
             context = `At ${created_at}, ${username} performed a ${type} ACTION connected to an earlier tweet from ${replyToAuthor} with "[parent.id]" ${statusId}.

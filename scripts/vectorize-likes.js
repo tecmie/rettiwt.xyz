@@ -18,6 +18,13 @@ const processTweets = async (jsonFilePath) => {
       continue;
     }
 
+
+    /* fix the asemota issue */
+    if(tweet.username != "asemota") {
+      console.log(tweet.username)
+      continue;
+    }
+
     const {
       url,
       type,
