@@ -486,7 +486,7 @@
     "startUrl": "https://twitter.com/Mochievous/with_replies"
   },
   {
-    "type": "quote-tweet",
+    "type": "tweet",
     "username": "Mochievous",
     "user_id": "72853440",
     "id": "1670391382307897345",
@@ -509,7 +509,7 @@
     "created_at": "2023-06-18T11:21:54.000Z",
     "view_count": 1855778,
     "quote_count": 129,
-    "is_quote_tweet": true,
+    "is_quote_tweet": false,
     "is_retweet": false,
     "is_pinned": false,
     "is_truncated": false,
@@ -2813,7 +2813,7 @@
     "startUrl": "https://twitter.com/davido/with_replies"
   },
   {
-    "type": "quote-tweet",
+    "type": "tweet",
     "username": "Mochievous",
     "user_id": "72853440",
     "id": "1318675001915080712",
@@ -2830,7 +2830,7 @@
     "url": "https://twitter.com/Mochievous/status/1318675001915080712",
     "created_at": "2020-10-20T22:06:34.000Z",
     "quote_count": 487,
-    "is_quote_tweet": true,
+    "is_quote_tweet": false,
     "is_retweet": false,
     "is_pinned": false,
     "is_truncated": false,
@@ -55351,7 +55351,7 @@
     "startUrl": "https://twitter.com/AishaYesufu/with_replies"
   },
   {
-    "type": "quote-tweet",
+    "type": "tweet",
     "username": "JasonNjoku",
     "user_id": "1050691124",
     "id": "1185556655678918656",
@@ -55375,7 +55375,7 @@
     "url": "https://twitter.com/JasonNjoku/status/1185556655678918656",
     "created_at": "2019-10-19T14:01:47.000Z",
     "quote_count": 20,
-    "is_quote_tweet": true,
+    "is_quote_tweet": false,
     "is_retweet": false,
     "is_pinned": false,
     "is_truncated": false,
@@ -56719,7 +56719,7 @@
     "startUrl": "https://twitter.com/AishaYesufu/with_replies"
   },
   {
-    "type": "quote-tweet",
+    "type": "tweet",
     "username": "DavidHundeyin",
     "user_id": "3315017925",
     "id": "1675570461562773504",

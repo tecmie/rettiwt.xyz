@@ -1,6 +1,19 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+interface UserMention {
+  id_str: string;
+  name: string;
+  screen_name: string;
+  profile: string;
+}
+
+interface Media {
+  media_url: string;
+  type: string;
+}
+
 interface Tweet {
+  type: "quote-tweet" | "thread-tweet" | "tweet";
   username: string;
   user_id: string;
   id: string;
@@ -11,21 +24,20 @@ interface Tweet {
   favorite_count: number;
   hashtags: string[];
   symbols: string[];
-  user_mentions: string[];
+  user_mentions: UserMention[];
+  media: Media[];
   urls: string[];
-  media: {
-    media_url: string;
-    type: string;
-  }[];
   url: string;
-  created_at: string;
   view_count: number;
+  created_at: string;
   quote_count: number;
   is_quote_tweet: boolean;
   is_retweet: boolean;
   is_pinned: boolean;
   is_truncated: boolean;
-  startUrl: string;
+  quoted_tweet?: Tweet;
+  startUrl?: string;
+  sort_index?: string; // Note: You might want to provide a more descriptive name for this property
 }
 
 interface LikedTweet {

@@ -1,7 +1,11 @@
 const fs = require('fs');
-const { connect, WriteMode, OpenAIEmbeddingFunction } = require('vectordb');
+const EMBEDDING_SOURCE_COLUMN = 'text'
 
-const embedFunction = new OpenAIEmbeddingFunction('text', process.env.OAK);
+const { connect, WriteMode, OpenAIEmbeddingFunction } = require('vectordb');
+const embedFunction = new OpenAIEmbeddingFunction(EMBEDDING_SOURCE_COLUMN, process.env.OAK);
+
+
+
 
 const processTweets = async (jsonFilePath) => {
   const tweets = JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8'));
@@ -35,10 +39,7 @@ const processTweets = async (jsonFilePath) => {
     } = tweet;
 
 
-    let mediaType =
-      media && media.length > 0
-        ? media[0].type || 'written text'
-        : 'written text';
+    let mediaType = media && media.length > 0 ? media[0].type : 'written text';
 
     const text = `
     At ${timestamp}, ${username} performed a ${type} ACTION on a tweet from ${authorUsername} that says "${full_text}". 
