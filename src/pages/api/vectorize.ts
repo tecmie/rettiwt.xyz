@@ -67,7 +67,13 @@ const vectorizeLikes = (likes: LikedTweet[]): VectorPayload[] => {
       mediaType = media[0]?.type || 'written text';
     }
 
-    const text = `${username} just liked a tweet from ${tweetUsername} that says "${full_text}" at ${timestamp}. This tweet has a ${mediaType} and has a reply count of ${reply_count} and has been favorited by ${like.full_tweet.favorite_count} users with hashtags like ${like.full_tweet.hashtags.join(', ')} and user mentions of ${user_mentions.join(', ')}. The tweet has been viewed a total of ${view_count} and has been quoted ${quote_count} times.`;
+    const text = `${username} just liked a tweet from ${tweetUsername} that says "${full_text}" at ${timestamp}. This tweet has a ${mediaType} and has a reply count of ${reply_count} and has been favorited by ${
+      like.full_tweet.favorite_count
+    } users with hashtags like ${like.full_tweet.hashtags.join(
+      ', ',
+    )} and user mentions of ${user_mentions.join(
+      ', ',
+    )}. The tweet has been viewed a total of ${view_count} and has been quoted ${quote_count} times.`;
 
     return {
       text,
@@ -79,13 +85,12 @@ const vectorizeLikes = (likes: LikedTweet[]): VectorPayload[] => {
   });
 };
 
-
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {
     return res.status(405).end(); // Method Not Allowed
   }
 
-  const data = vectorizeLikes(req.body)
+  const data = vectorizeLikes(req.body);
 
-  res.json(data)
+  res.json(data);
 };

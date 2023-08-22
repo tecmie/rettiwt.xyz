@@ -19,7 +19,7 @@ const processTweets = async (jsonFilePath) => {
       type,
       username,
       full_tweet: {
-        username: authorUsername,
+        username: authorUsername = "author",
         full_text,
         media,
         created_at,
@@ -34,6 +34,7 @@ const processTweets = async (jsonFilePath) => {
       timestamp,
     } = tweet;
 
+
     let mediaType =
       media && media.length > 0
         ? media[0].type || 'written text'
@@ -42,12 +43,8 @@ const processTweets = async (jsonFilePath) => {
     const text = `
     At ${timestamp}, ${username} performed a ${type} ACTION on a tweet from ${authorUsername} that says "${full_text}". 
     This tweet has a ${mediaType} with a reply count of ${reply_count} and has been favorited for ${favorite_count} time.
-    We checked if ${authorUsername} used a hashtag and found ${hashtags.join(
-      ', ',
-    )}.
-    We also checked if ${authorUsername} mentioned other authors and found ${user_mentions.join(
-      ', ',
-    )}. 
+    We checked if ${authorUsername} used a hashtag and found ${hashtags.join(', ',)}.
+    We also checked if ${authorUsername} mentioned other authors and found ${JSON.stringify(user_mentions.join(', ',))}. 
     The tweet was created at ${created_at}, has been viewed a total of ${view_count}, retweeted ${retweet_count}, and has been quoted ${quote_count} times since after ${username} performed a ${type} ACTION on the tweet`;
 
     const data = {
@@ -59,30 +56,31 @@ const processTweets = async (jsonFilePath) => {
     };
 
     try {
-      const table = await db.openTable(username);
+      /* You must open the table with the embedding function */
+      const table = await db.openTable(username, embedFunction);
+      await table.add([data]);
 
-      if (table) {
-        console.log(
-          { table, owner: data.username },
-          `we got a valid table for <><><><><><><><><<<<><><>><><<>`,
-        );
-        await table.add([data]);
-      } else {
+      console.log({ table, owner: username }, `we got a valid table for <><><><><><><><><<<<><><>><><<> ${url}`,);
+
+  } catch (error) {
+    
+    if (error.message.includes('was not found')) {
         await db.createTable(username, [data], embedFunction, {
-          writeMode: WriteMode.Append,
+          writeMode: WriteMode.Overwrite,
         });
+        console.log({ error, owner: data.username }, `we created a new table <><><><><><><><><<<<><><>><><<>`,);
+      } else {
+        console.error({ owner: data.username , error, embedFunction });
+        throw new Error(error);
       }
-    } catch (error) {
-      console.error({ error, embedFunction });
-      throw new Error(error);
+
     }
   }
 
   console.log('Tweets processed successfully! Pass the virtual popcorn');
 };
 
-const jsonFilePath =
-  'data/parsed/dataset_twitter_scrape_likes_full_parsed.json';
+const jsonFilePath = 'data/parsed/dataset_twitter_scrape_likes_full_parsed.json';
 
 processTweets(jsonFilePath).catch((err) =>
   console.error('The gremlins are back!', err),
