@@ -10,29 +10,35 @@ function transformTweets(filePath) {
   const transformedArray = jsonArray.map((item) => {
     if (item.is_retweet) {
       return {
-          type: 'retweet',
+        type: 'retweet',
         ...item,
       };
     } else if (item.is_quote_tweet) {
       return {
-          type: 'quote-tweet',
+        type: 'quote-tweet',
         ...item,
       };
-    } else if (item.replying_to_tweet && item.replying_to_tweet.startsWith('https://twitter.com/')) {
+    } else if (
+      item.replying_to_tweet &&
+      item.replying_to_tweet.startsWith('https://twitter.com/')
+    ) {
       return {
-          type: 'thread-tweet',
+        type: 'thread-tweet',
         ...item,
       };
     } else {
       return {
-          type: 'tweet',
+        type: 'tweet',
         ...item,
       };
     }
   });
 
   // Define the output file path
-  const outputFilePath = path.join(path.dirname(filePath), 'single_laycon_parsed.json');
+  const outputFilePath = path.join(
+    path.dirname(filePath),
+    'single_laycon_parsed.json',
+  );
 
   // Write the transformed data to the new file
   fs.writeFileSync(outputFilePath, JSON.stringify(transformedArray, null, 2));
