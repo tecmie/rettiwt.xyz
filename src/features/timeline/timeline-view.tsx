@@ -208,6 +208,7 @@ export const NewTimelinePost = (props: any) => {
 
               <Button
                 isDisabled={messages.length == 0}
+                isLoading={write.isLoading}
                 ml={2}
                 px={4}
                 onClick={_handlePostTweet}
