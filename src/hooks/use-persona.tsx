@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as React from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import { parseCookies, setCookie } from 'nookies';

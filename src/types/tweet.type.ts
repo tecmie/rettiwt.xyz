@@ -1,4 +1,4 @@
-import { Author, Tweet } from '@prisma/client';
+import { type Author, type Tweet } from '@prisma/client';
 
 export interface ITweetAuthor extends Author {
   /**

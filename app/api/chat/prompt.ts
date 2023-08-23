@@ -1,4 +1,4 @@
-import { Message as VercelChatMessage } from 'ai';
+import { type Message as VercelChatMessage } from 'ai';
 import { PromptTemplate } from 'langchain/prompts';
 
 /**

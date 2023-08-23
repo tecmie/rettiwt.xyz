@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { env } from '@/env.mjs';
-import { NextRequest } from 'next/server';
+import { type NextRequest } from 'next/server';
 import { connect, MetricType, OpenAIEmbeddingFunction } from 'vectordb';
 import { StreamingTextResponse } from 'ai';
 import { prompt } from './prompt';
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
    * @see https://lancedb.github.io/lancedb/sql/
    */
   const results = await table
-    .search(currentMessageContent)
+    .search(currentMessageContent as string)
     .metricType(MetricType.Cosine)
     .where(`type IN ("tweet", "quote-tweet")`) // Here's the modification
     .select(['type', 'text', 'url'])
