@@ -70,7 +70,12 @@ const AuthorRadioCard = forwardRef<HTMLInputElement, AuthorRadioCardProps>(
                 >
                   <HStack color="emphasized" fontWeight="medium" fontSize="sm">
                     <Box w={'40px'} mr={1} px={2}>
-                      <Avatar src={option.avatar} boxSize="6"></Avatar>
+                      <Avatar
+                        src={option.avatar}
+                        fontWeight={'700'}
+                        name={option.name.split(' ')[0]}
+                        boxSize="6"
+                      ></Avatar>
                     </Box>
 
                     <Text

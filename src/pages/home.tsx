@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { useForm } from '@/components/forms';
 import SeoMeta from '@/components/seo-meta';
 import { WhoToFollow } from '@/components/who-to-follow';
@@ -5,7 +6,8 @@ import { NewTimelinePost, TimelineView } from '@/features/timeline';
 import SidebarSlot from '@/layout/slots/SidebarSlot';
 import TimelineSlot from '@/layout/slots/TimelineSlot';
 import { SplitShell } from '@/layout/split-shell';
-import { Fragment } from 'react';
+import { type GetServerSidePropsContext } from 'next';
+import nookies from 'nookies';
 
 import { z } from 'zod';
 
@@ -50,3 +52,21 @@ export default function RouterPage() {
 RouterPage.getLayout = (page: React.ReactNode) => (
   <SplitShell>{page}</SplitShell>
 );
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const cookies = nookies.get(ctx);
+  const persona = cookies['persona'];
+
+  if (!persona) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};
