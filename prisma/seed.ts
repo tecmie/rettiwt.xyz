@@ -13,7 +13,7 @@ const createAuthors = async () => {
     try {
       const createdAuthor = await prisma.author.create({
         data: {
-          id: user.id_str,
+          id: Number(user.id_str),
           handle: handle,
           name: user.name,
           bio: user.description,
@@ -70,7 +70,7 @@ async function executeBatchFollowers(authorIds: string[]) {
       console.log({ followId, authorId, followingId });
 
       // Execute the raw SQL query, including the 'id' field in the column list
-      await prisma.$executeRaw`INSERT INTO "Follow" ("id", "followerId", "followingId") VALUES (${followId}, ${authorId}, ${followingId})`;
+      await prisma.$executeRaw`INSERT INTO "Follow" ("id", "follower_id", "following_id") VALUES (${followId}, ${authorId}, ${followingId})`;
     }
   }
 }

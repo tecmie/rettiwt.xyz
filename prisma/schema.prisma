@@ -66,7 +66,7 @@ model VerificationToken {
 }
 
 model Author {
-  id                   String      @id @default(cuid())
+  id                   BigInt     @id @default(autoincrement())
   handle               String      @unique
   name                 String
   avatar               String?
@@ -82,55 +82,55 @@ model Author {
 }
 
 model Follow {
-  id          Int  @id @default(autoincrement())
-  follower    Author   @relation("Followers", fields: [followerId], references: [id])
-  followerId  String
-  following   Author   @relation("Following", fields: [followingId], references: [id])
-  followingId String
-  createdAt   DateTime @default(now()) // Optional: timestamp of when the follow occurred
+  id                Int      @id @default(autoincrement())
+  follower          Author   @relation("Followers", fields: [follower_id], references: [id])
+  follower_id       BigInt
+  following         Author   @relation("Following", fields: [following_id], references: [id])
+  following_id      BigInt
+  created_at        DateTime @default(now())
 }
 
+
 model Tweet {
-  id              String    @id @default(cuid())
-  content         String
-  quote_count     Int
-  reply_count     Int
-  repost_count    Int
-  favorite_count  Int
-  bookmark_count  Int
-  timestamp       DateTime
-  author          Author    @relation(name: "AuthorTweets", fields: [authorId], references: [id])
-  authorId        String
-  type            String
-  is_pinned       Boolean
-  is_quote_tweet  Boolean
-  is_retweet      Boolean
-  parentId        String? // ID of the parent tweet, if this tweet is a reply
-  parent          Tweet?    @relation("Replies", fields: [parentId], references: [id])
-  replies         Tweet[]   @relation("Replies")
-  originalTweet   Tweet?    @relation("Retweets", fields: [originalTweetId], references: [id])
-  originalTweetId String?
-  retweets        Tweet[]   @relation("Retweets")
-  likedBy         Like[]
-  Retweet         Retweet[]
+  id                String    @id @default(cuid())
+  content           String
+  quote_count       Int       @default(0)
+  reply_count       Int       @default(0)
+  repost_count      Int       @default(0)
+  favorite_count    Int       @default(0)
+  bookmark_count    Int       @default(0)
+  timestamp         DateTime  @default(now())
+  author            Author    @relation(name: "AuthorTweets", fields: [author_id], references: [id])
+  author_id         BigInt
+  type              String
+  is_pinned         Boolean   @default(false)
+  is_quote_tweet    Boolean   
+  is_reply_tweet    Boolean   
+  parent_id         String?   // ID of the parent tweet, if this tweet is a reply or quote
+  parent            Tweet?    @relation("Replies", fields: [parent_id], references: [id])
+  replies           Tweet[]   @relation("Replies")
+  liked_by          Like[]
+  retweeted_by      Retweet[] 
 }
 
 model Retweet {
-  id            Int      @id @default(autoincrement())
-  createdAt     DateTime @default(now())
-  originalState String // State of the original tweet when retweeted
-  author        Author   @relation(fields: [authorId], references: [id])
-  authorId      String
-  tweet         Tweet    @relation(fields: [tweetId], references: [id])
-  tweetId       String
+  id              Int         @id @default(autoincrement())
+  createdAt       DateTime    @default(now())
+  // **** State of the original tweet when retweeted *****
+  origin_state    String      
+  author          Author      @relation(fields: [author_id], references: [id])
+  author_id       BigInt
+  tweet           Tweet       @relation(fields: [tweet_id], references: [id]) // Link to Tweet
+  tweet_id        String
 }
 
+
 model Like {
-  id            Int      @id @default(autoincrement())
-  createdAt     DateTime @default(now())
-  originalState String // State of the original tweet when liked
-  author        Author   @relation(fields: [authorId], references: [id])
-  authorId      String
-  tweet         Tweet    @relation(fields: [tweetId], references: [id])
-  tweetId       String
+  id              Int         @id @default(autoincrement())
+  createdAt       DateTime    @default(now())
+  origin_state    String     // State of the original tweet when liked
+  author          Author      @relation(fields: [author_id], references: [id])
+  author_id       BigInt
+  tweet           Tweet       @relation(fields: [tweet_id], references: [id]) // Link to Tweet
+  tweet_id        String
 }
