@@ -1,11 +1,11 @@
-import { type ITweet, type ITweetInteraction } from './tweet.type';
+import { type ITweet, type ITweetIntent } from './tweet.type';
 
 export interface ITimelineTweet extends ITweet {
   /**
    * @memberof ITimelineTweet
    * @description The type of interaction with the tweet.
    */
-  type: ITweetInteraction;
+  type: ITweetIntent;
 
   /**
    * @memberof ITimelineTweet
@@ -34,7 +34,7 @@ export interface ITimelineTweet extends ITweet {
   /**
    * @optional
    * @memberof ITimelineTweet
-   * @description The tweet that is quoted.
+   * @description The tweet that is quoted. `quote_parent`
    * @see {@link ITweet}
    */
   quoted_tweet?: ITweet;
@@ -42,7 +42,7 @@ export interface ITimelineTweet extends ITweet {
   /**
    * @optional
    * @memberof ITimelineTweet
-   * @description The tweet that is replied or quoted
+   * @description The tweet that is replied to `parent_tweet`
    * @see {@link ITweet}
    */
   parent_tweet?: ITweet;

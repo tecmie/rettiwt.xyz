@@ -102,15 +102,31 @@ model Tweet {
   timestamp         DateTime  @default(now())
   author            Author    @relation(name: "AuthorTweets", fields: [author_id], references: [id])
   author_id         BigInt
-  type              String
+  intent            String
   is_pinned         Boolean   @default(false)
   is_quote_tweet    Boolean   
   is_reply_tweet    Boolean   
-  parent_id         String?   // ID of the parent tweet, if this tweet is a reply or quote
-  parent            Tweet?    @relation("Replies", fields: [parent_id], references: [id])
-  replies           Tweet[]   @relation("Replies")
   liked_by          Like[]
   retweeted_by      Retweet[] 
+
+  // **** Parent tweet *****
+  // **** If this tweet is a reply, this is the ID of the parent tweet 
+  // *** (the tweet being replied to) *****
+  reply_parent_id   String? 
+  reply_parent      Tweet?    @relation("Replies", fields: [reply_parent_id], references: [id])
+
+  // **** Replies to this tweet *****
+  // **** This is a reverse graph, when other tweets are replies to this tweet *****
+  replies           Tweet[]   @relation("Replies")
+
+  // **** If this tweet is a quote, this is the ID of the parent tweet
+  // *** (the tweet being quoted) *****
+  quote_parent_id   String?
+  quote_parent      Tweet?   @relation("Quotes", fields: [quote_parent_id], references: [id])
+
+  // **** Quotes to this tweet *****
+  // **** This is a reverse graph, when other tweets have quoted this tweet *****
+  quotes            Tweet[]   @relation("Quotes")
 }
 
 model Retweet {

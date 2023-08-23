@@ -1,6 +1,7 @@
 import {
   Avatar,
   Badge,
+  chakra,
   Box,
   Button,
   HStack,
@@ -13,7 +14,7 @@ import {
   type StackProps,
   Text,
   Textarea,
-  chakra,
+
   useColorModeValue as mode,
 } from '@chakra-ui/react';
 import { api } from '@/utils/api';
@@ -30,13 +31,11 @@ import {
   ShareIcon,
 } from '@/components/icons';
 import {
-  BsChevronBarDown,
   BsChevronDown,
-  BsChevronRight,
 } from 'react-icons/bs';
 import { HiRefresh } from 'react-icons/hi';
 import { type ITimelineTweet } from '@/types/timeline.type';
-import { ITweetInteraction } from '@/types/tweet.type';
+import { ITweetIntent } from '@/types/tweet.type';
 import { useProfilePersona } from '@/hooks/use-persona';
 
 export const TimelineView = (props: StackProps) => {
@@ -360,7 +359,7 @@ export const ReplyDeckComponent = ({ post }: TimelineDeckProps) => {
 const InnerQuoteDeckComponent = ({ post }: TimelineDeckProps) => {
   const __render__ = post.type;
   switch (__render__) {
-    case ITweetInteraction.REPLY:
+    case ITweetIntent.REPLY:
       return <ReplyDeckComponent post={post} />;
     default:
       return <TweetDeckComponent post={post} />;
@@ -406,13 +405,13 @@ export const QuoteDeckComponent = ({ post }: TimelineDeckProps) => {
 export const TimelineDeckBody = ({ post }: TimelineDeckProps) => {
   const __render__ = post.type;
   switch (__render__) {
-    case ITweetInteraction.RETWEET:
+    case ITweetIntent.RETWEET:
       return <RetweetDeckComponent post={post} />;
-    case ITweetInteraction.QUOTE_TWEET:
+    case ITweetIntent.QUOTE_TWEET:
       return <QuoteDeckComponent post={post} />;
-    case ITweetInteraction.LIKE:
+    case ITweetIntent.LIKE:
       return <LikeDeckComponent post={post} />;
-    case ITweetInteraction.REPLY:
+    case ITweetIntent.REPLY:
       return <ReplyDeckComponent post={post} />;
     default:
       return <TweetDeckComponent post={post} />;

@@ -99,37 +99,37 @@ export interface ITweet {
   author: ITweetAuthor;
 }
 
-export enum ITweetInteraction {
+export enum ITweetIntent {
   /**
-   * @memberof ITweetInteraction
+   * @memberof ITweetIntent
    * @description A direct tweet.
    */
   TWEET = 'tweet',
   /**
-   * @memberof ITweetInteraction
+   * @memberof ITweetIntent
    * @description A quote of another tweet.
    */
-  QUOTE_TWEET = 'quote-tweet',
+  QUOTE = 'quote-tweet',
   /**
-   * @memberof ITweetInteraction
+   * @memberof ITweetIntent
    * @description A retweet of another tweet.
    */
   RETWEET = 'retweet',
   /**
-   * @memberof ITweetInteraction
+   * @memberof ITweetIntent
    * @description A favorite action on a tweet.
    */
   LIKE = 'like',
 
   /**
-   * @memberof ITweetInteraction
+   * @memberof ITweetIntent
    * @description A bookmark action on a tweet.
    * @since 1.1.0
    */
   BOOKMARK = 'bookmark',
 
   /**
-   * @memberof ITweetInteraction
+   * @memberof ITweetIntent
    * @description A reply to a tweet.
    * @since 1.1.0
    */
