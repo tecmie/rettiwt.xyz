@@ -1,5 +1,4 @@
 import { Fragment } from 'react';
-import { useForm } from '@/components/forms';
 import SeoMeta from '@/components/seo-meta';
 import { WhoToFollow } from '@/components/who-to-follow';
 import { NewTimelinePost, TimelineView } from '@/features/timeline';
@@ -7,32 +6,18 @@ import SidebarSlot from '@/layout/slots/SidebarSlot';
 import TimelineSlot from '@/layout/slots/TimelineSlot';
 import { SplitShell } from '@/layout/split-shell';
 import { type GetServerSidePropsContext } from 'next';
+import { createInnerTRPCContext } from '@/server/api/trpc';
+
 import nookies from 'nookies';
 
 import { z } from 'zod';
-
-const setupValidationSchema = z.object({
-  fullName: z.string().nonempty(),
-  occupation: z.string().nonempty(),
-  location: z.string().nonempty(),
-  email: z.string().email(),
-  website: z.string().nonempty(),
-  phone: z.string().nonempty(),
-});
-
+import { appRouter } from '@/server/api/root';
+import { createServerSideHelpers } from '@trpc/react-query/server';
+import superjson from 'superjson';
+ 
 export default function RouterPage() {
-  const { renderForm } = useForm<z.infer<typeof setupValidationSchema>>({
-    onSubmit: (data) => console.log(data),
-    schema: setupValidationSchema,
-    defaultValues: {
-      fullName: 'Seun Andrew',
-      occupation: 'Brand Designer',
-      location: 'Lagos, Nigeria',
-      website: 'seun.design',
-      email: '',
-      phone: '',
-    },
-  });
+
+
   return (
     <Fragment>
       <SeoMeta />
@@ -57,6 +42,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const cookies = nookies.get(ctx);
   const persona = cookies['persona'];
 
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    ctx: createInnerTRPCContext({ session: null }),
+    transformer: superjson,
+  });
+
   if (!persona) {
     return {
       redirect: {
@@ -66,7 +57,21 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     };
   }
 
+  /**
+   * @see https://trpc.io/docs/client/nextjs/server-side-helpers#nextjs-example
+   * Prefetching the `post.byId` query.
+   * `prefetch` does not return the result and never throws - if you need that behavior, use `fetch` instead.
+   */
+  await helpers.author.get.prefetch({ handle: persona });
+
+  const trpcState = helpers.dehydrate();
+
+  console.log({ trpcState: JSON.stringify(trpcState) });
+  // Make sure to return { props: { trpcState: helpers.dehydrate() } }
   return {
-    props: {},
+    props: {
+      trpcState,
+      persona,
+    },
   };
 };

@@ -23,7 +23,8 @@ export const env = createEnv({
     // Add `.min(1) on ID and SECRET if you want to make sure they're not empty
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
-    OPEN_AI_KEY: z.string(),
+    /** Open AI API Key  */
+    OAK: z.string(),
     AUTH_EMAIL_SERVER: z.string(),
     GOOGLE_APPLICATION_KEY: z.string().min(50),
   },
@@ -51,7 +52,8 @@ export const env = createEnv({
     /** ----------------------------------------- */
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-    OPEN_AI_KEY: process.env.OPEN_AI_KEY,
+    /** Open AI API Key  */
+    OAK: process.env.OAK,
     AUTH_EMAIL_SERVER: process.env.AUTH_EMAIL_SERVER,
     GOOGLE_APPLICATION_KEY: process.env.GOOGLE_APPLICATION_KEY, // base64 encoded
     /** ----------------------------------------- */

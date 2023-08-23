@@ -20,6 +20,7 @@ import { api } from '@/utils/api';
 import { Fragment, useState } from 'react';
 import { format } from 'timeago.js';
 import { ColumnIconButton } from '@/layout/split-shell/Column';
+import { useChat } from 'ai/react';
 
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import {
@@ -58,7 +59,7 @@ export const TimelineView = (props: StackProps) => {
       {tweets.data?.pages[currCursor]?.tweets.map((post) => {
         return (
           <HStack align="start" key={post.id} px={4} pt={2}>
-            <Box w={'40px'} mr={1} px={2}>
+            <Box w={'40px'} mr={1} px={0}>
               <Avatar src={post.author.avatar} boxSize="9"></Avatar>
             </Box>
 
@@ -123,9 +124,12 @@ const RenderContentText = ({ text }: { text: string }) => {
 
 export const NewTimelinePost = (props: any) => {
   const name = props.name || 'Ezra';
+  const { messages, input, handleInputChange, handleSubmit } = useChat();
+
   return (
     <Box borderWidth={'0.5px'} borderX={'none'}>
       <Stack divider={<StackDivider />} spacing={0} mt={3}>
+
         <HStack align="start" px={3}>
           <Stack w={'full'}>
             <Badge
@@ -143,37 +147,55 @@ export const NewTimelinePost = (props: any) => {
               </HStack>
             </Badge>
             <Textarea
-              style={{ resize: 'none' }}
+              // style={{ resize: 'none' }}
+              readOnly
               variant={'flushed'}
               borderBottom={0}
               rows={3}
+              value={JSON.stringify(messages)}
             />
           </Stack>
         </HStack>
 
-        <HStack px={3}>
-          <Input
-            placeholder={`What should ${name} tweet about`}
-            style={{ resize: 'none' }}
-            variant={'flushed'}
-            borderWidth={'.1px'}
-            border={'none'}
-          />
-
-          <HStack spacing={3}>
-            <IconButton
-              icon={<HiRefresh />}
-              aria-label="Generate Post"
-              size={'xs'}
-              variant={'outline'}
-              rounded={'full'}
+        {/* ---------  AI Generate Author Tweet Form with Vercel AI SDK ---------- */}
+        <form onSubmit={handleSubmit}>
+          <HStack px={3}>
+            <Input
+              placeholder={`What should ${name} tweet about`}
+              style={{ resize: 'none' }}
+              variant={'flushed'}
+              value={input}
+              onChange={handleInputChange}
+              borderWidth={'.1px'}
+              border={'none'}
             />
 
-            <Button size="sm" colorScheme="twitter" rounded={'full'}>
-              Post
-            </Button>
+            <HStack spacing={3}>
+              <Button
+                type="submit"
+                rightIcon={<HiRefresh />}
+                aria-label="Generate Post"
+                size={'xs'}
+                variant={'outline'}
+                rounded={'full'}
+              >
+                Generate
+              </Button>
+
+              <Button
+                isDisabled={messages.length == 0}
+                ml={2}
+                size="sm"
+                colorScheme="twitter"
+                rounded={'md'}
+              >
+                Post
+              </Button>
+            </HStack>
           </HStack>
-        </HStack>
+        </form>
+        {/* ---------  AI Generate Author Tweet Form with Vercel AI SDK ---------- */}
+
       </Stack>
     </Box>
   );
@@ -182,13 +204,6 @@ export const NewTimelinePost = (props: any) => {
 type TimelineDeckProps = {
   post: ITimelineTweet;
 };
-
-// import React from 'react';
-// import TweetDeck from './TweetDeck'; // Import TweetDeck component
-// import Retweet from './Retweet'; // Import Retweet component
-// import Quote from './Quote'; // Import Quote component
-// import Like from './Like'; // Import Like component
-// import Reply from './Reply'; // Import Reply component
 
 export const TweetDeckComponent = ({ post }: TimelineDeckProps) => {
   return (
