@@ -10,9 +10,9 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-export const WhoToFollow = () => (
+export const FollowRecommendation = () => (
   <Center maxW="sm" mx="auto" py={{ base: '4', md: '8' }}>
-    <Box bg="bg-surface" px={4} rounded={'2xl'}>
+    <Box px={4} rounded={'2xl'}>
       <Heading as="h2" fontSize="lg">
         Your Followers
       </Heading>

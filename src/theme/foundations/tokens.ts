@@ -1,7 +1,7 @@
 export default {
   colors: {
     'bg-canvas': {
-      default: 'gray.50',
+      default: '#fafafa',
       _dark: 'gray.900',
     },
     'bg-surface': {
@@ -9,7 +9,7 @@ export default {
       _dark: 'gray.800',
     },
     'bg-subtle': {
-      default: 'gray.50',
+      default: '#fafafa',
       _dark: 'gray.700',
     },
     'bg-muted': {

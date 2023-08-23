@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import SeoMeta from '@/components/seo-meta';
-import { WhoToFollow } from '@/components/who-to-follow';
+import { FollowRecommendation } from '@/components/follow-recommendation';
 import { NewTimelinePost, TimelineView } from '@/features/timeline';
 import SidebarSlot from '@/layout/slots/SidebarSlot';
 import TimelineSlot from '@/layout/slots/TimelineSlot';
@@ -27,8 +27,8 @@ export default function RouterPage() {
       </TimelineSlot>
 
       <SidebarSlot>
-        <WhoToFollow />
         <TimelineStatDeck />
+        <FollowRecommendation />
       </SidebarSlot>
     </Fragment>
   );

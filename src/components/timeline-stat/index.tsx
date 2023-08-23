@@ -17,18 +17,18 @@ import {
 const stats = [
   {
     label: 'Total Interactions',
-    value: '71,887',
-    delta: { value: '320', isUpwardsTrend: true },
+    value: '237,887',
+    delta: { value: '120,090', isUpwardsTrend: true },
   },
   {
     label: 'Positive Intent Ratio',
-    value: '56.87%',
-    delta: { value: '2.3%', isUpwardsTrend: true },
+    value: '73.02%',
+    delta: { value: '5.1%', isUpwardsTrend: true },
   },
   {
     label: 'Negative Intent Ratio',
-    value: '12.87%',
-    delta: { value: '0.1%', isUpwardsTrend: false },
+    value: '31.23%',
+    delta: { value: '7.90%', isUpwardsTrend: false },
   },
 ];
 
@@ -61,6 +61,7 @@ export const StatDeck = (props: Props) => {
       boxShadow="sm"
       border={'.5px solid'}
       borderColor={'muted'}
+      opacity={0.8}
       {...boxProps}
     >
       <Stack>
@@ -73,10 +74,10 @@ export const StatDeck = (props: Props) => {
         <HStack justify="space-between">
           <Heading size={{ base: 'sm', md: 'md' }}>{value}</Heading>
           <Badge
-            variant="pill"
+            variant="outline"
             colorScheme={delta.isUpwardsTrend ? 'green' : 'red'}
           >
-            <HStack spacing="1">
+            <HStack spacing="1" mt={'1px'}>
               <Icon
                 as={delta.isUpwardsTrend ? FiArrowUpRight : FiArrowDownRight}
               />

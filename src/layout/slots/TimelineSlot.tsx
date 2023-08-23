@@ -1,4 +1,4 @@
-import { useColorModeValue, Box, HStack } from '@chakra-ui/react';
+import { useColorModeValue as mode, Box, HStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { FiArrowLeft, FiHeart } from 'react-icons/fi';
 import {
@@ -17,7 +17,7 @@ const TimelineSlot: React.FC<TimelineSlotProps> = ({ children }) => {
 
   return (
     <Box
-      bg={useColorModeValue('gray.50', 'gray.900')}
+      bg={mode('white', 'gray.900')}
       flex="1"
       alignItems={'center'}
       overflowY="auto"
