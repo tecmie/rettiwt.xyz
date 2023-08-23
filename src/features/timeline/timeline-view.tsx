@@ -124,12 +124,12 @@ const RenderContentText = ({ text }: { text: string }) => {
 
 export const NewTimelinePost = (props: any) => {
   const name = props.name || 'Ezra';
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const { messages, isLoading, input, handleInputChange, handleSubmit } =
+    useChat();
 
   return (
     <Box borderWidth={'0.5px'} borderX={'none'}>
       <Stack divider={<StackDivider />} spacing={0} mt={3}>
-
         <HStack align="start" px={3}>
           <Stack w={'full'}>
             <Badge
@@ -147,12 +147,17 @@ export const NewTimelinePost = (props: any) => {
               </HStack>
             </Badge>
             <Textarea
-              // style={{ resize: 'none' }}
+              style={{ resize: 'none' }}
               readOnly
               variant={'flushed'}
               borderBottom={0}
-              rows={3}
-              value={JSON.stringify(messages)}
+              rows={4}
+              /* We only want the latest message content */
+              value={
+                (messages.length != 0 &&
+                  messages[messages.length - 1]?.content) ||
+                ''
+              }
             />
           </Stack>
         </HStack>
@@ -174,6 +179,7 @@ export const NewTimelinePost = (props: any) => {
               <Button
                 type="submit"
                 rightIcon={<HiRefresh />}
+                isLoading={isLoading}
                 aria-label="Generate Post"
                 size={'xs'}
                 variant={'outline'}
@@ -195,7 +201,6 @@ export const NewTimelinePost = (props: any) => {
           </HStack>
         </form>
         {/* ---------  AI Generate Author Tweet Form with Vercel AI SDK ---------- */}
-
       </Stack>
     </Box>
   );

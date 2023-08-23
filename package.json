@@ -6,6 +6,7 @@
     "build": "next build",
     "dev": "next dev",
     "format": "prettier --write src",
+    "vercel:build": "sed -i 's/nativeLib = require(`@lancedb\\/vectordb-\\${currentTarget()}`);/nativeLib = require(`@lancedb\\/vectordb-linux-x64-gnu`);/' node_modules/vectordb/native.js && next build",
     "postinstall": "yarn prisma generate && yarn db:sync",
     "db:deploy": "yarn prisma migrate deploy",
     "db:generate": "yarn prisma generate",
