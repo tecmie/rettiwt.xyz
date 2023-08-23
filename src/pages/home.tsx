@@ -14,6 +14,7 @@ import { z } from 'zod';
 import { appRouter } from '@/server/api/root';
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import superjson from 'superjson';
+import TimelineStatDeck from '@/components/timeline-stat';
 
 export default function RouterPage() {
   return (
@@ -27,6 +28,7 @@ export default function RouterPage() {
 
       <SidebarSlot>
         <WhoToFollow />
+        <TimelineStatDeck />
       </SidebarSlot>
     </Fragment>
   );

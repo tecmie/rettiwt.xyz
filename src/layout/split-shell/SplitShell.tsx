@@ -15,6 +15,7 @@ export const SplitShell = ({ children, navFlexProps }: SplitShellProps) => {
           position="relative"
           w={'full'}
           maxW={'xl'}
+          pl={4}
           display={{ base: 'none', lg: 'initial' }}
           overflowY="auto"
           borderRightWidth="1px"
