@@ -21,8 +21,9 @@ export const authorRouter = createTRPCRouter({
     const authors = await ctx.prisma.author.findMany({ take: 20 });
 
     // return a map of author id, author name, author handle as value and the rest as metadata
-    return authors.map(({ handle, ...rest }) => {
+    return authors.map(({ handle, id, ...rest }) => {
       return {
+        id: String(id),
         handle: handle,
         /* value is the only duplicate */
         value: handle,

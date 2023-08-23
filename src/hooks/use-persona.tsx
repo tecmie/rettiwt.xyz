@@ -17,8 +17,6 @@ export const useProfilePersona = () => {
   const cookies = parseCookies();
   const personaHandle = cookies['persona'];
 
-  console.log({ cookies, personaHandle });
-
   // Use the persona handle to fetch the author profile from our API
   const authorQuery = api.author.get.useQuery({
     handle: personaHandle as Author,
@@ -49,6 +47,8 @@ export const useProfilePersona = () => {
   };
 
   return {
+    handle: personaHandle,
+    name: activeProfilePersona?.name,
     activeProfilePersona: authorQuery.data,
     setNewProfilePersona,
   };

@@ -29,10 +29,15 @@ import {
   RetweetIcon,
   ShareIcon,
 } from '@/components/icons';
-import { BsChevronRight } from 'react-icons/bs';
+import {
+  BsChevronBarDown,
+  BsChevronDown,
+  BsChevronRight,
+} from 'react-icons/bs';
 import { HiRefresh } from 'react-icons/hi';
 import { type ITimelineTweet } from '@/types/timeline.type';
 import { ITweetInteraction } from '@/types/tweet.type';
+import { useProfilePersona } from '@/hooks/use-persona';
 
 export const TimelineView = (props: StackProps) => {
   const [currCursor, setCurrCursor] = useState(0);
@@ -123,7 +128,7 @@ const RenderContentText = ({ text }: { text: string }) => {
 };
 
 export const NewTimelinePost = (props: any) => {
-  const name = props.name || 'Ezra';
+  const { handle, name } = useProfilePersona();
   const { messages, isLoading, input, handleInputChange, handleSubmit } =
     useChat();
 
@@ -132,20 +137,21 @@ export const NewTimelinePost = (props: any) => {
       <Stack divider={<StackDivider />} spacing={0} mt={3}>
         <HStack align="start" px={3}>
           <Stack w={'full'}>
-            <Badge
-              size={'lg'}
-              pl={1.5}
+            <Button
+              size={'sm'}
+              pl={0.5}
               pr={3.5}
+              rounded={'full'}
               variant={'outline'}
               w={'max-content'}
               colorScheme="blue"
             >
               <HStack>
                 <Avatar src={name} name={name} size={'xs'}></Avatar>
-                <Text>{`Viewing as ${name}`}</Text>
-                <Icon as={BsChevronRight} fontSize={'xs'} />
+                <Text>{`Acting as ${handle}`}</Text>
+                <Icon as={BsChevronDown} fontSize={'xs'} />
               </HStack>
-            </Badge>
+            </Button>
             <Textarea
               style={{ resize: 'none' }}
               readOnly
@@ -191,6 +197,7 @@ export const NewTimelinePost = (props: any) => {
               <Button
                 isDisabled={messages.length == 0}
                 ml={2}
+                px={4}
                 size="sm"
                 colorScheme="twitter"
                 rounded={'md'}

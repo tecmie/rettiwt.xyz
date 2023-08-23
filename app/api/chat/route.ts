@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
     _GPT3_MODEL_,
     _GPT4_MODEL_,
     _GPT3_MODEL_,
+    _GPT4_MODEL_,
     _GPT3_MODEL_,
   ]);
 
@@ -97,6 +98,7 @@ export async function POST(req: NextRequest) {
   const chain = prompt.pipe(model).pipe(outputParser);
 
   const stream = await chain.stream({
+    actor: actor?.value,
     context: formattedContext,
     input: currentMessageContent,
   });
