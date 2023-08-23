@@ -117,7 +117,7 @@ export const RadioCard = (props: RadioCardProps) => {
     >
       <chakra.input {...inputProps} aria-labelledby={id} />
       <Box sx={styles} {...checkboxProps} {...rest}>
-        <Stack direction="row">
+        <Stack direction="row" align={'center'}>
           {state.isChecked ? (
             <Circle size="4">
               <Icon as={CheckCircleIcon} boxSize="4" color="link" />
@@ -125,7 +125,7 @@ export const RadioCard = (props: RadioCardProps) => {
           ) : (
             <Circle borderWidth="2px" size="4" />
           )}
-          <HStack flex={1} justify="flex-end">
+          <HStack flex={1} justify="space-between">
             {children}
           </HStack>
         </Stack>

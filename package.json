@@ -50,6 +50,7 @@
     "next-auth": "^4.22.1",
     "nextjs-google-analytics": "^2.3.3",
     "nodemailer": "^6.9.3",
+    "nookies": "^2.5.2",
     "nprogress": "^0.2.0",
     "openai": "^3.3.0",
     "react": "18.2.0",

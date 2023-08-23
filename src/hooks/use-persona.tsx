@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { createContext } from '@chakra-ui/react-utils';
 import { useLocalStorage } from 'usehooks-ts';
-import { useRouter } from 'next/router';
+import { parseCookies } from 'nookies';
+import { api } from '@/utils/api';
 
 export type Author = string;
 export const __STORAGE_KEY__ = 'xims.persona';
@@ -27,11 +28,14 @@ export const [PersonaContextProvider, usePersona] =
  * @returns {string} The current profile persona
  */
 export const useProfilePersona = () => {
-  const { query, pathname } = useRouter();
-  console.log(`${{ pathname, query }} from ... [use-persona]`);
+  /* Instead of path params, lets use cookies */
+  const cookies = parseCookies();
+  console.log(`${{ cookies }} from ... [use-persona]`);
 
-  const params = query;
-  const profilePersona = params.persona?.toString() || '';
+  const profilePersona = cookies['persona'];
+
+  /* Call trpc API to retrieve author profile */
+  const { data: authorProfile } = api.author.getAuthorProfile.useQuery();
 
   const [activeProfilePersona, setProfilePersona] = useLocalStorage(
     __STORAGE_KEY__,
@@ -42,7 +46,7 @@ export const useProfilePersona = () => {
     if (profilePersona && profilePersona !== activeProfilePersona) {
       setProfilePersona(profilePersona);
     }
-  }, [params]);
+  }, [cookies]);
 
   const setNewProfilePersona = (newProfilePersona: string) => {
     setProfilePersona(newProfilePersona);
