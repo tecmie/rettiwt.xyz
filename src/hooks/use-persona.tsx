@@ -1,56 +1,55 @@
 import * as React from 'react';
-import { createContext } from '@chakra-ui/react-utils';
 import { useLocalStorage } from 'usehooks-ts';
-import { parseCookies } from 'nookies';
+import { parseCookies, setCookie } from 'nookies';
 import { api } from '@/utils/api';
 
-export type Author = string;
+type Author = string;
 export const __STORAGE_KEY__ = 'xims.persona';
-
-export interface Persona {
-  setAuthor: (author: Author) => Author;
-}
-
-export interface PersonaContextValue {
-  author?: Author | null;
-  setAuthor: (Author: Author) => void;
-}
-
-export const [PersonaContextProvider, usePersona] =
-  createContext<PersonaContextValue>({
-    name: 'PersonaProvider',
-  });
 
 /**
  * Get the current profile persona from localStorage if available.
  * The value is synced with the query params.
  *
- * @returns {string} The current profile persona
+ * @returns {Object} The current profile persona
  */
 export const useProfilePersona = () => {
-  /* Instead of path params, lets use cookies */
+  // Read the persona handle from cookies
   const cookies = parseCookies();
-  console.log(`${{ cookies }} from ... [use-persona]`);
+  const personaHandle = cookies['persona'];
 
-  const profilePersona = cookies['persona'];
+  console.log({ cookies, personaHandle });
 
-  /* Call trpc API to retrieve author profile */
-  const { data: authorProfile } = api.author.getAuthorProfile.useQuery();
+  // Use the persona handle to fetch the author profile from our API
+  const authorQuery = api.author.get.useQuery({
+    handle: personaHandle as Author,
+  });
 
+  // If the author data changes, update the local storage
   const [activeProfilePersona, setProfilePersona] = useLocalStorage(
     __STORAGE_KEY__,
-    profilePersona,
+    authorQuery.data,
   );
 
   React.useEffect(() => {
-    if (profilePersona && profilePersona !== activeProfilePersona) {
-      setProfilePersona(profilePersona);
+    if (personaHandle && personaHandle !== activeProfilePersona?.handle) {
+      authorQuery.refetch();
+      setProfilePersona(authorQuery.data);
     }
-  }, [cookies]);
+  }, [personaHandle, authorQuery.status, authorQuery.data]);
 
-  const setNewProfilePersona = (newProfilePersona: string) => {
+  // @ts-ignore
+  const setNewProfilePersona = (newProfilePersona) => {
+    // Set a cookie to store the profile information
+    setCookie(null, 'persona', newProfilePersona.handle, {
+      maxAge: 30 * 24 * 60 * 60,
+      path: '/',
+    });
+
     setProfilePersona(newProfilePersona);
   };
 
-  return { activeProfilePersona, setNewProfilePersona };
+  return {
+    activeProfilePersona: authorQuery.data,
+    setNewProfilePersona,
+  };
 };

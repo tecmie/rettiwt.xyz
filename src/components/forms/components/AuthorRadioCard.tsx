@@ -14,11 +14,9 @@ import { RadioCardGroup, RadioCard } from './FormRadioCard';
 export interface CardOptions {
   name: string;
   value: string;
-  metadata: {
-    avatar?: string;
-    bio?: string;
-    [key: string]: any;
-  };
+  avatar?: string;
+  bio?: string;
+  [key: string]: any;
 }
 
 export interface AuthorRadioCardProps {
@@ -65,13 +63,14 @@ const AuthorRadioCard = forwardRef<HTMLInputElement, AuthorRadioCardProps>(
               {...field}
             >
               {options.map((option) => (
-                <RadioCard key={option.value} value={option.value}>
+                <RadioCard
+                  key={option.value}
+                  // This is unsafe, value is a string, but we want an object returned
+                  value={JSON.stringify(option)}
+                >
                   <HStack color="emphasized" fontWeight="medium" fontSize="sm">
                     <Box w={'40px'} mr={1} px={2}>
-                      <Avatar
-                        src={option.metadata?.avatar}
-                        boxSize="6"
-                      ></Avatar>
+                      <Avatar src={option.avatar} boxSize="6"></Avatar>
                     </Box>
 
                     <Text

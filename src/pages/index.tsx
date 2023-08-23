@@ -15,6 +15,8 @@ import { useRouter } from 'next/router';
 import { Fragment } from 'react';
 import { z } from 'zod';
 import { api } from '@/utils/api';
+import { useProfilePersona } from '@/hooks/use-persona';
+import { set } from 'lodash';
 
 const personaFormSchema = z.object({
   personaProfile: z.string().nonempty(),
@@ -22,8 +24,18 @@ const personaFormSchema = z.object({
 
 export default function RouterPage() {
   const router = useRouter();
+
+  const { activeProfilePersona, setNewProfilePersona } = useProfilePersona();
+
+  console.log({ activeProfilePersona, setNewProfilePersona });
+
   const handleOnSubmit = async (data: z.infer<typeof personaFormSchema>) => {
-    alert(JSON.stringify(data));
+    const author = JSON.parse(data.personaProfile);
+
+    setNewProfilePersona(author);
+
+    console.log({ author });
+
     await router.push('/home');
   };
 
@@ -38,21 +50,6 @@ export default function RouterPage() {
   /** @note It's important for us to call this query after the form hook */
 
   const { data: personaList } = api.author.list_form.useQuery();
-  if (!personaList) {
-    return <div>Loading...</div>;
-  }
-
-  //   avatar: "https://pbs.twimg.com/profile_images/1686866427200831499/LY9Tn_Mi_normal.jpg", bio: "Husband, father of 3, modern day capitalist Ironman 70.3 triathlete. Impose ta chance, serre ton bonheur et va vers ton risque. A te regarder, ils s’habitueront", has_custom_timelines: true, … }
-  // ​​​​
-  // avatar: "https://pbs.twimg.com/profile_images/1686866427200831499/LY9Tn_Mi_normal.jpg"
-  // ​​​​
-  // bio: "Husband, father of 3, modern day capitalist Ironman 70.3 triathlete. Impose ta chance, serre ton bonheur et va vers ton risque. A te regarder, ils s’habitueront"
-  // ​​​​
-  // has_custom_timelines: true
-  // ​​​​
-  // url: "https://pbs.twimg.com/profile_banners/1050691124/1667732583"
-  // ​​​​
-  // verified: false
 
   return renderForm(
     <Fragment>
@@ -69,11 +66,13 @@ export default function RouterPage() {
           </Text>
         </Stack>
 
-        <AuthorRadioCard
-          label="Click on a profile to begin"
-          name={'personaProfile'}
-          options={personaList as any}
-        />
+        {personaList && (
+          <AuthorRadioCard
+            label="Click on a profile to begin"
+            name={'personaProfile'}
+            options={personaList as any}
+          />
+        )}
       </Container>
 
       <Flex

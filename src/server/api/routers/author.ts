@@ -3,11 +3,13 @@ import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 
 export const authorRouter = createTRPCRouter({
   get: publicProcedure
-    .input(z.object({ text: z.string() }))
+    .input(z.object({ handle: z.string() }))
     .query(({ input, ctx }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
+      return ctx.prisma.author.findUnique({
+        where: {
+          handle: input.handle,
+        },
+      });
     }),
 
   list: publicProcedure.query(({ ctx }) => {
@@ -19,11 +21,12 @@ export const authorRouter = createTRPCRouter({
     const authors = await ctx.prisma.author.findMany({ take: 20 });
 
     // return a map of author id, author name, author handle as value and the rest as metadata
-    return authors.map(({ name, handle, ...rest }) => {
+    return authors.map(({ handle, ...rest }) => {
       return {
-        name: name,
+        handle: handle,
+        /* value is the only duplicate */
         value: handle,
-        metadata: rest,
+        ...rest,
       };
     });
   }),
