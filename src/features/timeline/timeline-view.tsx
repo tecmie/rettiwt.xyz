@@ -40,7 +40,7 @@ export const TimelineView = (props: StackProps) => {
   const tweets = api.timeline.list.useInfiniteQuery(
     {
       id: '1',
-      limit: 10,
+      limit: 20,
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -48,7 +48,7 @@ export const TimelineView = (props: StackProps) => {
     },
   );
 
-  console.log(tweets.data?.pages[0]);
+  // console.log(tweets.data?.pages[0]);
 
   return (
     <Stack
@@ -58,10 +58,15 @@ export const TimelineView = (props: StackProps) => {
       {...props}
     >
       {tweets.data?.pages[currCursor]?.tweets.map((post) => {
+        console.log({ post });
         return (
           <HStack align="start" key={post.id} px={4} pt={2}>
             <Box w={'40px'} mr={1} px={0}>
-              <Avatar src={post.author.avatar} boxSize="9"></Avatar>
+              <Avatar
+                src={post.author.avatar ?? post.author.name}
+                name={post.author.handle}
+                boxSize="9"
+              ></Avatar>
             </Box>
 
             <Link
@@ -123,7 +128,7 @@ const RenderContentText = ({ text }: { text: string }) => {
   return <chakra.text opacity={0.8}>{renderTextWithHashtags()}</chakra.text>;
 };
 
-export const NewTimelinePost = (props: any) => {
+export const NewTimelinePost = () => {
   const { handle, name, activeProfilePersona } = useProfilePersona();
   const { messages, isLoading, input, handleInputChange, handleSubmit } =
     useChat();
@@ -372,7 +377,7 @@ export const ReplyDeckComponent = ({ post }: TimelineDeckProps) => {
 };
 
 const InnerQuoteDeckComponent = ({ post }: TimelineDeckProps) => {
-  const __render__ = post.type;
+  const __render__ = post.intent;
   switch (__render__) {
     case ITweetIntent.REPLY:
       return <ReplyDeckComponent post={post} />;
@@ -418,7 +423,7 @@ export const QuoteDeckComponent = ({ post }: TimelineDeckProps) => {
 };
 
 export const TimelineDeckBody = ({ post }: TimelineDeckProps) => {
-  const __render__ = post.type;
+  const __render__ = post.intent;
   switch (__render__) {
     case ITweetIntent.RETWEET:
       return <RetweetDeckComponent post={post} />;

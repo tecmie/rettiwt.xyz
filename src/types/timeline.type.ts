@@ -5,7 +5,7 @@ export interface ITimelineTweet extends ITweet {
    * @memberof ITimelineTweet
    * @description The type of interaction with the tweet.
    */
-  type: ITweetIntent;
+  intent: ITweetIntent | string;
 
   /**
    * @memberof ITimelineTweet
@@ -18,12 +18,6 @@ export interface ITimelineTweet extends ITweet {
    * @description Whether the tweet is a quote tweet.
    */
   is_quote_tweet: boolean;
-
-  /**
-   * @memberof ITimelineTweet
-   * @description Whether the tweet is a retweet.
-   */
-  is_retweet: boolean;
 
   /**
    * @memberof ITimelineTweet

@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { type ITimelineTweet } from '@/types/timeline.type';
-import { timelineTweets } from './data';
 
 const queryTimelineSchema = z.object({
   id: z.string(),
@@ -10,46 +9,27 @@ const queryTimelineSchema = z.object({
 });
 
 export const timelineRouter = createTRPCRouter({
-  list: publicProcedure.input(queryTimelineSchema).query(({ input }) => {
-    const { id } = input;
-    // replace with actual implementation to fetch tweets from database
-    const tweets: ITimelineTweet[] = timelineTweets;
+  list: publicProcedure
+    .input(queryTimelineSchema)
+    .query(async ({ input, ctx }) => {
+      const { id } = input;
+      const limit = input.limit ?? 25;
 
-    //   This is for pagination, but we are not using it
-    const { cursor } = input;
-    const limit = input.limit ?? 50;
-    const startIndex = cursor
-      ? tweets.findIndex((tweet) => tweet.id === cursor) + 1
-      : 0;
+      const posts: ITimelineTweet[] = await ctx.prisma.tweet.findMany({
+        take: limit,
+        include: {
+          author: true,
+          quote_parent: true,
+          reply_parent: true,
+        },
+      });
 
-    // const items = await ctx.prisma.tweets.findMany({
-    //   take: limit + 1, // get an extra item at the end which we'll use as next cursor
-    //   where: {
-    //     title: {
-    //       contains: 'Prisma' /* Optional filter */,
-    //     },
-    //   },
-    //   cursor: cursor ? { myCursor: cursor } : undefined,
-    //   orderBy: {
-    //     myCursor: 'asc',
-    //   },
-    // });
-    // let nextCursor: typeof cursor | undefined = undefined;
-    // if (items.length > limit) {
-    //   const nextItem = items.pop();
-    //   nextCursor = nextItem!.myCursor;
-    // }
-    // return {
-    //   items,
-    //   nextCursor,
-    // };
-
-    /* we need to implement this */
-    const nextCursor = null;
-    return {
-      id,
-      tweets: tweets,
-      nextCursor,
-    };
-  }),
+      /* we need to implement this */
+      const nextCursor = null;
+      return {
+        id,
+        tweets: posts,
+        nextCursor,
+      };
+    }),
 });

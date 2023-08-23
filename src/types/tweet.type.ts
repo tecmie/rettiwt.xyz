@@ -1,9 +1,11 @@
-export interface ITweetAuthor {
+import { Author, Tweet } from '@prisma/client';
+
+export interface ITweetAuthor extends Author {
   /**
    * @memberof ITweetAuthor
    * @description The unique identifier of the author.
    */
-  id: string;
+  id: bigint;
   /**
    * @memberof ITweetAuthor
    * @description The Twitter handle of the author.
@@ -18,12 +20,12 @@ export interface ITweetAuthor {
    * @memberof ITweetAuthor
    * @description The profile picture URL of the author.
    */
-  avatar: string;
+  avatar: string | null;
   /**
    * @memberof ITweetAuthor
    * @description The bio of the author.
    */
-  bio?: string;
+  bio: string | null;
   /**
    * @memberof ITweetAuthor
    * @description Whether the author has custom timelines.
@@ -33,7 +35,7 @@ export interface ITweetAuthor {
    * @memberof ITweetAuthor
    * @description The URL of the author's profile.
    */
-  url: string;
+  url: string | null;
   /**
    * @memberof ITweetAuthor
    * @description Whether the author is verified.
@@ -41,19 +43,12 @@ export interface ITweetAuthor {
   verified: boolean;
 }
 
-export interface ITweet {
+export interface ITweet extends Tweet {
   /**
    * @memberof ITweet
    * @description The unique identifier of the tweet.
    */
-  id: string | number;
-
-  /**
-   * @optional
-   * @memberof ITweetAuthor
-   * @description The id of tweet the user is replying to
-   */
-  parent_id?: string;
+  id: string;
 
   /**
    * @memberof ITweet
@@ -65,7 +60,7 @@ export interface ITweet {
    * @memberof ITweet
    * @description The timestamp of the tweet.
    */
-  timestamp: Date | string;
+  timestamp: Date;
 
   /**
    * @memberof ITweet
