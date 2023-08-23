@@ -14,7 +14,6 @@ import {
   type StackProps,
   Text,
   Textarea,
-
   useColorModeValue as mode,
 } from '@chakra-ui/react';
 import { api } from '@/utils/api';
@@ -30,9 +29,7 @@ import {
   RetweetIcon,
   ShareIcon,
 } from '@/components/icons';
-import {
-  BsChevronDown,
-} from 'react-icons/bs';
+import { BsChevronDown } from 'react-icons/bs';
 import { HiRefresh } from 'react-icons/hi';
 import { type ITimelineTweet } from '@/types/timeline.type';
 import { ITweetIntent } from '@/types/tweet.type';
@@ -127,9 +124,21 @@ const RenderContentText = ({ text }: { text: string }) => {
 };
 
 export const NewTimelinePost = (props: any) => {
-  const { handle, name } = useProfilePersona();
+  const { handle, name, activeProfilePersona } = useProfilePersona();
   const { messages, isLoading, input, handleInputChange, handleSubmit } =
     useChat();
+
+  const write = api.tweet.create.useMutation();
+
+  const _handlePostTweet = async () => {
+    const result = await write.mutateAsync({
+      content: messages[messages.length - 1]?.content || '',
+      authorId: Number(activeProfilePersona?.id),
+      intent: ITweetIntent.TWEET,
+    });
+
+    console.log(result);
+  };
 
   return (
     <Box borderWidth={'0.5px'} borderX={'none'}>
@@ -146,7 +155,11 @@ export const NewTimelinePost = (props: any) => {
               colorScheme="blue"
             >
               <HStack>
-                <Avatar src={name} name={name} size={'xs'}></Avatar>
+                <Avatar
+                  src={activeProfilePersona?.avatar || name}
+                  name={name}
+                  size={'xs'}
+                ></Avatar>
                 <Text>{`Acting as ${handle}`}</Text>
                 <Icon as={BsChevronDown} fontSize={'xs'} />
               </HStack>
@@ -197,6 +210,7 @@ export const NewTimelinePost = (props: any) => {
                 isDisabled={messages.length == 0}
                 ml={2}
                 px={4}
+                onClick={_handlePostTweet}
                 size="sm"
                 colorScheme="twitter"
                 rounded={'md'}
@@ -407,7 +421,7 @@ export const TimelineDeckBody = ({ post }: TimelineDeckProps) => {
   switch (__render__) {
     case ITweetIntent.RETWEET:
       return <RetweetDeckComponent post={post} />;
-    case ITweetIntent.QUOTE_TWEET:
+    case ITweetIntent.QUOTE:
       return <QuoteDeckComponent post={post} />;
     case ITweetIntent.LIKE:
       return <LikeDeckComponent post={post} />;

@@ -40,6 +40,8 @@ export async function POST(req: NextRequest) {
 
   const table = await db.openTable(actor?.value ?? '0x', embeddings);
 
+  console.log(table);
+
   /**
    * We need to filter out the messages that are not tweets
    * or quote tweets when executing our queries

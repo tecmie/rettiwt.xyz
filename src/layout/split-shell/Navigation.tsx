@@ -28,6 +28,7 @@ import {
 import { ColumnHeader, ColumnIconButton } from './Column';
 import XLogo from '@/components/logo';
 import { MdHome, MdPersonOutline } from 'react-icons/md';
+import NextLink from 'next/link';
 
 interface NavbarProps extends FlexProps {
   onClose?: () => void;
@@ -65,10 +66,12 @@ export const Navbar = (props: NavbarProps) => {
 
         <Stack pt={[4, 8]} px="3" spacing="6">
           <Stack spacing="1">
-            <NavLink icon={MdHome} aria-current="page">
+            <NavLink href="/home" icon={MdHome} aria-current="page">
               Home
             </NavLink>
-            <NavLink icon={MdPersonOutline}>Profile</NavLink>
+            <NavLink href="/" icon={MdPersonOutline}>
+              Profile
+            </NavLink>
           </Stack>
         </Stack>
       </Stack>
@@ -137,6 +140,8 @@ export const NavLink = (props: NavLinkProps) => {
   const { icon, ...linkProps } = props;
   return (
     <Link
+      as={NextLink}
+      href={props.href || '#'}
       px="2"
       py="1.5"
       borderRadius="md"
