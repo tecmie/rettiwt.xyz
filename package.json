@@ -76,7 +76,7 @@
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.1.0",
-    "yarn": "1.22.19"
+    "yarn": ">=1.22.10"
   },
   "devDependencies": {
     "@hookform/devtools": "^4.2.3",

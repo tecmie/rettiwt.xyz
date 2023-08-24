@@ -10,9 +10,15 @@ import type { NextApiRequest, NextApiResponse } from 'next';
  * @param {NextApiRequest} req - The HTTP request object.
  * @param {NextApiResponse} res - The HTTP response object.
  */
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default async function GET(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     return res.status(405).end(); // Method Not Allowed
+  }
+
+  // Check if the key query parameter is present and has the correct value
+  const key = req.query.key;
+  if (key !== 'omo_naija') {
+    return res.status(403).send('Forbidden');
   }
 
   // Define the folder to be zipped
@@ -25,7 +31,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Set the response headers
   res.setHeader('Content-Type', 'application/zip');
-  res.setHeader('Content-Disposition', 'attachment; filename=vector.zip');
+  res.setHeader('Content-Disposition', 'attachment; filename=vectors.zip');
 
   // Create a ZIP archive
   const archive = archiver('zip', {
@@ -46,4 +52,4 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     console.error(err);
     res.status(500).send('An error occurred while creating the ZIP file');
   });
-};
+}
