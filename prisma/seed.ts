@@ -1,3 +1,4 @@
+// import {prisma} from '@/server/db';
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
@@ -77,15 +78,27 @@ async function executeBatchFollowers(authorIds: string[]) {
   }
 }
 
+async function seedTweets() {
+  const tweets = require('./xims.sqlite_tweet_seed.json');
+  // await prisma.tweet.create({
+  //   data: tweets[0],
+  // });
+  return await prisma.tweet.createMany({
+    data: tweets,
+    skipDuplicates: true,
+  });
+}
+
 async function main() {
   const authors: string[] = await createAuthors();
   // const authors = Object.keys(profiles)
   // const aIds = authors.map(value => profiles[value].id_str)
 
-  // console.log(authors)
-
   /* Use authors to create a batch follow operation */
   await executeBatchFollowers(authors);
+
+  /* ------ seed the db with tweets ------ */
+  await seedTweets();
 }
 
 main()
