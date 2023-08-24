@@ -1,12 +1,10 @@
 import {
   Avatar,
-  Badge,
   chakra,
   Box,
   Button,
   HStack,
   Icon,
-  IconButton,
   Input,
   Link,
   Stack,
@@ -36,6 +34,7 @@ import { type ITimelineTweet } from '@/types/timeline.type';
 import { ITweetIntent } from '@/types/tweet.type';
 import { useProfilePersona } from '@/hooks/use-persona';
 import { PersonaModal } from '@/features/persona/persona-modal';
+import { useRouter } from 'next/router';
 
 export const TimelineView = (props: StackProps) => {
   const [currCursor, setCurrCursor] = useState(0);
@@ -125,23 +124,41 @@ const RenderContentText = ({ text }: { text: string }) => {
     return parts;
   };
 
-  return <chakra.text opacity={0.8}>{renderTextWithHashtags()}</chakra.text>;
+  return <chakra.p opacity={0.8}>{renderTextWithHashtags()}</chakra.p>;
 };
 
 export const NewTimelinePost = () => {
+  const router = useRouter();
   const disclosure = useDisclosure();
   const { handle, name, activeProfilePersona } = useProfilePersona();
-  const { messages, isLoading, input, handleInputChange, handleSubmit } =
-    useChat();
+  const {
+    messages,
+    isLoading,
+    setMessages,
+    input,
+    handleInputChange,
+    handleSubmit,
+  } = useChat();
 
   const write = api.tweet.create.useMutation();
 
   const _handlePostTweet = async () => {
-    const result = await write.mutateAsync({
-      content: messages[messages.length - 1]?.content || '',
-      authorId: Number(activeProfilePersona?.id),
-      intent: ITweetIntent.TWEET,
-    });
+    const result = await write.mutateAsync(
+      {
+        content: messages[messages.length - 1]?.content || '',
+        authorId: Number(activeProfilePersona?.id),
+        intent: ITweetIntent.TWEET,
+      },
+      {
+        onSuccess() {
+          /* Clear the AI form input */
+          setMessages([]);
+
+          /* Reload our page */
+          void router.push('/home');
+        },
+      },
+    );
 
     console.log(result);
   };
@@ -194,7 +211,7 @@ export const NewTimelinePost = () => {
         <form onSubmit={handleSubmit}>
           <HStack px={3}>
             <Input
-              placeholder={`What should ${name} tweet about`}
+              placeholder={`Type a new tweet idea for ${name} into this box.`}
               style={{ resize: 'none' }}
               variant={'flushed'}
               value={input}

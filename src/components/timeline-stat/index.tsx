@@ -18,7 +18,7 @@ const stats = [
   {
     label: 'Total Interactions',
     value: '237,887',
-    delta: { value: '120,090', isUpwardsTrend: true },
+    delta: { value: '120,295', isUpwardsTrend: true },
   },
   {
     label: 'Positive Intent Ratio',

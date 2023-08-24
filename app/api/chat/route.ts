@@ -64,14 +64,13 @@ export async function POST(req: NextRequest) {
 
   /**
    * Create some sort of variability in model use,
-   * with more bias towards GPT3
+   * with more bias towards GPT4
    */
   const openaiModel = _.sample([
-    _GPT3_MODEL_,
+    _GPT4_MODEL_,
     _GPT4_MODEL_,
     _GPT3_MODEL_,
     _GPT4_MODEL_,
-    _GPT3_MODEL_,
   ]);
 
   /**

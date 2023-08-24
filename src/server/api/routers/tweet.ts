@@ -43,7 +43,7 @@ export const tweetRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.prisma.tweet.create({
+      const post = await ctx.prisma.tweet.create({
         data: {
           content: input.content,
           author_id: input.authorId,
@@ -67,5 +67,7 @@ export const tweetRouter = createTRPCRouter({
           bookmark_count: 0,
         },
       });
+
+      return post;
     }),
 });

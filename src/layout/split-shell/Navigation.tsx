@@ -7,8 +7,6 @@ import {
   type FlexProps,
   HStack,
   Icon,
-  Link,
-  type LinkProps,
   Stack,
   Text,
   type TextProps,
@@ -28,7 +26,7 @@ import {
 import { ColumnHeader, ColumnIconButton } from './Column';
 import XLogo from '@/components/logo';
 import { MdHome, MdPersonOutline } from 'react-icons/md';
-import NextLink from 'next/link';
+import { Link, type LinkProps } from '@chakra-ui/next-js';
 
 interface NavbarProps extends FlexProps {
   onClose?: () => void;
@@ -80,10 +78,10 @@ export const Navbar = (props: NavbarProps) => {
         <Stack spacing="3" px="3">
           <NavHeading>Online</NavHeading>
           <Stack spacing="1">
-            <NavLink icon={FiTwitter} isExternal>
+            <NavLink href="https://x.com/0xalzzy" icon={FiTwitter} isExternal>
               Twitter
             </NavLink>
-            <NavLink icon={FiGithub} isExternal>
+            <NavLink href="https://x.com/0xalzzy" icon={FiGithub} isExternal>
               GitHub
             </NavLink>
 
@@ -136,12 +134,10 @@ interface NavLinkProps extends LinkProps {
   icon: As;
 }
 
-export const NavLink = (props: NavLinkProps) => {
+export const NavLink = (props: NavLinkProps & { isExternal?: boolean }) => {
   const { icon, ...linkProps } = props;
   return (
     <Link
-      as={NextLink}
-      href={props.href || '#'}
       px="2"
       py="1.5"
       borderRadius="md"

@@ -38,8 +38,8 @@ export function PersonaModal({ disclosure }: PersonaModalProps) {
     setNewProfilePersona(author);
     onClose();
 
-    window && window.location.reload();
-    // void router.push('/home');
+    // window && window.location.reload();
+    void router.push('/home');
   };
 
   const {
@@ -102,7 +102,7 @@ function SelectPersonaForm() {
       {personaList && (
         <AuthorRadioCard
           withName={false}
-          label="Select a new profile to act as"
+          label="Select a new profile to act as, if a profile is not available, refresh the page."
           name={'personaProfile'}
           options={personaList}
         />

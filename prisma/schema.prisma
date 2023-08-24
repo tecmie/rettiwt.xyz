@@ -61,7 +61,7 @@ model VerificationToken {
 
 model Author {
   id                   BigInt     @id @default(autoincrement())
-  handle               String      @unique
+  handle               String     @unique
   name                 String
   avatar               String?
   bio                  String?
