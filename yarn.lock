@@ -1122,11 +1122,6 @@
   resolved "https://registry.yarnpkg.com/@lancedb/vectordb-darwin-x64/-/vectordb-darwin-x64-0.2.2.tgz#c14cb685047e083a603e02c8e9b590199852783c"
   integrity sha512-6H9H6gY7MTo8ijoldGVY2YfGhvjohDwOxceHIj/1HD+p90VWi3FLAMPMHzAlPMYg7ezMJH0qaemqmNaoboStrA==
 
-"@lancedb/vectordb-darwin-x64@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@lancedb/vectordb-darwin-x64/-/vectordb-darwin-x64-0.2.3.tgz#0e83683805741575e754fd4a79967a204be4d8ac"
-  integrity sha512-p06WkjmdVwDxkH8ghIWh59SCgUhjXBpy1gQISgktouymqfoFbBHz7vmeI6VO1oBA5ji6vSgGZxqjmeLRKM6blA==
-
 "@lancedb/vectordb-linux-arm64-gnu@0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@lancedb/vectordb-linux-arm64-gnu/-/vectordb-linux-arm64-gnu-0.2.2.tgz#fb841a21d6b6169f5471f69cd6d59ee38f3cd83a"
