@@ -1,18 +1,15 @@
 import { EventEmitter } from 'eventemitter3';
 
 /**
- * Interface for the arguments passed to the `schedule` method of `DefferedQueue`.
- *
- * @typedef {Object} EmitWithScheduleArgs
- * @property {string} event - The name of the event to be emitted.
- * @property {number} delay - The delay in milliseconds before the event is emitted.
- * @property {any[]} args - The arguments to be passed to the event listeners.
+ * `object` should be in either of the following forms:
+ * ```
+ * interface EventTypes {
+ *   'event-with-parameters': any[]
+ *   'event-with-example-handler': (...args: any[]) => void
+ * }
+ * ```
  */
-export interface EmitWithScheduleArgs {
-  event: string;
-  delay: number;
-  args: any[];
-}
+type ValidEventTypes = string | symbol | object;
 
 /**
  * Enum for representing different types of queue tasks.
@@ -26,6 +23,20 @@ export interface EmitWithScheduleArgs {
 export enum QueueTask {
   TWEET = 'tweet',
   REACT = 'react',
+}
+
+/**
+ * Interface for the arguments passed to the `schedule` method of `DefferedQueue`.
+ *
+ * @typedef {Object} EmitWithScheduleArgs
+ * @property {string} event - The name of the event to be emitted.
+ * @property {number} delay - The delay in milliseconds before the event is emitted.
+ * @property {any[]} args - The arguments to be passed to the event listeners.
+ */
+export interface EmitWithScheduleArgs {
+  event: string | symbol;
+  delay: number;
+  args: EventEmitter.EventArgs<ValidEventTypes, QueueTask>;
 }
 
 /**
@@ -47,11 +58,12 @@ export class DefferedQueue extends EventEmitter {
    * @param {EmitWithScheduleArgs} args - The arguments for scheduling the event.
    * @example
    * ```typescript
-   * queue.schedule({ event: 'magic', delay: 1000, args: ['Delayed greetings from Hogwarts!'] });
+   * queue.schedule({ event: 'magic', delay: 1000, args: ['Delayed greetings from Yaba!'] });
    * ```
    */
   schedule({ event, delay, args }: EmitWithScheduleArgs): void {
     void setTimeout(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       this.emit(event, ...args);
     }, delay);
   }
