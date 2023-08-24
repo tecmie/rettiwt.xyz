@@ -70,7 +70,9 @@ async function executeBatchFollowers(authorIds: string[]) {
       console.log({ followId, authorId, followingId });
 
       // Execute the raw SQL query, including the 'id' field in the column list
-      await prisma.$executeRaw`INSERT INTO "Follow" ("id", "follower_id", "following_id") VALUES (${followId}, ${authorId}, ${followingId})`;
+      await prisma.$executeRaw`INSERT INTO "Follow" ("id", "follower_id", "following_id") VALUES (${Number(
+        followId,
+      )}, ${authorId}, ${followingId})`;
     }
   }
 }

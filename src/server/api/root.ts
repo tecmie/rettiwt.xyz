@@ -1,5 +1,4 @@
 import { timelineRouter } from '@/features/timeline/router';
-import { exampleRouter } from '@/server/api/routers/example';
 import { authorRouter } from '@/server/api/routers/author';
 import { createTRPCRouter } from '@/server/api/trpc';
 import { tweetRouter } from './routers/tweet';
@@ -10,7 +9,6 @@ import { tweetRouter } from './routers/tweet';
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  example: exampleRouter,
   author: authorRouter,
   tweet: tweetRouter,
   timeline: timelineRouter,

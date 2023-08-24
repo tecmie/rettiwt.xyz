@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { api } from '@/utils/api';
 
 export default function Home() {
-  const hello = api.example.hello.useQuery({ text: 'from tRPC' });
+  const hello = api.author.get.useQuery({ handle: '0x' });
 
   return (
     <>
@@ -45,7 +45,7 @@ export default function Home() {
           </div>
           <div className={styles.showcaseContainer}>
             <p className={styles.showcaseText}>
-              {hello.data ? hello.data.greeting : 'Loading tRPC query...'}
+              {hello.data ? hello.data.bio : 'Loading tRPC query...'}
             </p>
             <AuthShowcase />
           </div>
@@ -58,7 +58,7 @@ export default function Home() {
 function AuthShowcase() {
   const { data: sessionData } = useSession();
 
-  const { data: secretMessage } = api.example.getSecretMessage.useQuery(
+  const { data: secretMessage } = api.author.list.useQuery(
     undefined, // no input
     { enabled: sessionData?.user !== undefined },
   );
@@ -67,7 +67,7 @@ function AuthShowcase() {
     <div className={styles.authContainer}>
       <p className={styles.showcaseText}>
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
+        {secretMessage && <span> - {secretMessage[0]?.verified}</span>}
       </p>
       <button
         className={styles.loginButton}
