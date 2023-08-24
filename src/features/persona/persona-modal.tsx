@@ -4,7 +4,7 @@ import { AuthorRadioCard } from '@/components/forms';
 import { useProfilePersona } from '@/hooks/use-persona';
 import { api } from '@/utils/api';
 import {
-  useDisclosure,
+  type useDisclosure,
   Button,
   Modal,
   ModalOverlay,
@@ -32,15 +32,14 @@ export function PersonaModal({ disclosure }: PersonaModalProps) {
   const { isOpen, onClose } = disclosure;
   const { setNewProfilePersona } = useProfilePersona();
 
-  const handleOnSubmit = async (data: z.infer<typeof personaFormSchema>) => {
+  const handleOnSubmit = (data: z.infer<typeof personaFormSchema>) => {
     const author = JSON.parse(data.personaProfile);
 
-    await setNewProfilePersona(author);
-
-    console.log({ author });
+    setNewProfilePersona(author);
     onClose();
 
-    await router.push('/home');
+    window && window.location.reload();
+    // void router.push('/home');
   };
 
   const {
@@ -94,8 +93,8 @@ export function PersonaModal({ disclosure }: PersonaModalProps) {
 
 function SelectPersonaForm() {
   const { data: personaList } = api.author.list_form_modal.useQuery(undefined, {
-    //  refetchOnMount: false,
-    //  refetchOnWindowFocus: false
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 
   return (
