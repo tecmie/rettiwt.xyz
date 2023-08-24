@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
   const openaiModel = _.sample([
     _GPT4_MODEL_,
     _GPT4_MODEL_,
+    _GPT4_MODEL_,
     _GPT3_MODEL_,
     _GPT4_MODEL_,
   ]);

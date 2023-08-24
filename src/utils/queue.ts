@@ -58,7 +58,7 @@ export class DefferedQueue extends EventEmitter {
    * @param {EmitWithScheduleArgs} args - The arguments for scheduling the event.
    * @example
    * ```typescript
-   * queue.schedule({ event: 'magic', delay: 1000, args: ['Delayed greetings from Yaba!'] });
+   * queue.schedule({ event: QueueTask.TWEET, delay: 1000, args: ['Delayed greetings from Yaba!'] });
    * ```
    */
   schedule({ event, delay, args }: EmitWithScheduleArgs): void {
