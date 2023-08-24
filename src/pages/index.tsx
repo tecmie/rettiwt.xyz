@@ -16,7 +16,6 @@ import { Fragment } from 'react';
 import { z } from 'zod';
 import { api } from '@/utils/api';
 import { useProfilePersona } from '@/hooks/use-persona';
-import { set } from 'lodash';
 
 const personaFormSchema = z.object({
   personaProfile: z.string().nonempty(),

@@ -17,6 +17,9 @@ export const timelineRouter = createTRPCRouter({
 
       const posts: ITimelineTweet[] = await ctx.prisma.tweet.findMany({
         take: limit,
+        orderBy: {
+          timestamp: 'desc',
+        },
         include: {
           author: true,
           quote_parent: true,

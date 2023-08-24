@@ -15,6 +15,7 @@ import {
   Text,
   Textarea,
   useColorModeValue as mode,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { api } from '@/utils/api';
 import { Fragment, useState } from 'react';
@@ -34,13 +35,14 @@ import { HiRefresh } from 'react-icons/hi';
 import { type ITimelineTweet } from '@/types/timeline.type';
 import { ITweetIntent } from '@/types/tweet.type';
 import { useProfilePersona } from '@/hooks/use-persona';
+import { PersonaModal } from '@/features/persona/persona-modal';
 
 export const TimelineView = (props: StackProps) => {
   const [currCursor, setCurrCursor] = useState(0);
   const tweets = api.timeline.list.useInfiniteQuery(
     {
       id: '1',
-      limit: 20,
+      limit: 10,
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -94,8 +96,6 @@ export const TimelineView = (props: StackProps) => {
 const RenderContentText = ({ text }: { text: string }) => {
   const regex = /#(\w+)/g;
 
-  console.log({ text });
-
   if (!text) return;
 
   const renderTextWithHashtags = () => {
@@ -129,6 +129,7 @@ const RenderContentText = ({ text }: { text: string }) => {
 };
 
 export const NewTimelinePost = () => {
+  const disclosure = useDisclosure();
   const { handle, name, activeProfilePersona } = useProfilePersona();
   const { messages, isLoading, input, handleInputChange, handleSubmit } =
     useChat();
@@ -147,6 +148,9 @@ export const NewTimelinePost = () => {
 
   return (
     <Box borderWidth={'0.5px'} borderX={'none'}>
+      {/* Inject our persona modal below */}
+      <PersonaModal disclosure={disclosure} />
+
       <Stack divider={<StackDivider />} spacing={0} mt={3}>
         <HStack align="start" px={3}>
           <Stack w={'full'}>
@@ -157,6 +161,7 @@ export const NewTimelinePost = () => {
               rounded={'full'}
               variant={'outline'}
               w={'max-content'}
+              onClick={disclosure.onOpen}
               colorScheme="blue"
             >
               <HStack>

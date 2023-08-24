@@ -18,9 +18,9 @@ import { RadioCardGroup, RadioCard } from './FormRadioCard';
 export interface CardOptions {
   name: string;
   value: string;
-  avatar?: string;
-  bio?: string;
-  [key: string]: any;
+  avatar: string | null;
+  bio: string | null;
+  [key: string]: unknown;
 }
 
 export interface AuthorRadioCardProps {
@@ -28,13 +28,14 @@ export interface AuthorRadioCardProps {
   name: string;
   /** Field label. */
   label?: string;
+  withName?: boolean;
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements['div']>;
   labelProps?: ComponentPropsWithoutRef<'label'>;
   options: CardOptions[];
 }
 
 const AuthorRadioCard = forwardRef<HTMLInputElement, AuthorRadioCardProps>(
-  ({ name, label, options, outerProps, labelProps }, ref) => {
+  ({ name, label, options, withName = true, outerProps, labelProps }, ref) => {
     const {
       formState: { errors },
       control,
@@ -75,7 +76,7 @@ const AuthorRadioCard = forwardRef<HTMLInputElement, AuthorRadioCardProps>(
                   <HStack color="emphasized" fontWeight="medium" fontSize="sm">
                     <Box w={'40px'} mr={1} px={2}>
                       <Avatar
-                        src={option.avatar}
+                        src={option.avatar || undefined}
                         fontWeight={'700'}
                         name={option.name.split(' ')[0]}
                         boxSize="6"
@@ -95,7 +96,7 @@ const AuthorRadioCard = forwardRef<HTMLInputElement, AuthorRadioCardProps>(
 
                   <Box textAlign={'right'}>
                     <Text color="muted" fontSize="sm">
-                      {option.name}
+                      {withName && option.name}
                     </Text>
                   </Box>
                 </RadioCard>
