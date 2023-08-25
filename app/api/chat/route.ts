@@ -7,15 +7,17 @@ import { prompt } from './prompt';
 
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { BytesOutputParser } from 'langchain/schema/output_parser';
+import {
+  _VECTOR_SOURCE_COLUMN_,
+  _GPT3_MODEL_,
+  _GPT4_MODEL_,
+} from '@/utils/constants';
 
 /**
  * @warning
  * We can't use the Edge runtime due to Vector DB limitations
  * */
 // export const runtime = 'edge'
-const _VECTOR_SOURCE_COLUMN_ = 'text';
-const _GPT3_MODEL_ = 'gpt-3.5-turbo-0613';
-const _GPT4_MODEL_ = 'gpt-4-0613';
 
 const embeddings = new OpenAIEmbeddingFunction(_VECTOR_SOURCE_COLUMN_, env.OAK);
 
