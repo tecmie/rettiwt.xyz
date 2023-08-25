@@ -60,7 +60,7 @@ model VerificationToken {
 }
 
 model Author {
-  id                   BigInt     @id @default(autoincrement())
+  id                   String     @id @default(cuid())
   handle               String     @unique
   name                 String
   avatar               String?
@@ -78,9 +78,9 @@ model Author {
 model Follow {
   id                Int      @id @default(autoincrement())
   follower          Author   @relation("Followers", fields: [follower_id], references: [id])
-  follower_id       BigInt
+  follower_id       String
   following         Author   @relation("Following", fields: [following_id], references: [id])
-  following_id      BigInt
+  following_id      String
   created_at        DateTime @default(now())
 }
 
@@ -95,7 +95,7 @@ model Tweet {
   bookmark_count    Int       @default(0)
   timestamp         DateTime  @default(now())
   author            Author    @relation(name: "AuthorTweets", fields: [author_id], references: [id])
-  author_id         BigInt
+  author_id         String
   intent            String
   is_pinned         Boolean   @default(false)
   is_quote_tweet    Boolean   
@@ -129,7 +129,7 @@ model Retweet {
   // **** State of the original tweet when retweeted *****
   origin_state    String      
   author          Author      @relation(fields: [author_id], references: [id])
-  author_id       BigInt
+  author_id       String
   tweet           Tweet       @relation(fields: [tweet_id], references: [id]) // Link to Tweet
   tweet_id        String
 }
@@ -140,7 +140,7 @@ model Like {
   createdAt       DateTime    @default(now())
   origin_state    String     // State of the original tweet when liked
   author          Author      @relation(fields: [author_id], references: [id])
-  author_id       BigInt
+  author_id       String
   tweet           Tweet       @relation(fields: [tweet_id], references: [id]) // Link to Tweet
   tweet_id        String
 }

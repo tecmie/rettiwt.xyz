@@ -5,7 +5,7 @@ export interface ITweetAuthor extends Author {
    * @memberof ITweetAuthor
    * @description The unique identifier of the author.
    */
-  id: bigint;
+  id: string;
   /**
    * @memberof ITweetAuthor
    * @description The Twitter handle of the author.

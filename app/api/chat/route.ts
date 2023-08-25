@@ -51,9 +51,9 @@ export async function POST(req: NextRequest) {
   const results = await table
     .search(currentMessageContent as string)
     .metricType(MetricType.Cosine)
-    .where(`type IN ("tweet", "quote-tweet")`) // Here's the modification
+    .where(`type IN ("tweet", "thread-tweet", "quote-tweet")`)
     .select(['type', 'text', 'url'])
-    .limit(2)
+    .limit(3)
     .execute();
 
   // need to make sure our prompt is not larger than max size
@@ -67,11 +67,11 @@ export async function POST(req: NextRequest) {
    * with more bias towards GPT4
    */
   const openaiModel = _.sample([
-    _GPT4_MODEL_,
-    _GPT4_MODEL_,
-    _GPT4_MODEL_,
     _GPT3_MODEL_,
-    _GPT4_MODEL_,
+    // _GPT4_MODEL_,
+    // _GPT4_MODEL_,
+    // _GPT4_MODEL_,
+    // _GPT4_MODEL_,
   ]);
 
   /**

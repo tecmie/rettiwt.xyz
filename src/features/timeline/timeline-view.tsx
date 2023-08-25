@@ -146,7 +146,7 @@ export const NewTimelinePost = () => {
     const result = await write.mutateAsync(
       {
         content: messages[messages.length - 1]?.content || '',
-        authorId: Number(activeProfilePersona?.id),
+        authorId: String(activeProfilePersona?.id),
         intent: ITweetIntent.TWEET,
       },
       {

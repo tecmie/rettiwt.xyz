@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { ITweetIntent } from '@/types/tweet.type';
+import queue, { QueueTask } from '@/utils/queue';
 
 export const tweetRouter = createTRPCRouter({
   // Get one tweet by ID
@@ -23,7 +24,7 @@ export const tweetRouter = createTRPCRouter({
     .input(
       z.object({
         content: z.string(),
-        authorId: z.number(),
+        authorId: z.string(),
         intent: z
           .enum([
             ITweetIntent.TWEET,
@@ -66,6 +67,13 @@ export const tweetRouter = createTRPCRouter({
           favorite_count: 0,
           bookmark_count: 0,
         },
+      });
+
+      queue.on(QueueTask.TWEET, (message) => console.log(message));
+      queue.schedule({
+        event: QueueTask.TWEET,
+        delay: 1000,
+        args: ['Tweet message', JSON.stringify(post)],
       });
 
       return post;
