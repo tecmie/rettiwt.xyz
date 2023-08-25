@@ -3,6 +3,23 @@ import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 import { ITweetIntent } from '@/types/tweet.type';
 import queue, { QueueTask } from '@/utils/queue';
 
+/**
+ * Export listeners
+ *
+ * We try to keep the listeners as close as possible to the location
+ * of the event that they are listening to.
+ *
+ * @example
+ * export * as tl from '@/server/listeners/tweet-listener';
+ * import '@/server/listeners/tweet-listener';
+ */
+export * as tl from '@/server/listeners/tweet-listener';
+
+/**
+ * This is the router for tweets.
+ *
+ * It contains all the routes for tweets.
+ */
 export const tweetRouter = createTRPCRouter({
   // Get one tweet by ID
   get: publicProcedure
@@ -69,10 +86,8 @@ export const tweetRouter = createTRPCRouter({
         },
       });
 
-      queue.on(QueueTask.TWEET, (message) => console.log(message));
-      queue.schedule({
+      queue.send({
         event: QueueTask.TWEET,
-        delay: 1000,
         args: ['Tweet message', JSON.stringify(post)],
       });
 

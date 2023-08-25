@@ -463,7 +463,7 @@ export const TimelineDeckBody = ({ post }: TimelineDeckProps) => {
 export const TimelineDeckFooter = ({ post }: { post: ITimelineTweet }) => {
   return (
     <HStack justify={'space-between'}>
-      <HStack>
+      <HStack spacing={0}>
         <ColumnIconButton
           aria-label="Comment"
           rounded={'full'}
@@ -476,7 +476,7 @@ export const TimelineDeckFooter = ({ post }: { post: ITimelineTweet }) => {
         </Text>
       </HStack>
 
-      <HStack>
+      <HStack spacing={0}>
         <ColumnIconButton
           aria-label="Retweet"
           rounded={'full'}
@@ -490,7 +490,7 @@ export const TimelineDeckFooter = ({ post }: { post: ITimelineTweet }) => {
         </Text>
       </HStack>
 
-      <HStack>
+      <HStack spacing={0}>
         <ColumnIconButton
           aria-label="Favorite"
           rounded={'full'}
@@ -504,7 +504,7 @@ export const TimelineDeckFooter = ({ post }: { post: ITimelineTweet }) => {
         </Text>
       </HStack>
 
-      <HStack>
+      <HStack spacing={0}>
         <ColumnIconButton
           aria-label="Favorite"
           rounded={'full'}

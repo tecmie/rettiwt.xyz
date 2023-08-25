@@ -35,7 +35,7 @@ const TimelineSlot: React.FC<TimelineSlotProps> = ({ children }) => {
             />
             {mainIsScrolled && (
               <ColumnHeading>
-                <strong>Home</strong>
+                <small>Knowledge Cutoff: Mon Aug 16 2023</small>
               </ColumnHeading>
             )}
           </HStack>

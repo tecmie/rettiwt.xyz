@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { EventEmitter } from 'eventemitter3';
 
 /**
@@ -33,10 +34,10 @@ export enum QueueTask {
  * @property {number} delay - The delay in milliseconds before the event is emitted.
  * @property {any[]} args - The arguments to be passed to the event listeners.
  */
-export interface EmitWithScheduleArgs {
+export interface EmitScheduleOptions {
   event: string | symbol;
+  args: EventEmitter.EventArgs<ValidEventTypes, string>;
   delay: number;
-  args: EventEmitter.EventArgs<ValidEventTypes, QueueTask>;
 }
 
 /**
@@ -55,17 +56,28 @@ export class DefferedQueue extends EventEmitter {
   /**
    * Schedules an event to be emitted after a given delay.
    *
-   * @param {EmitWithScheduleArgs} args - The arguments for scheduling the event.
+   * @param {EmitScheduleOptions} args - The arguments for scheduling the event.
    * @example
    * ```typescript
    * queue.schedule({ event: QueueTask.TWEET, delay: 1000, args: ['Delayed greetings from Yaba!'] });
    * ```
    */
-  schedule({ event, delay, args }: EmitWithScheduleArgs): void {
+  schedule({ event, delay, args }: EmitScheduleOptions): void {
     void setTimeout(() => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       this.emit(event, ...args);
     }, delay);
+  }
+
+  /**
+   * Emits an event with the given arguments.
+   *
+   * @example
+   * ```typescript
+   * queue.send({ event: QueueTask.TWEET, args: ['Greetings from Yaba!'] });
+   * ```
+   */
+  send({ event, args }: Omit<EmitScheduleOptions, 'delay'>): boolean {
+    return this.emit(event, ...args);
   }
 }
 
