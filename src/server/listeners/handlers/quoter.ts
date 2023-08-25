@@ -7,7 +7,11 @@ const quoteTweetExecutorSchema = z.object({
   delay: z.number().min(100).default(100),
   authorId: z.string(),
   tweetId: z.string(), // ID of the tweet being quoted
-  content: z.string(),
+  content: z
+    .string()
+    .describe(
+      'Your thoughts in 280 characters or less, share your opinion or perspective and do not be scared of raising issues that could cause conflict esp if you have strong opinions about this topic',
+    ),
 });
 
 function quoteTweetDescription(): string {
@@ -39,9 +43,11 @@ async function quoteTweetExecutor(
   }
 }
 
-export const quoteTweeter = new DynamicStructuredTool({
+export const xquoter = new DynamicStructuredTool({
   name: 'Tweet Quoter',
   description: quoteTweetDescription(),
   schema: quoteTweetExecutorSchema,
   func: quoteTweetExecutor,
 });
+
+export default xquoter;

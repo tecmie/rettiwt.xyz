@@ -50,11 +50,11 @@ async function executor(
   }
 }
 
-export const liker = new DynamicStructuredTool({
+export const xliker = new DynamicStructuredTool({
   name: 'Tweet Liker',
   description: description(),
   schema: executorSchema,
   func: executor,
 });
 
-export default liker;
+export default xliker;

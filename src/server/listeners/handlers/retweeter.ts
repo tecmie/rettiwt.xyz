@@ -36,9 +36,11 @@ async function retweetExecutor(
   }
 }
 
-export const retweeter = new DynamicStructuredTool({
+export const xretweeter = new DynamicStructuredTool({
   name: 'Tweet Retweeter',
   description: retweetDescription(),
   schema: retweetExecutorSchema,
   func: retweetExecutor,
 });
+
+export default xretweeter;

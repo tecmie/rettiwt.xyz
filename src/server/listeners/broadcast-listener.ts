@@ -2,6 +2,7 @@
 // ddecide which listener to publish to based on the actions of the message.
 
 // thats all for now
+import queue, { QueueTask } from '@/utils/queue';
 import { initializeAgentExecutorWithOptions } from 'langchain/agents';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { SerpAPI } from 'langchain/tools';
@@ -15,5 +16,5 @@ const executor = await initializeAgentExecutorWithOptions(tools, chat, {
   verbose: true,
 });
 
-const result = await executor.run('What is the weather in New York?');
-console.log(result);
+// const result = await executor.run('What is the weather in New York?');
+// console.log(result);

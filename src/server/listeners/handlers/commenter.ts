@@ -6,8 +6,12 @@ import { ITweetIntent } from '@/types/tweet.type';
 const tweetExecutorSchema = z.object({
   delay: z.number().min(100).default(100),
   authorId: z.string(),
-  content: z.string(),
   tweetId: z.string(),
+  content: z
+    .string()
+    .describe(
+      'Your thoughts in 280 characters or less, share your opinion or perspective and do not be scared of raising issues that could cause conflict esp if you have strong opinions about this topic',
+    ),
 });
 
 function tweetDescription(): string {
@@ -39,9 +43,11 @@ async function tweetExecutor(
   }
 }
 
-export const commenter = new DynamicStructuredTool({
-  name: 'Tweet Creator',
+export const xcommenter = new DynamicStructuredTool({
+  name: 'Tweet Commenter',
   description: tweetDescription(),
   schema: tweetExecutorSchema,
   func: tweetExecutor,
 });
+
+export default xcommenter;

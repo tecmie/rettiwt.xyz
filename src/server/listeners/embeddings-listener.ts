@@ -6,14 +6,30 @@ import { env } from '@/env.mjs';
 import { prisma } from '@/server/db';
 import { queue, QueueTask } from '@/utils/queue';
 import { ITweetIntent } from '@/types/tweet.type';
-import { Author, Tweet } from '@prisma/client';
+import { Author, Follow, Tweet } from '@prisma/client';
 import { OpenAIEmbeddingFunction, connect } from 'vectordb';
-import { _VECTOR_SOURCE_COLUMN_ } from '@/utils/constants';
+import {
+  _GPT3_MODEL_,
+  _GPT4_MODEL_,
+  _VECTOR_SOURCE_COLUMN_,
+} from '@/utils/constants';
+
+import { initializeAgentExecutorWithOptions } from 'langchain/agents';
+import { ChatOpenAI } from 'langchain/chat_models/openai';
+import xquoter from './handlers/quoter';
+import xliker from './handlers/liker';
+import xcommenter from './handlers/commenter';
+import xretweeter from './handlers/retweeter';
 
 export type EmbeddingRequestData = Partial<Tweet> & {
   actor: Author;
   context: string;
   intent: ITweetIntent;
+};
+
+export type BroadcastEventData = EmbeddingRequestData & {
+  followers: Follow[];
+  following: Follow[];
 };
 
 /**
@@ -36,7 +52,7 @@ queue.on(QueueTask.EMBED_TWEET, async (...[intent, payload]) => {
     // Check if the intent is 'tweet'
     if (tweetIntent !== intent) {
       console.error(
-        `Invalid schema.tweet intent:, ${tweetIntent} from listener ${intent}`,
+        `Bad intent schema.tweet, ${tweetIntent} listener: ${intent}`,
       );
       return;
     }
@@ -54,7 +70,7 @@ queue.on(QueueTask.EMBED_TWEET, async (...[intent, payload]) => {
       console.error('Author not found:', authorId);
       return;
     }
-    console.log({ author });
+    console.log({ author, fll: JSON.stringify(author.followers) });
 
     const { following, followers, ...actor } = author;
 
@@ -75,17 +91,15 @@ queue.on(QueueTask.EMBED_TWEET, async (...[intent, payload]) => {
      * This is where we now broadcast this new intent to the rest of the listeners
      * Notifying all our followers of a new tweet action from a X user.
      */
-    queue.send({
+    await queue.send({
       event: QueueTask.BROADCAST,
       args: [
         tweetIntent,
         {
           ...rest,
-          actor: {
-            ...actor,
-            followers: followers,
-            following: following,
-          },
+          ...data,
+          followers: followers,
+          following: following,
         },
       ],
     });
@@ -127,18 +141,86 @@ export async function embeddingsFromTweet(payload: EmbeddingRequestData) {
     timestamp,
   };
 
-  console.log({ data });
-
   try {
     /* You must open the table with the embedding function */
     const table = await db.openTable(payload.actor.handle, embeddings);
     await table.add([data]);
-    console.log(
-      { table, owner: payload.actor.handle },
-      `A valid table has been found 🎉 for ${intent} ${id}`,
-    );
+    console.log({
+      table,
+      owner: payload.actor.handle,
+      message: `A valid table has been found 🎉 for ${intent} ${id}`,
+    });
   } catch (error: any) {
     console.error({ owner: data.username, error });
     throw new Error(JSON.stringify({ error, data }));
   }
 }
+
+const prefix = `You are a helpful AI assistant. However, all final response to the user must be in pirate dialect.`;
+
+const tools = [xquoter, xliker, xcommenter, xretweeter];
+const chat = new ChatOpenAI({
+  modelName: _GPT3_MODEL_,
+  temperature: 0.7,
+  openAIApiKey: env.OAK,
+  verbose: true,
+});
+
+const executor = await initializeAgentExecutorWithOptions(tools, chat, {
+  agentType: 'openai-functions',
+  verbose: true,
+  agentArgs: {
+    prefix,
+  },
+});
+// const result = await executor.run('What is the weather in New York?');
+
+// queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
+//   console.log('Received a message from the queue:', {intent, us: JSON.stringify(payload)});
+//   });
+
+queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
+  console.log('Received a message from the queue:', { intent, payload });
+
+  // Destructure what you need from the payload
+  const { content: initialContext, followers } = payload as BroadcastEventData;
+
+  // 1. Iterate through the array of followers
+  for (const follower of followers) {
+    // 2. Get the full author object for each following_id
+    const author = await prisma.author.findUnique({
+      where: {
+        id: follower.following_id,
+      },
+    });
+
+    // If author not found, just skip this loop iteration
+    if (!author) {
+      console.warn(`Author not found for ID: ${follower.following_id}`);
+      continue;
+    }
+
+    console.log({ author });
+
+    // 3. Construct the context
+    const context = `${initialContext} ${author.name}`;
+    // return;
+    continue;
+
+    // 4. Call the executor function
+    // await executor.run(context);
+  }
+});
+
+queue.on(QueueTask.REACT_LIKE, (...args) =>
+  console.log('Received a like from the queue:', args),
+);
+queue.on(QueueTask.REACT_QUOTE, (...args) =>
+  console.log('Received a quote from the queue:', args),
+);
+queue.on(QueueTask.REACT_REPLY, (...args) =>
+  console.log('Received a REPLY from the queue:', args),
+);
+queue.on(QueueTask.REACT_RETWEET, (...args) =>
+  console.log('Received a retweet from the queue:', args),
+);

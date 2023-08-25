@@ -36,6 +36,7 @@ export enum QueueTask {
   EMBED_RETWEET = 'embed_tweet_retweets',
 
   /* Broadcast tasks */
+  TWEET = 'tweet',
   BROADCAST = 'broadcast',
 }
 
