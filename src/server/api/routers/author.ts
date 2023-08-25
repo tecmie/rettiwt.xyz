@@ -23,7 +23,7 @@ export const authorRouter = createTRPCRouter({
 
   /* Use this form form radios and checkboxes */
   list_form: publicProcedure.query(async ({ ctx }) => {
-    const authors = await ctx.prisma.author.findMany({ take: 20 });
+    const authors = await ctx.prisma.author.findMany({ take: 40 });
 
     // return a map of author id, author name, author handle as value and the rest as metadata
     return authors.map(({ handle, id, ...rest }) => {

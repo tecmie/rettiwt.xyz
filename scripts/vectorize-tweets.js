@@ -18,6 +18,13 @@ const vectorizeTweets = async (jsonFilePath) => {
       if (!tweet || Object.keys(tweet).length === 0) {
         continue;
       }
+
+
+    /* fix the asemota issue */
+    // if(tweet.username != "asemota") {
+    //   console.log(tweet.username)
+    //   continue;
+    // }
   
       const {
         url,
@@ -107,7 +114,7 @@ const vectorizeTweets = async (jsonFilePath) => {
     console.log('Tweets processed successfully! Unleash the fireworks! 🎆');
   };
   
-  const jsonFilePath = 'data/parsed/25_aug_latest_diversity.json';
+  const jsonFilePath = 'raw/data/parsed/dataset_twitter_scraper_with_replies_parsed.json';
   
   vectorizeTweets(jsonFilePath).catch((err) =>
     console.error('The digital gnomes are at it again! 🧙‍♂️', err),

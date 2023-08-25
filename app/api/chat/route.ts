@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     .metricType(MetricType.Cosine)
     .where(`type IN ("tweet", "thread-tweet", "quote-tweet")`)
     .select(['type', 'text', 'url'])
-    .limit(3)
+    .limit(5)
     .execute();
 
   // need to make sure our prompt is not larger than max size
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
    */
   const openaiModel = _.sample([
     _GPT3_MODEL_,
-    _GPT4_MODEL_,
+    // _GPT4_MODEL_,
     // _GPT4_MODEL_,
     // _GPT4_MODEL_,
     // _GPT4_MODEL_,

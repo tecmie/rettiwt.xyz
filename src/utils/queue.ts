@@ -29,7 +29,14 @@ export enum QueueTask {
   REACT_QUOTE = 'react_quote',
 
   /* Embeddings events */
+  EMBED_LIKE = 'embed_tweet_likes',
   EMBED_TWEET = 'embed_tweet',
+  EMBED_REPLY = 'embed_tweet_replies',
+  EMBED_QUOTE = 'embed_tweet_quote',
+  EMBED_RETWEET = 'embed_tweet_retweets',
+
+  /* Broadcast tasks */
+  BROADCAST = 'broadcast',
 }
 
 /**
