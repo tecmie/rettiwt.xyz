@@ -43,14 +43,7 @@ export const tweetRouter = createTRPCRouter({
         content: z.string(),
         authorId: z.string(),
         intent: z
-          .enum([
-            ITweetIntent.TWEET,
-            ITweetIntent.BOOKMARK,
-            ITweetIntent.LIKE,
-            ITweetIntent.RETWEET,
-            ITweetIntent.REPLY,
-            ITweetIntent.QUOTE,
-          ])
+          .enum([ITweetIntent.TWEET, ITweetIntent.REPLY, ITweetIntent.QUOTE])
           .optional()
           .default(ITweetIntent.TWEET),
         isPinned: z.boolean().optional().default(false),
@@ -87,7 +80,7 @@ export const tweetRouter = createTRPCRouter({
       });
 
       queue.send({
-        event: QueueTask.TWEET,
+        event: QueueTask.EMBED_TWEET,
         args: ['Tweet message', JSON.stringify(post)],
       });
 

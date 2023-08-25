@@ -16,6 +16,7 @@ import { BytesOutputParser } from 'langchain/schema/output_parser';
 const _VECTOR_SOURCE_COLUMN_ = 'text';
 const _GPT3_MODEL_ = 'gpt-3.5-turbo-0613';
 const _GPT4_MODEL_ = 'gpt-4-0613';
+
 const embeddings = new OpenAIEmbeddingFunction(_VECTOR_SOURCE_COLUMN_, env.OAK);
 
 /*
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest) {
    */
   const openaiModel = _.sample([
     _GPT3_MODEL_,
-    // _GPT4_MODEL_,
+    _GPT4_MODEL_,
     // _GPT4_MODEL_,
     // _GPT4_MODEL_,
     // _GPT4_MODEL_,

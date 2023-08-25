@@ -22,8 +22,14 @@ type ValidEventTypes = string | symbol | object;
  * ```
  */
 export enum QueueTask {
-  TWEET = 'tweet',
-  REACT = 'react',
+  /* Tweet reaction events */
+  REACT_LIKE = 'react_like',
+  REACT_RETWEET = 'react_retweet',
+  REACT_REPLY = 'react_reply',
+  REACT_QUOTE = 'react_quote',
+
+  /* Embeddings events */
+  EMBED_TWEET = 'embed_tweet',
 }
 
 /**
