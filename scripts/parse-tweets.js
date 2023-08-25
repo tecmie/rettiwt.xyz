@@ -37,7 +37,7 @@ function transformTweets(filePath) {
   // Define the output file path
   const outputFilePath = path.join(
     path.dirname(filePath),
-    'single_laycon_parsed.json',
+    'latest_diversity.json',
   );
 
   // Write the transformed data to the new file
@@ -47,5 +47,5 @@ function transformTweets(filePath) {
 }
 
 // Example usage
-const filePath = 'data/tweets/single_laycon.json';
+const filePath = 'raw/dataset_twitter-scraper_latest_diversity-08-25_12-10-58-532.json';
 transformTweets(filePath);

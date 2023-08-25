@@ -77,7 +77,7 @@ async function executeBatchFollowers(authorIds: string[]) {
     const shuffledIds = shuffle(authorIds.filter((id) => id !== authorId));
 
     // Cross over permutation, so each author has at least 3 possible mutual relationships
-    const followingIds = shuffledIds.slice(0, 13);
+    const followingIds = shuffledIds.slice(0, 15);
 
     // Construct the values for the INSERT INTO statement
     const values = followingIds

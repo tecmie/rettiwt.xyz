@@ -87,9 +87,9 @@ const processTweets = async (jsonFilePath) => {
     }
     }
 
-  console.log('Tweets processed successfully! The Twitter-sphere is now a more organized place!');
+  console.log('Tweets processed successfully!!');
 };
 
 
 const jsonFilePath = 'data/parsed/dataset_twitter_scrape_likes_full_parsed.json';
-processTweets(jsonFilePath).catch(err => console.error('Gremlins, please leave our code alone!', err));
+processTweets(jsonFilePath).catch(err => console.error('Village people, please leave our code alone!', err));
