@@ -10,10 +10,10 @@ import queue, { QueueTask } from '@/utils/queue';
  * of the event that they are listening to.
  *
  * @example
- * export * as tl from '@/server/listeners/tweet-listener';
+ * export * as eml from '@/server/listeners/tweet-listener';
  * import '@/server/listeners/tweet-listener';
  */
-export * as tl from '@/server/listeners/tweet-listener';
+export * as eml from '@/server/listeners/embeddings-listener';
 
 /**
  * This is the router for tweets.
