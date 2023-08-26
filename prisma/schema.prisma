@@ -71,8 +71,21 @@ model Author {
   following            Follow[]  @relation("Following")
   followers            Follow[]  @relation("Followers")
   tweets               Tweet[]   @relation(name: "AuthorTweets")
-  retweets             Retweet[]
   likes                Like[]
+  retweets             Retweet[]
+  sentiments           Sentiment[]
+}
+
+model Sentiment {
+  id            Int         @id @default(autoincrement())
+  author_id     String
+  tweet_id      String
+  text          String
+  timestamp     DateTime    @default(now())
+  
+  // **** Relationship mapping ****
+  author     Author   @relation(fields: [author_id], references: [id])
+  tweet      Tweet    @relation(fields: [tweet_id], references: [id])
 }
 
 model Follow {
@@ -102,6 +115,7 @@ model Tweet {
   is_reply_tweet    Boolean   
   liked_by          Like[]
   retweeted_by      Retweet[] 
+  sentiments        Sentiment[]
 
   // **** Parent tweet *****
   // **** If this tweet is a reply, this is the ID of the parent tweet 

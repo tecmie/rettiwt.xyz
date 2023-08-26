@@ -9,7 +9,6 @@ import { MetricType, OpenAIEmbeddingFunction, connect } from 'vectordb';
 import {
   _AI_TEMPERATURE_MEDIUM_,
   _GPT316K_MODEL_,
-  _GPT3_MODEL_,
   _GPT4_MODEL_,
   _VECTOR_SOURCE_COLUMN_,
 } from '@/utils/constants';
@@ -21,6 +20,7 @@ import xliker from './handlers/liker';
 import xcommenter from './handlers/commenter';
 import xretweeter from './handlers/retweeter';
 import { BroadcastOpinionPrompt } from './prompts';
+import _ from 'lodash';
 
 export type EmbeddingRequestData = Partial<Tweet> & {
   actor: Author;
@@ -187,8 +187,15 @@ queue.on(QueueTask.BroadcastOpinion, async (...[intent, payload]) => {
    * @see https://js.langchain.com/docs/modules/agents/agent_types/openai_functions_agent
    */
   const tools = [xquoter, xliker, xcommenter, xretweeter];
+  const openaiModel = _.sample([
+    _GPT316K_MODEL_,
+    _GPT316K_MODEL_,
+    _GPT4_MODEL_,
+    _GPT316K_MODEL_,
+  ]);
+
   const chat = new ChatOpenAI({
-    modelName: _GPT316K_MODEL_,
+    modelName: openaiModel,
     temperature: _AI_TEMPERATURE_MEDIUM_,
     openAIApiKey: env.OAK,
     verbose: true,

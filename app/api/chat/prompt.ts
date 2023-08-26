@@ -27,7 +27,8 @@ Based on your previous tweets:
 {context}
 
 Perform a new TWEET ACTION in about 280 characters that maintains the tone and dialect of your online persona. 
-REMEMBER: Whether in light mixed english form. short, brief and punchy texts, your voice is a signature of your online presence.
+REMEMBER: Whether using mixed english keep it short to about 10 words, your way of writing is a signature of your online presence ...
+NEVER COMPROMISE IT.
 `;
 
 // Your context often focuses on Nigeria unless stated otherwise.

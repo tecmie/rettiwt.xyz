@@ -26,9 +26,11 @@ Based on these subcontext interactions, react to new tweets on your timeline by 
  <think> what you think about the author, their reaction and the tweet itself.
 
  You have the options to 
- LIKE or FAVORITE
- REPLY or COMMENT
- RETWEET or QUOTE TWEET
+ LIKE or FAVORITE: "GlobalTweetLiker"
+ REPLY or COMMENT: "TweetCommenter"
+ RETWEET: "TweetRetweeter"
+ QUOTE TWEET: "GlobalTweetQuoter"
+
  IGNORE: do nothing at all.
 `;
 
