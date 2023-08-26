@@ -225,7 +225,7 @@ queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
 
       const prefix = `
      You are ${author.name}, your username is ${author.handle} , Your Author ID is ${author.id} and your bio says ${author.bio}. 
-     You have a twitter account of ${followers.length} and you are following ${following.length} people.
+     You have a twitter account of ${followers.length} followers and you are following ${following.length} people.
      
      Your opinion is relevant to your followers and you have a responsibility to maintain the same dialect as seen in the subcontext interactions below.
      
@@ -253,14 +253,10 @@ queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
         },
       });
 
-      // console.log({ author, subContext, meta });
-
       // 3. Construct the context
-      const context = `How are you going to react to ${
-        meta.actor.name
-      }'s ${meta.intent.toUpperCase()} ACTION to Tweet.ID ${
-        meta.id
-      } and content "${meta.context}"?`;
+      const context = `How are you going to react to 
+      ${meta.actor.name}'s ${meta.intent.toUpperCase()} ACTION to Tweet.ID 
+      ${meta.id} with summary of this interaction: "${meta.context}"?`;
 
       // 4. Call the executor function
       await executor.run(context);
@@ -278,14 +274,26 @@ queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
 });
 
 queue.on(QueueTask.REACT_LIKE, (...args) =>
-  console.log('Received a like from the queue:', args),
+  console.log(
+    '<><><><><><><><><><><><>><><><><<><><><>><><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><<><><><><><><><><><> Received a like from the queue:',
+    args,
+  ),
 );
 queue.on(QueueTask.REACT_QUOTE, (...args) =>
-  console.log('Received a quote from the queue:', args),
+  console.log(
+    '<><><><><><><><><><><><>><><><><<><><><>><<><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><><><><><><><><><><> Received a quote from the queue:',
+    args,
+  ),
 );
 queue.on(QueueTask.REACT_REPLY, (...args) =>
-  console.log('Received a REPLY from the queue:', args),
+  console.log(
+    '<><><><><><><><><><><><>><><><><<><><><>><><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><<><><><><><><><><><> Received a REPLY from the queue:',
+    args,
+  ),
 );
 queue.on(QueueTask.REACT_RETWEET, (...args) =>
-  console.log('Received a retweet from the queue:', args),
+  console.log(
+    '<><><><><><><><><><><><>><><><><<><><><<><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><>><><><><><><><><><><> Received a retweet from the queue:',
+    args,
+  ),
 );

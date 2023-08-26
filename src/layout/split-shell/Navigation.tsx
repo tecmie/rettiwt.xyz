@@ -56,7 +56,13 @@ export const Navbar = (props: NavbarProps) => {
               icon={<FiX />}
               display={{ base: 'inline-flex', lg: 'none' }}
             />
-            <Text fontWeight="bold" fontSize="sm" lineHeight="1.25rem">
+            <Text
+              as={Link}
+              href={'/'}
+              fontWeight="bold"
+              fontSize="sm"
+              lineHeight="1.25rem"
+            >
               <XLogo />
             </Text>
           </HStack>

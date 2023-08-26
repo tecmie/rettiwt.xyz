@@ -7,7 +7,7 @@ const retweetExecutorSchema = z.object({
   delay: z
     .number()
     .min(100)
-    .max(12_000_000) // 4 hours
+    .max(1.44e7) // 4 hours
     .default(100)
     .describe('The delay time in milliseconds before the executor starts.'),
   authorId: z

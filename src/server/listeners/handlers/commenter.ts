@@ -7,8 +7,8 @@ const tweetExecutorSchema = z.object({
   delay: z
     .number()
     .min(100)
-    .max(12_000_000) // 4 hours
-    .default(100)
+    .max(1.44e7) // 4 hours
+    .default(1000)
     .describe('The delay time in milliseconds before the executor starts.'),
   authorId: z
     .string()
