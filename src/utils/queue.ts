@@ -23,21 +23,21 @@ type ValidEventTypes = string | symbol | object;
  */
 export enum QueueTask {
   /* Tweet reaction events */
-  REACT_LIKE = 'react_like',
-  REACT_RETWEET = 'react_retweet',
-  REACT_REPLY = 'react_reply',
-  REACT_QUOTE = 'react_quote',
+  ExecuteLike = 'x_react_like',
+  ExecuteRetweet = 'x_react_retweet',
+  ExecuteComment = 'x_react_comment',
+  ExecuteQuote = 'x_react_quote',
 
-  /* Embeddings events */
-  EMBED_LIKE = 'embed_tweet_likes',
-  EMBED_TWEET = 'embed_tweet',
-  EMBED_REPLY = 'embed_tweet_replies',
-  EMBED_QUOTE = 'embed_tweet_quote',
-  EMBED_RETWEET = 'embed_tweet_retweets',
+  /* Generic Global events */
+  Tweet = 'new_post_tweet',
 
-  /* Broadcast tasks */
-  TWEET = 'tweet',
-  BROADCAST = 'broadcast',
+  /* Task Groups for Follower Broadcasts */
+  BroadcastOpinion = 'broadcast_opinion',
+  BroadcastReaction = 'broadcast_reaction',
+
+  /* Task Groups for Embeddings */
+  EmbedOpinion = 'embed_opinion',
+  EmbedReaction = 'embed_reaction',
 }
 
 /**

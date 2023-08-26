@@ -50,7 +50,7 @@ async function quoteTweetExecutor(
     };
 
     await queue.schedule({
-      event: QueueTask.REACT_QUOTE,
+      event: QueueTask.ExecuteQuote,
       delay: input.delay,
       args: [payload.intent, payload],
     });

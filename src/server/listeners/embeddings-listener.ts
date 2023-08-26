@@ -85,11 +85,11 @@ export async function embeddingsFromTweet(payload: EmbeddingRequestData) {
 /**
  * Listen for the 'embed tweet' queue task and embed the tweet.
  *
- * @param {QueueTask.EMBED_TWEET} taskName - The name of the queue task.
+ * @param {QueueTask.EmbedOpinion} taskName - The name of the queue task.
  * @param {unknown[]} args - The arguments passed to the queue task.
  * @returns {Promise<void>} - A promise that resolves when the tweet has been embedded.
  */
-queue.on(QueueTask.EMBED_TWEET, async (...[intent, payload]) => {
+queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
   try {
     // Parse the payload
     const parsedPayload = JSON.parse(payload);
@@ -142,7 +142,7 @@ queue.on(QueueTask.EMBED_TWEET, async (...[intent, payload]) => {
      * Notifying all our followers of a new tweet action from a X user.
      */
     await queue.send({
-      event: QueueTask.BROADCAST,
+      event: QueueTask.BroadcastOpinion,
       args: [
         tweetIntent,
         {
@@ -161,7 +161,7 @@ queue.on(QueueTask.EMBED_TWEET, async (...[intent, payload]) => {
   }
 });
 
-queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
+queue.on(QueueTask.BroadcastOpinion, async (...[intent, payload]) => {
   /**
    * Agent Executor with Langchain Tools
    * This uses the OpenAI Function Call kwargs available in GPT3.5 and GPT4
@@ -273,25 +273,25 @@ queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
   console.log(`Successfully executed broadcast for  ${payload.id}`);
 });
 
-queue.on(QueueTask.REACT_LIKE, (...args) =>
+queue.on(QueueTask.ExecuteLike, (...args) =>
   console.log(
-    '<><><><><><><><><><><><>><><><><<><><><>><><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><<><><><><><><><><><> Received a like from the queue:',
+    '<><><><><><><><><><><><>><><><><<><><><>><><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><<><><><><><><><><><> Received a LIKE from the queue:',
     args,
   ),
 );
-queue.on(QueueTask.REACT_QUOTE, (...args) =>
+queue.on(QueueTask.ExecuteQuote, (...args) =>
   console.log(
-    '<><><><><><><><><><><><>><><><><<><><><>><<><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><><><><><><><><><><> Received a quote from the queue:',
+    '<><><><><><><><><><><><>><><><><<><><><>><<><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><><><><><><><><><><> Received a QUOTE from the queue:',
     args,
   ),
 );
-queue.on(QueueTask.REACT_REPLY, (...args) =>
+queue.on(QueueTask.ExecuteComment, (...args) =>
   console.log(
-    '<><><><><><><><><><><><>><><><><<><><><>><><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><<><><><><><><><><><> Received a REPLY from the queue:',
+    '<><><><><><><><><><><><>><><><><<><><><>><><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><<><><><><><><><><><> Received a COMMENT from the queue:',
     args,
   ),
 );
-queue.on(QueueTask.REACT_RETWEET, (...args) =>
+queue.on(QueueTask.ExecuteRetweet, (...args) =>
   console.log(
     '<><><><><><><><><><><><>><><><><<><><><<><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><>><><><><><><><><><><> Received a retweet from the queue:',
     args,

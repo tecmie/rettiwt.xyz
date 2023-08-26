@@ -50,7 +50,7 @@ async function tweetExecutor(
     };
 
     await queue.schedule({
-      event: QueueTask.REACT_REPLY,
+      event: QueueTask.ExecuteComment,
       delay: input.delay,
       args: [payload],
     });

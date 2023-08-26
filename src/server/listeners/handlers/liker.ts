@@ -55,7 +55,7 @@ async function executor(
 
     /* Trigger a new Event to Schedule this event for execution */
     await queue.schedule({
-      event: QueueTask.REACT_LIKE,
+      event: QueueTask.ExecuteLike,
       delay: input.delay,
       args: [payload.intent, payload],
     });

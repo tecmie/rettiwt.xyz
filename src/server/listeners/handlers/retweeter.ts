@@ -43,7 +43,7 @@ async function retweetExecutor(
     };
 
     await queue.schedule({
-      event: QueueTask.REACT_RETWEET,
+      event: QueueTask.ExecuteRetweet,
       delay: input.delay,
       args: [payload.intent, payload],
     });

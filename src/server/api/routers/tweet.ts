@@ -80,7 +80,7 @@ export const tweetRouter = createTRPCRouter({
       });
 
       queue.send({
-        event: QueueTask.EMBED_TWEET,
+        event: QueueTask.EmbedOpinion,
         args: [ITweetIntent.TWEET, JSON.stringify(post)],
       });
 
