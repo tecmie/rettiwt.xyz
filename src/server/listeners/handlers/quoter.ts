@@ -6,10 +6,12 @@ import { ITweetIntent } from '@/types/tweet.type';
 const quoteTweetExecutorSchema = z.object({
   delay: z
     .number()
-    .min(100)
-    .max(1.44e7) // 4 hours
-    .default(100)
-    .describe('The delay time in milliseconds before the executor starts.'),
+    .min(1000)
+    .max(1.44e7)
+    .default(5000)
+    .describe(
+      'The delay time in milliseconds. \n@example 15000 means a 15-second delay before the executor starts.',
+    ),
   authorId: z
     .string()
     .describe(

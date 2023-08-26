@@ -11,6 +11,7 @@ import {
   _VECTOR_SOURCE_COLUMN_,
   _GPT3_MODEL_,
   _GPT4_MODEL_,
+  _AI_TEMPERATURE_MEDIUM_,
 } from '@/utils/constants';
 
 /**
@@ -52,6 +53,7 @@ export async function POST(req: NextRequest) {
    * @see https://lancedb.github.io/lancedb/sql/
    */
   const results = await table
+    // .search("")
     .search(currentMessageContent as string)
     .metricType(MetricType.Cosine)
     .where(`type IN ("tweet", "thread-tweet", "quote-tweet")`)
@@ -69,20 +71,14 @@ export async function POST(req: NextRequest) {
    * Create some sort of variability in model use,
    * with more bias towards GPT4
    */
-  const openaiModel = _.sample([
-    _GPT3_MODEL_,
-    // _GPT4_MODEL_,
-    // _GPT4_MODEL_,
-    // _GPT4_MODEL_,
-    // _GPT4_MODEL_,
-  ]);
+  const openaiModel = _.sample([_GPT3_MODEL_, _GPT4_MODEL_]);
 
   /**
    * See a full list of supported models at:
    * https://js.langchain.com/docs/modules/model_io/models/
    */
   const model = new ChatOpenAI({
-    temperature: 0.7,
+    temperature: _AI_TEMPERATURE_MEDIUM_,
     modelName: openaiModel,
     openAIApiKey: env.OAK,
     verbose: true,

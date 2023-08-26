@@ -174,9 +174,7 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
  *
  * @param {string} args.intent - The type of broadcast operation.
  * @param {BroadcastEventData} args.payload - The data payload for the broadcast event.
- * @param {string} args.payload.authorId - The ID of the author.
- * @param {string} args.payload.tweetId - The ID of the tweet.
- * @param {string} args.payload.content - The content of the tweet.
+ * @param {Array<Following>} args.payload.following - The array of authors they are following.
  * @param {Array<Followers>} args.payload.followers - The array of followers.
  *
  * @returns {Promise<void>} - A Promise that resolves when the broadcast operation is complete.
