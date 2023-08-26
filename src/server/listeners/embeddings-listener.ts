@@ -20,6 +20,7 @@ import xquoter from './handlers/quoter';
 import xliker from './handlers/liker';
 import xcommenter from './handlers/commenter';
 import xretweeter from './handlers/retweeter';
+import { BroadcastOpinionPrompt } from './prompts';
 
 export type EmbeddingRequestData = Partial<Tweet> & {
   actor: Author;
@@ -39,6 +40,7 @@ export type BroadcastEventData = EmbeddingRequestData & {
 const embeddings = new OpenAIEmbeddingFunction(_VECTOR_SOURCE_COLUMN_, env.OAK);
 
 /**
+ * @function embeddingsFromTweet
  * Creates a vector embedding for the given tweet payload and embeddings function.
  *
  * @param {EmbeddingRequestData} payload - The tweet payload to create a vector embedding for.
@@ -79,12 +81,19 @@ export async function embeddingsFromTweet(payload: EmbeddingRequestData) {
     throw new Error(JSON.stringify({ error, data }));
   }
 }
-
 /**
+ * @listens QueueTask.EmbedOpinion
+ *
  * Listen for the 'embed tweet' queue task and embed the tweet.
  *
  * @param {QueueTask.EmbedOpinion} taskName - The name of the queue task.
- * @param {unknown[]} args - The arguments passed to the queue task.
+ * @param {Array<unknown>} args - The arguments passed to the queue task.
+ * @param {string} args.intent - The type of operation for embedding a tweet.
+ * @param {Tweet} args.payload - The data payload for the tweet embedding.
+ * @param {string} args.payload.intent - The intent related to the tweet.
+ * @param {string} args.payload.author_id - The ID of the author.
+ * @param {Object} args.payload.rest - Remaining payload properties.
+ *
  * @returns {Promise<void>} - A promise that resolves when the tweet has been embedded.
  */
 queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
@@ -157,6 +166,21 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
   }
 });
 
+/**
+ * @listens QueueTask.BroadcastOpinion
+ *
+ * This function listens to a broadcast event and performs a vector similarity search step for each follower.
+ * It then constructs a context and calls an agent executor function to react to new tweets on the follower's timeline.
+ *
+ * @param {string} args.intent - The type of broadcast operation.
+ * @param {BroadcastEventData} args.payload - The data payload for the broadcast event.
+ * @param {string} args.payload.authorId - The ID of the author.
+ * @param {string} args.payload.tweetId - The ID of the tweet.
+ * @param {string} args.payload.content - The content of the tweet.
+ * @param {Array<Followers>} args.payload.followers - The array of followers.
+ *
+ * @returns {Promise<void>} - A Promise that resolves when the broadcast operation is complete.
+ */
 queue.on(QueueTask.BroadcastOpinion, async (...[intent, payload]) => {
   /**
    * Agent Executor with Langchain Tools
@@ -202,10 +226,11 @@ queue.on(QueueTask.BroadcastOpinion, async (...[intent, payload]) => {
 
       /**
        * @operation
-       * We perform the vector similarity search step here
-       * We are using Euclidean distance to get very similar interactions
-       * although this could limit the number of results
-       * we can retrieve due to our very small dataset */
+       *
+       * We perform the vector similarity search step here. We are using an
+       * Euclidean distance to get very similar interactions  although this could limit
+       * the number of results we can retrieve due to our very small dataset
+       */
       const table = await db.openTable(author.handle, embeddings);
       const results = await table
         .search(meta.context)
@@ -219,27 +244,15 @@ queue.on(QueueTask.BroadcastOpinion, async (...[intent, payload]) => {
        */
       const subContext = results.map((r) => r.text).join('\n\n---\n\n');
 
-      const prefix = `
-     You are ${author.name}, your username is ${author.handle} , Your Author ID is ${author.id} and your bio says ${author.bio}. 
-     You have a twitter account of ${followers.length} followers and you are following ${following.length} people.
-     
-     Your opinion is relevant to your followers and you have a responsibility to maintain the same dialect as seen in the subcontext interactions below.
-     
-     Here is the subcontext:
-     ${subContext}
-     
-     Based on these subcontext interactions, react to new tweets on your timeline by evaluating them based on,
-
-      <feel> how you feel about the tweet
-      <say> your opinion about the tweet or nothing at all
-      <think> what you think about the author, their reaction and the tweet itself.
-
-      You have the options to 
-      LIKE or FAVORITE
-      REPLY or COMMENT
-      RETWEET or QUOTE TWEET
-      IGNORE: do nothing at all.
-    `;
+      const prefix = await BroadcastOpinionPrompt.format({
+        author_name: author.name,
+        author_handle: author.handle,
+        author_id: author.id,
+        author_bio: author.bio,
+        num_followers: followers.length,
+        num_following: following.length,
+        sub_context: subContext,
+      });
 
       const executor = await initializeAgentExecutorWithOptions(tools, chat, {
         agentType: 'openai-functions',
