@@ -9,6 +9,7 @@ import { ITweetIntent } from '@/types/tweet.type';
 import { Author, Follow, Tweet } from '@prisma/client';
 import { MetricType, OpenAIEmbeddingFunction, connect } from 'vectordb';
 import {
+  _AI_TEMPERATURE_MEDIUM_,
   _GPT316K_MODEL_,
   _GPT3_MODEL_,
   _GPT4_MODEL_,
@@ -160,11 +161,7 @@ queue.on(QueueTask.EMBED_TWEET, async (...[intent, payload]) => {
   }
 });
 
-// const result = await executor.run('What is the weather in New York?');
-
 queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
-  console.log('Received a message from the queue:', { intent, payload });
-
   /**
    * Agent Executor with Langchain Tools
    * This uses the OpenAI Function Call kwargs available in GPT3.5 and GPT4
@@ -174,7 +171,7 @@ queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
   const tools = [xquoter, xliker, xcommenter, xretweeter];
   const chat = new ChatOpenAI({
     modelName: _GPT316K_MODEL_,
-    temperature: 0.7,
+    temperature: _AI_TEMPERATURE_MEDIUM_,
     openAIApiKey: env.OAK,
     verbose: true,
   });
@@ -270,15 +267,14 @@ queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
       continue;
     } catch (error) {
       console.error(
-        `${error} executing broadcast operation for: ${JSON.stringify(
-          follower,
-          null,
-          2,
-        )}`,
+        `${error} executing broadcast operation for: 
+         ${JSON.stringify(follower, null, 2)}
+        `,
       );
       continue;
     }
   }
+  console.log(`Successfully executed broadcast for  ${payload.id}`);
 });
 
 queue.on(QueueTask.REACT_LIKE, (...args) =>
