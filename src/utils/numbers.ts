@@ -1,20 +1,4 @@
 /**
- * Generate a random integer between min and max, inclusive.
- *
- * @param {number} min - The minimum value (inclusive).
- * @param {number} max - The maximum value (inclusive).
- * @returns {number} - A random integer between min and max, inclusive.
- *
- * @example
- * const randomNum = randomInt(1, 10);  // Generates a random integer between 1 and 10
- */
-export function randomInt(min: number, max: number): number {
-  const xmin = Math.ceil(min);
-  const xmax = Math.floor(max);
-  return Math.floor(Math.random() * (xmax - xmin + 1)) + min;
-}
-
-/**
  * Format a number to a whole number with comma separators.
  *
  * @param {number} number - The number to be formatted.
@@ -46,3 +30,31 @@ export const formatDecimalNumbers = (number: number): string => {
     maximumFractionDigits: 2,
   });
 };
+
+/**
+ * Generate a random integer between min and max, inclusive.
+ *
+ * @param {number} min - The minimum value (inclusive).
+ * @param {number} max - The maximum value (inclusive).
+ * @returns {number} - A random integer between min and max, inclusive.
+ *
+ * @example
+ * const randomNum = randomInt(1, 10);  // Generates a random integer between 1 and 10
+ */
+export function randomInt(min: number, max: number): number {
+  const xmin = Math.ceil(min);
+  const xmax = Math.floor(max);
+  return Math.floor(Math.random() * (xmax - xmin + 1)) + min;
+}
+
+/**
+ * Generate a random whole number between min and max, format it with comma separators, and return it as a string.
+ *
+ * @returns {string} - The formatted random whole number as a string.
+ *
+ * @example
+ * const formattedRandomWholeNumber = randomWholeInt(1, 10);  // random whole number between 1 and 10 and formats it with comma separators
+ */
+export function randomWholeInt(min: number, max: number): string {
+  return formatWholeNumber(randomInt(min, max));
+}
