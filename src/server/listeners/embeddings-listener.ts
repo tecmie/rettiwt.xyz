@@ -173,7 +173,7 @@ queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
     modelName: _GPT316K_MODEL_,
     temperature: _AI_TEMPERATURE_MEDIUM_,
     openAIApiKey: env.OAK,
-    verbose: true,
+    // verbose: true,
   });
 
   /**
@@ -247,7 +247,7 @@ queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
 
       const executor = await initializeAgentExecutorWithOptions(tools, chat, {
         agentType: 'openai-functions',
-        verbose: true,
+        // verbose: true,
         agentArgs: {
           prefix,
         },
@@ -263,7 +263,7 @@ queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
       continue;
     } catch (error) {
       console.error(
-        `${error} executing broadcast operation for: 
+        `${error} executing ${intent} broadcast operation for: 
          ${JSON.stringify(follower, null, 2)}
         `,
       );

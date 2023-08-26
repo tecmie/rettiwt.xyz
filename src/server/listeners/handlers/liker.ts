@@ -70,7 +70,7 @@ async function executor(
 }
 
 export const xliker = new DynamicStructuredTool({
-  name: 'TweetLiker',
+  name: 'FunctionCallLiker',
   description: description(),
   schema: executorSchema,
   func: executor,
