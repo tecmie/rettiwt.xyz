@@ -7,8 +7,9 @@ import { prisma } from '@/server/db';
 import { queue, QueueTask } from '@/utils/queue';
 import { ITweetIntent } from '@/types/tweet.type';
 import { Author, Follow, Tweet } from '@prisma/client';
-import { OpenAIEmbeddingFunction, connect } from 'vectordb';
+import { MetricType, OpenAIEmbeddingFunction, connect } from 'vectordb';
 import {
+  _GPT316K_MODEL_,
   _GPT3_MODEL_,
   _GPT4_MODEL_,
   _VECTOR_SOURCE_COLUMN_,
@@ -31,6 +32,54 @@ export type BroadcastEventData = EmbeddingRequestData & {
   followers: Follow[];
   following: Follow[];
 };
+
+/**
+ * Embedding function for our vector database.
+ * @see https://lancedb.github.io/lancedb
+ */
+const embeddings = new OpenAIEmbeddingFunction(_VECTOR_SOURCE_COLUMN_, env.OAK);
+
+/**
+ * Creates a vector embedding for the given tweet payload and embeddings function.
+ *
+ * @param {EmbeddingRequestData} payload - The tweet payload to create a vector embedding for.
+ * @returns {Promise<void>} - A promise that resolves when the vector embedding has been created.
+ */
+export async function embeddingsFromTweet(payload: EmbeddingRequestData) {
+  const db = await connect('vectors');
+
+  const { id, intent, context, timestamp, actor } = payload;
+
+  /**
+   * @note
+   * Something to note when working with LanceDB is that the order
+   * of your data payload matters, and should remain constant with how it was
+   * when you created the vector table. It should never changes
+   *
+   * @see /scripts/vectorize-tweets.js
+   */
+  const data = {
+    url: `https://rettiwt.xyz/status/${id}`,
+    type: String(intent),
+    text: context,
+    username: actor.handle,
+    timestamp,
+  };
+
+  try {
+    /* You must open the table with the embedding function */
+    const table = await db.openTable(payload.actor.handle, embeddings);
+    await table.add([data]);
+    console.log({
+      table,
+      owner: payload.actor.handle,
+      message: `A valid table has been found 🎉 for ${intent} ${id}`,
+    });
+  } catch (error: any) {
+    console.error({ owner: data.username, error });
+    throw new Error(JSON.stringify({ error, data }));
+  }
+}
 
 /**
  * Listen for the 'embed tweet' queue task and embed the tweet.
@@ -98,6 +147,7 @@ queue.on(QueueTask.EMBED_TWEET, async (...[intent, payload]) => {
         {
           ...rest,
           ...data,
+          content: rest.content,
           followers: followers,
           following: following,
         },
@@ -110,105 +160,124 @@ queue.on(QueueTask.EMBED_TWEET, async (...[intent, payload]) => {
   }
 });
 
-/**
- * Creates a vector embedding for the given tweet payload and embeddings function.
- *
- * @param {EmbeddingRequestData} payload - The tweet payload to create a vector embedding for.
- * @returns {Promise<void>} - A promise that resolves when the vector embedding has been created.
- */
-export async function embeddingsFromTweet(payload: EmbeddingRequestData) {
-  const embeddings = new OpenAIEmbeddingFunction(
-    _VECTOR_SOURCE_COLUMN_,
-    env.OAK,
-  );
-  const db = await connect('vectors');
-
-  const { id, intent, context, timestamp, actor } = payload;
-
-  /**
-   * @note
-   * Something to note when working with LanceDB is that the order
-   * of your data payload matters, and should remain constant with how it was
-   * when you created the vector table. It should never changes
-   *
-   * @see /scripts/vectorize-tweets.js
-   */
-  const data = {
-    url: `https://rettiwt.xyz/status/${id}`,
-    type: String(intent),
-    text: context,
-    username: actor.handle,
-    timestamp,
-  };
-
-  try {
-    /* You must open the table with the embedding function */
-    const table = await db.openTable(payload.actor.handle, embeddings);
-    await table.add([data]);
-    console.log({
-      table,
-      owner: payload.actor.handle,
-      message: `A valid table has been found 🎉 for ${intent} ${id}`,
-    });
-  } catch (error: any) {
-    console.error({ owner: data.username, error });
-    throw new Error(JSON.stringify({ error, data }));
-  }
-}
-
-const prefix = `You are a helpful AI assistant. However, all final response to the user must be in pirate dialect.`;
-
-const tools = [xquoter, xliker, xcommenter, xretweeter];
-const chat = new ChatOpenAI({
-  modelName: _GPT3_MODEL_,
-  temperature: 0.7,
-  openAIApiKey: env.OAK,
-  verbose: true,
-});
-
-const executor = await initializeAgentExecutorWithOptions(tools, chat, {
-  agentType: 'openai-functions',
-  verbose: true,
-  agentArgs: {
-    prefix,
-  },
-});
 // const result = await executor.run('What is the weather in New York?');
-
-// queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
-//   console.log('Received a message from the queue:', {intent, us: JSON.stringify(payload)});
-//   });
 
 queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
   console.log('Received a message from the queue:', { intent, payload });
 
-  // Destructure what you need from the payload
-  const { content: initialContext, followers } = payload as BroadcastEventData;
+  /**
+   * Agent Executor with Langchain Tools
+   * This uses the OpenAI Function Call kwargs available in GPT3.5 and GPT4
+   *
+   * @see https://js.langchain.com/docs/modules/agents/agent_types/openai_functions_agent
+   */
+  const tools = [xquoter, xliker, xcommenter, xretweeter];
+  const chat = new ChatOpenAI({
+    modelName: _GPT316K_MODEL_,
+    temperature: 0.7,
+    openAIApiKey: env.OAK,
+    verbose: true,
+  });
+
+  /**
+   * Initialize Vector Retrieval step for our actor
+   * We are using LanceDB as our db for vector retrieval
+   **/
+  const db = await connect('vectors');
+
+  const {
+    content: initialContext,
+    followers,
+    following,
+    ...meta
+  } = payload as BroadcastEventData;
 
   // 1. Iterate through the array of followers
   for (const follower of followers) {
-    // 2. Get the full author object for each following_id
-    const author = await prisma.author.findUnique({
-      where: {
-        id: follower.following_id,
-      },
-    });
+    try {
+      // 2. Get the full author object for each following_id
+      const author = await prisma.author.findUnique({
+        where: {
+          id: follower.following_id,
+        },
+      });
 
-    // If author not found, just skip this loop iteration
-    if (!author) {
-      console.warn(`Author not found for ID: ${follower.following_id}`);
+      if (!author) {
+        console.warn(`Author not found for ID: ${follower.following_id}`);
+        continue;
+      }
+
+      /**
+       * @operation
+       * We perform the vector similarity search step here
+       * We are using Euclidean distance to get very similar interactions
+       * although this could limit the number of results
+       * we can retrieve due to our very small dataset */
+      const table = await db.openTable(author.handle, embeddings);
+      const results = await table
+        .search(meta.context)
+        .metricType(MetricType.L2)
+        .select(['type', 'text', 'url'])
+        .limit(10)
+        .execute();
+
+      /**
+       * we combine all similarity data from embeddings into a string format
+       */
+      const subContext = results.map((r) => r.text).join('\n\n---\n\n');
+
+      const prefix = `
+     You are ${author.name}, your username is ${author.handle} , Your Author ID is ${author.id} and your bio says ${author.bio}. 
+     You have a twitter account of ${followers.length} and you are following ${following.length} people.
+     
+     Your opinion is relevant to your followers and you have a responsibility to maintain the same dialect as seen in the subcontext interactions below.
+     
+     Here is the subcontext:
+     ${subContext}
+     
+     Based on these subcontext interactions, react to new tweets on your timeline by evaluating them based on,
+
+      <feel> how you feel about the tweet
+      <say> your opinion about the tweet or nothing at all
+      <think> what you think about the author, their reaction and the tweet itself.
+
+      You have the options to 
+      LIKE or FAVORITE
+      REPLY or COMMENT
+      RETWEET or QUOTE TWEET
+      or do nothing at all.
+    `;
+
+      const executor = await initializeAgentExecutorWithOptions(tools, chat, {
+        agentType: 'openai-functions',
+        verbose: true,
+        agentArgs: {
+          prefix,
+        },
+      });
+
+      // console.log({ author, subContext, meta });
+
+      // 3. Construct the context
+      const context = `How are you going to react to ${
+        meta.actor.name
+      }'s ${meta.intent.toUpperCase()} ACTION to Tweet.ID ${
+        meta.id
+      } and content "${meta.context}"?`;
+
+      // 4. Call the executor function
+      await executor.run(context);
+      continue;
+    } catch (error) {
+      console.error(
+        `${error} executing broadcast operation for: ${JSON.stringify(
+          follower,
+          null,
+          2,
+        )}`,
+      );
       continue;
     }
-
-    console.log({ author });
-
-    // 3. Construct the context
-    const context = `${initialContext} ${author.name}`;
-    // return;
-    continue;
-
-    // 4. Call the executor function
-    // await executor.run(context);
   }
 });
 

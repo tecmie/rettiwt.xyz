@@ -7,9 +7,27 @@ import { ITweetIntent } from '@/types/tweet.type';
  * The schema for the executor.
  */
 const executorSchema = z.object({
-  authorId: z.string(),
-  tweetId: z.string(),
-  delay: z.number().min(100).default(100),
+  delay: z
+    .number()
+    .min(100)
+    .max(12_000_000) // 4 hours
+    .default(100)
+    .describe('The delay time in milliseconds before the executor starts.'),
+  authorId: z
+    .string()
+    .describe(
+      'The unique identifier stringified number for our system author. Essential for mapping to the database.',
+    ),
+  authorUsername: z
+    .string()
+    .describe(
+      'The username of our author, used as a display for their human readable screen name.',
+    ),
+  tweetId: z
+    .string()
+    .describe(
+      'The unique identifier for the tweet. This will help in referencing the specific tweet in any operation.',
+    ),
 });
 
 /**
@@ -32,10 +50,11 @@ async function executor(
       intent: ITweetIntent.LIKE,
       tweetId: input.tweetId,
       authorId: input.authorId,
+      authorHandle: input.authorUsername,
     };
 
     /* Trigger a new Event to Schedule this event for execution */
-    queue.schedule({
+    await queue.schedule({
       event: QueueTask.REACT_LIKE,
       delay: input.delay,
       args: [payload.intent, payload],
@@ -51,7 +70,7 @@ async function executor(
 }
 
 export const xliker = new DynamicStructuredTool({
-  name: 'Tweet Liker',
+  name: 'TweetLiker',
   description: description(),
   schema: executorSchema,
   func: executor,

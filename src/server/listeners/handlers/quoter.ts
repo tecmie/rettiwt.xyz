@@ -4,9 +4,27 @@ import { DynamicStructuredTool } from 'langchain/tools';
 import { ITweetIntent } from '@/types/tweet.type';
 
 const quoteTweetExecutorSchema = z.object({
-  delay: z.number().min(100).default(100),
-  authorId: z.string(),
-  tweetId: z.string(), // ID of the tweet being quoted
+  delay: z
+    .number()
+    .min(100)
+    .max(12_000_000) // 4 hours
+    .default(100)
+    .describe('The delay time in milliseconds before the executor starts.'),
+  authorId: z
+    .string()
+    .describe(
+      'The unique identifier stringified number for our system author. Essential for mapping to the database.',
+    ),
+  authorUsername: z
+    .string()
+    .describe(
+      'The username of our author, used as a display for their human readable screen name.',
+    ),
+  tweetId: z
+    .string()
+    .describe(
+      'The unique identifier for the tweet. This will help in referencing the specific tweet in any operation.',
+    ),
   content: z
     .string()
     .describe(
@@ -27,10 +45,11 @@ async function quoteTweetExecutor(
       delay: input.delay,
       quoteParentId: input.tweetId,
       authorId: input.authorId,
+      authorHandle: input.authorUsername,
       content: input.content,
     };
 
-    queue.schedule({
+    await queue.schedule({
       event: QueueTask.REACT_QUOTE,
       delay: input.delay,
       args: [payload.intent, payload],
@@ -44,7 +63,7 @@ async function quoteTweetExecutor(
 }
 
 export const xquoter = new DynamicStructuredTool({
-  name: 'Tweet Quoter',
+  name: 'TweetQuoter',
   description: quoteTweetDescription(),
   schema: quoteTweetExecutorSchema,
   func: quoteTweetExecutor,
