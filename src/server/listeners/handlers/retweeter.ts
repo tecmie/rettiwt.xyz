@@ -42,13 +42,15 @@ async function retweetExecutor(
       authorHandle: input.authorUsername,
     };
 
-    await queue.schedule({
+    queue.schedule({
       event: QueueTask.ExecuteRetweet,
       delay: input.delay,
       args: [payload.intent, payload],
     });
 
-    return `We have dispatched the [RetweetExecutor] to execute in ${input.delay}ms.`;
+    return Promise.resolve(
+      `We have dispatched the [RetweetExecutor] to execute in ${input.delay}ms.`,
+    );
   } catch (error) {
     console.error(error);
     return 'We failed to execute the [RetweetExecutor]';

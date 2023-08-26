@@ -49,13 +49,15 @@ async function quoteTweetExecutor(
       content: input.content,
     };
 
-    await queue.schedule({
+    queue.schedule({
       event: QueueTask.ExecuteQuote,
       delay: input.delay,
       args: [payload.intent, payload],
     });
 
-    return `We have dispatched the [QuoteTweetExecutor] to quote a tweet in ${input.delay}ms.`;
+    return Promise.resolve(
+      `We have dispatched the [QuoteTweetExecutor] to quote a tweet in ${input.delay}ms.`,
+    );
   } catch (error) {
     console.error(error);
     return 'We failed to execute the [QuoteTweetExecutor]';

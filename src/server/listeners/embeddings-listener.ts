@@ -1,12 +1,10 @@
-// This listener receives a directive to persist a new action into our vector database.
-
-// We might rely on the broadcast listener to know how to handle this, or internally handle the switches ourselves.
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 
 import { env } from '@/env.mjs';
 import { prisma } from '@/server/db';
 import { queue, QueueTask } from '@/utils/queue';
-import { ITweetIntent } from '@/types/tweet.type';
-import { Author, Follow, Tweet } from '@prisma/client';
+import { type ITweetIntent } from '@/types/tweet.type';
+import { type Author, type Follow, type Tweet } from '@prisma/client';
 import { MetricType, OpenAIEmbeddingFunction, connect } from 'vectordb';
 import {
   _AI_TEMPERATURE_MEDIUM_,
@@ -16,8 +14,8 @@ import {
   _VECTOR_SOURCE_COLUMN_,
 } from '@/utils/constants';
 
-import { initializeAgentExecutorWithOptions } from 'langchain/agents';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
+import { initializeAgentExecutorWithOptions } from 'langchain/agents';
 import xquoter from './handlers/quoter';
 import xliker from './handlers/liker';
 import xcommenter from './handlers/commenter';
@@ -120,8 +118,6 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
       console.error('Author not found:', authorId);
       return;
     }
-    console.log({ author, fll: JSON.stringify(author.followers) });
-
     const { following, followers, ...actor } = author;
 
     /**
@@ -141,7 +137,7 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
      * This is where we now broadcast this new intent to the rest of the listeners
      * Notifying all our followers of a new tweet action from a X user.
      */
-    await queue.send({
+    queue.send({
       event: QueueTask.BroadcastOpinion,
       args: [
         tweetIntent,

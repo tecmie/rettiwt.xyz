@@ -49,13 +49,15 @@ async function tweetExecutor(
       replyParentId: input.tweetId,
     };
 
-    await queue.schedule({
+    queue.schedule({
       event: QueueTask.ExecuteComment,
       delay: input.delay,
       args: [payload],
     });
 
-    return `We have dispatched the [TweetExecutor] to create a new tweet in ${input.delay}ms.`;
+    return Promise.resolve(
+      `We have dispatched the [TweetExecutor] to create a new tweet in ${input.delay}ms.`,
+    );
   } catch (error) {
     console.error(error);
     return 'We failed to execute the [TweetExecutor]';

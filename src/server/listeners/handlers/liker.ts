@@ -54,13 +54,13 @@ async function executor(
     };
 
     /* Trigger a new Event to Schedule this event for execution */
-    await queue.schedule({
+    queue.schedule({
       event: QueueTask.ExecuteLike,
       delay: input.delay,
       args: [payload.intent, payload],
     });
 
-    return String(
+    return Promise.resolve(
       `We have dispatched the [LikeExecutor] to execute in ${input.delay}ms.`,
     );
   } catch (error) {
