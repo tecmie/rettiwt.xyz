@@ -63,7 +63,7 @@ async function quoteTweetExecutor(
 }
 
 export const xquoter = new DynamicStructuredTool({
-  name: 'FunctionCallQuoter',
+  name: 'GenericTweetQuoter',
   description: quoteTweetDescription(),
   schema: quoteTweetExecutorSchema,
   func: quoteTweetExecutor,

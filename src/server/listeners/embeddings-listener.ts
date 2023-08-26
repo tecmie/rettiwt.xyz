@@ -173,7 +173,7 @@ queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
     modelName: _GPT316K_MODEL_,
     temperature: _AI_TEMPERATURE_MEDIUM_,
     openAIApiKey: env.OAK,
-    // verbose: true,
+    verbose: true,
   });
 
   /**
@@ -242,12 +242,12 @@ queue.on(QueueTask.BROADCAST, async (...[intent, payload]) => {
       LIKE or FAVORITE
       REPLY or COMMENT
       RETWEET or QUOTE TWEET
-      or do nothing at all.
+      IGNORE: do nothing at all.
     `;
 
       const executor = await initializeAgentExecutorWithOptions(tools, chat, {
         agentType: 'openai-functions',
-        // verbose: true,
+        verbose: true,
         agentArgs: {
           prefix,
         },

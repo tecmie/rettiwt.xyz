@@ -63,7 +63,7 @@ async function tweetExecutor(
 }
 
 export const xcommenter = new DynamicStructuredTool({
-  name: 'FunctionCallCommenter',
+  name: 'TweetCommenter',
   description: tweetDescription(),
   schema: tweetExecutorSchema,
   func: tweetExecutor,
