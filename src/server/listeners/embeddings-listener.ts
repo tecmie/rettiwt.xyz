@@ -98,10 +98,8 @@ export async function embeddingsFromInteraction(payload: EmbeddingRequestData) {
 
   const { id, intent, context, timestamp, actor } = payload;
 
-  console.log(`
-  ${_CONSOLE_LOG_EMBEDDINGS_}
-  ${JSON.stringify({ payload }, null, 2)}
-  `);
+  /* prettier-ignore */
+  console.log(`${_CONSOLE_LOG_EMBEDDINGS_} ${JSON.stringify({ payload }, null, 2)}`);
 
   /**
    * @note
@@ -123,11 +121,9 @@ export async function embeddingsFromInteraction(payload: EmbeddingRequestData) {
     /* You must open the table with the embedding function */
     const table = await db.openTable(payload.actor.handle, embeddings);
     await table.add([data]);
-    console.log({
-      table,
-      owner: payload.actor.handle,
-      message: `A valid table has been found 🎉 for ${intent} ${id}`,
-    });
+
+    /* prettier-ignore */
+    console.log(table, `A valid table has been found 🎉 for ${payload.actor.handle} ${id}`);
   } catch (error: any) {
     console.error({ owner: data.username, error });
     throw new Error(JSON.stringify({ error, data }));
@@ -204,14 +200,8 @@ async function creatInteractionContext(
 ): Promise<string> {
   const { tweetAuthor, tweetMeta, intent, timestamp } = params;
 
-  console.log(`
-  ${_BROADCAST_INIT_}
-  ${intent} Utils.creatInteractionContext ${JSON.stringify(
-    { tweetAuthor, tweetMeta, intent, timestamp },
-    null,
-    2,
-  )}
-  `);
+  /* prettier-ignore */
+  console.log(` ${_BROADCAST_INIT_}  ${intent} Utils.creatInteractionContext ${JSON.stringify({ tweetAuthor, tweetMeta, intent, timestamp }, null, 2,)}`);
 
   try {
     /**
@@ -388,11 +378,8 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
     }
     const { following, followers, ...actor } = author;
 
-    console.log(`
-    ${_CONSOLE_LOG_ASCII_}
-    destructured object for << QueueTask.EmbedOpinion >>
-    ${JSON.stringify({ author, actor, following, followers }, null, 2)}
-    `);
+    /* prettier-ignore */
+    console.log(` ${_CONSOLE_LOG_ASCII_} destructured object for << QueueTask.EmbedOpinion >> ${JSON.stringify({ author, actor, following, followers }, null, 2)}`);
 
     /**
      * @var
@@ -729,8 +716,6 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
  *
  */
 queue.on(QueueTask.ExecuteQuote, async (...[intent, payload]) => {
-  console.log(`Received a ${intent} from the queue:`, payload);
-
   console.log(_CONSOLE_LOG_TWEET_, [intent, payload]);
 
   const { tweetId, authorId, authorUsername, content } =

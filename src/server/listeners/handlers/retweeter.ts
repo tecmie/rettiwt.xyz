@@ -6,9 +6,9 @@ import { ITweetIntent } from '@/types/tweet.type';
 const retweetExecutorSchema = z.object({
   delayNumberInMilliseconds: z
     .number()
-    .min(1000)
+    .min(120000)
     .max(1.44e7)
-    .default(5000)
+    .default(180000)
     .describe(
       'The delay time in milliseconds. \n@example 15000 means a 15-second delay before the executor starts.',
     ),
