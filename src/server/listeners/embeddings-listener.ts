@@ -643,7 +643,7 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
       const context = `
         Your current time is ${new Date().toDateString()} 
         How are you going to react to ${meta.intent}
-        to Tweet.ID ${meta.id} with summary of this engagement: 
+        where Tweet.ID is ${meta.id} with summary of this engagement: 
         "${meta.context}" ?
       `;
 
@@ -748,9 +748,8 @@ queue.on(QueueTask.ExecuteQuote, async (...[intent, payload]) => {
      * Schedules a new event to the queue with the `QueueTask.EmbedOpinion` task and the `ITweetIntent.QUOTE` intent.
      * The `args` parameter contains a JSON stringified object with the `quote` object.
      */
-    queue.schedule({
+    queue.send({
       event: QueueTask.EmbedOpinion,
-      delay: 5000,
       args: [ITweetIntent.QUOTE, JSON.stringify(quote)],
     });
 
@@ -833,9 +832,8 @@ queue.on(QueueTask.ExecuteComment, async (...[intent, payload]) => {
      * Schedules a new event to the queue with the `QueueTask.EmbedOpinion` task and the `ITweetIntent.QUOTE` intent.
      * The `args` parameter contains a JSON stringified object with the `comment` object.
      */
-    queue.schedule({
+    queue.send({
       event: QueueTask.EmbedOpinion,
-      delay: 5000,
       args: [ITweetIntent.QUOTE, JSON.stringify({ ...trans[0] })],
     });
 
