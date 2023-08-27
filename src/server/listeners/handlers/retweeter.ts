@@ -4,7 +4,7 @@ import { DynamicStructuredTool } from 'langchain/tools';
 import { ITweetIntent } from '@/types/tweet.type';
 
 const retweetExecutorSchema = z.object({
-  delay: z
+  delayNumberInMilliseconds: z
     .number()
     .min(1000)
     .max(1.44e7)
@@ -48,12 +48,12 @@ async function retweetExecutor(
 
     queue.schedule({
       event: QueueTask.ExecuteRetweet,
-      delay: input.delay,
+      delay: input.delayNumberInMilliseconds,
       args: [payload.intent, payload],
     });
 
     return Promise.resolve(
-      `We have dispatched the [RetweetExecutor] to execute in ${input.delay}ms.`,
+      `We have dispatched the [RetweetExecutor] to execute in ${input.delayNumberInMilliseconds}ms.`,
     );
   } catch (error) {
     console.error(error);

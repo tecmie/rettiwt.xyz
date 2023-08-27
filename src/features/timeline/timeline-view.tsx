@@ -35,6 +35,7 @@ import { ITweetIntent } from '@/types/tweet.type';
 import { useProfilePersona } from '@/hooks/use-persona';
 import { PersonaModal } from '@/features/persona/persona-modal';
 import { useRouter } from 'next/router';
+import { sanitizeText } from '@/utils/values';
 
 export const TimelineView = (props: StackProps) => {
   const [currCursor, setCurrCursor] = useState(0);
@@ -200,7 +201,7 @@ export const NewTimelinePost = () => {
               /* We only want the latest message content */
               value={
                 (messages.length != 0 &&
-                  messages[messages.length - 1]?.content) ||
+                  sanitizeText(messages[messages.length - 1]?.content)) ||
                 ''
               }
             />

@@ -58,3 +58,15 @@ export function randomInt(min: number, max: number): number {
 export function randomWholeInt(min: number, max: number): string {
   return formatWholeNumber(randomInt(min, max));
 }
+
+/**
+ * Sanitizes a string by removing any characters that are not letters,
+ * numbers, spaces, periods, commas, underscores, hashtags, ampersands, equal signs, or hyphens.
+ *
+ * @param {string} [str=""] - The string to sanitize.
+ * @returns {string} - The sanitized string.
+ */
+export function sanitizeText(str: string = '') {
+  str = str.replace(/[^a-z0-9áéíóúñü \.,_#&=?-]/gim, '');
+  return str.trim();
+}

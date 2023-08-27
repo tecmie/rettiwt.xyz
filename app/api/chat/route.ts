@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
    * Create some sort of variability in model use,
    * with more bias towards GPT4
    */
-  const openaiModel = _.sample([_GPT3_MODEL_, _GPT4_MODEL_]);
+  const openaiModel = _.sample([_GPT3_MODEL_, _GPT4_MODEL_, _GPT3_MODEL_]);
 
   /**
    * See a full list of supported models at:
@@ -79,6 +79,8 @@ export async function POST(req: NextRequest) {
    */
   const model = new ChatOpenAI({
     temperature: _AI_TEMPERATURE_MEDIUM_,
+    presencePenalty: 0.111,
+    frequencyPenalty: 0.333,
     modelName: openaiModel,
     openAIApiKey: env.OAK,
     verbose: true,

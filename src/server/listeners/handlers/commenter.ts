@@ -4,7 +4,7 @@ import { DynamicStructuredTool } from 'langchain/tools';
 import { ITweetIntent } from '@/types/tweet.type';
 
 const commentExecutorSchema = z.object({
-  delay: z
+  delayNumberInMilliseconds: z
     .number()
     .min(1000)
     .max(1.44e7)
@@ -40,13 +40,13 @@ function tweetDescription(): string {
   return 'Use this to create a new thread-tweet that is a response or comment to a previous tweet.';
 }
 
-async function tweetExecutor(
+async function commentExecutor(
   input: z.infer<typeof commentExecutorSchema>,
 ): Promise<string> {
   try {
     const payload = {
       intent: ITweetIntent.REPLY,
-      delay: input.delay,
+      delay: input.delayNumberInMilliseconds,
       authorId: input.authorId,
       authorHandle: input.authorUsername,
       content: input.content,
@@ -55,16 +55,16 @@ async function tweetExecutor(
 
     queue.schedule({
       event: QueueTask.ExecuteComment,
-      delay: input.delay,
-      args: [payload],
+      delay: input.delayNumberInMilliseconds,
+      args: [payload.intent, payload],
     });
 
     return Promise.resolve(
-      `We have dispatched the [TweetExecutor] to create a new tweet in ${input.delay}ms.`,
+      `We have dispatched the [CommentExecutor] to create a new tweet in ${input.delayNumberInMilliseconds}ms.`,
     );
   } catch (error) {
     console.error(error);
-    return 'We failed to execute the [TweetExecutor]';
+    return 'We failed to execute the [CommentExecutor]';
   }
 }
 
@@ -72,7 +72,7 @@ export const xcommenter = new DynamicStructuredTool({
   name: 'TweetCommenter',
   description: tweetDescription(),
   schema: commentExecutorSchema,
-  func: tweetExecutor,
+  func: commentExecutor,
 });
 
 export default xcommenter;

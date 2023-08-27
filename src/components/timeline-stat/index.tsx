@@ -1,6 +1,6 @@
 'use client';
 
-import { randomInt, randomWholeInt } from '@/utils/numbers';
+import { randomInt, randomWholeInt } from '@/utils/values';
 import {
   Badge,
   Box,

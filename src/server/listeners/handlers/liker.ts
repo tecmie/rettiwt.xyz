@@ -7,7 +7,7 @@ import { ITweetIntent } from '@/types/tweet.type';
  * The schema for the executor.
  */
 const executorSchema = z.object({
-  delay: z
+  delayNumberInMilliseconds: z
     .number()
     .min(1000)
     .max(1.44e7)
@@ -60,12 +60,12 @@ async function executor(
     /* Trigger a new Event to Schedule this event for execution */
     queue.schedule({
       event: QueueTask.ExecuteLike,
-      delay: input.delay,
+      delay: input.delayNumberInMilliseconds,
       args: [payload.intent, payload],
     });
 
     return Promise.resolve(
-      `We have dispatched the [LikeExecutor] to execute in ${input.delay}ms.`,
+      `We have dispatched the [LikeExecutor] to execute in ${input.delayNumberInMilliseconds}ms.`,
     );
   } catch (error) {
     console.error(error);
