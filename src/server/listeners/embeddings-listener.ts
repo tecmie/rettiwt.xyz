@@ -17,8 +17,8 @@ import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { initializeAgentExecutorWithOptions } from 'langchain/agents';
 import xquoter, { QuoteTaskPayload } from './handlers/quoter';
 import xliker, { LikeTaskPayload } from './handlers/liker';
-import xcommenter from './handlers/commenter';
-import xretweeter from './handlers/retweeter';
+import xcommenter, { CommentTaskPayload } from './handlers/commenter';
+import xretweeter, { RetweetTaskPayload } from './handlers/retweeter';
 import { BroadcastOpinionPrompt } from './prompts';
 import _ from 'lodash';
 
@@ -319,27 +319,14 @@ queue.on(QueueTask.ExecuteLike, async (...[payload]) => {
   const { tweetId, authorId, authorUsername } = payload as LikeTaskPayload;
 
   try {
-    /**
-     * @operation
-     *
-     * This is a fail safe find operation to ensure we have a
-     * valid author from the agent executor
-     */
-    const author = await prisma.author.findFirst({
-      where: {
-        OR: [{ id: authorId }, { handle: authorUsername }],
-      },
+    const authorTweetObj = await lookupAuthorAndTweet({
+      tweetId,
+      authorId,
+      authorUsername,
     });
+    if (!authorTweetObj) return;
 
-    if (!author) return;
-
-    const tweet = await prisma.tweet.findUnique({
-      where: {
-        id: tweetId,
-      },
-    });
-
-    if (!tweet) return;
+    const { author, tweet } = authorTweetObj;
 
     const like = await prisma.like.create({
       data: {
@@ -385,22 +372,21 @@ queue.on(QueueTask.ExecuteQuote, async (...[payload]) => {
     payload as QuoteTaskPayload;
 
   try {
-    const author = await prisma.author.findFirst({
-      where: {
-        OR: [{ id: authorId }, { handle: authorUsername }],
-      },
+    /**
+     * @operation
+     */
+    const authorTweetObj = await lookupAuthorAndTweet({
+      tweetId,
+      authorId,
+      authorUsername,
     });
 
-    if (!author) return;
+    if (!authorTweetObj) return;
+    const { author, tweet } = authorTweetObj;
 
-    const tweet = await prisma.tweet.findUnique({
-      where: {
-        id: tweetId,
-      },
-    });
-
-    if (!tweet) return;
-
+    /**
+     * @operation
+     */
     const quote = await prisma.tweet.create({
       data: {
         content,
@@ -436,27 +422,37 @@ queue.on(QueueTask.ExecuteQuote, async (...[payload]) => {
   }
 });
 
+/**
+ * @listens QueueTask.ExecuteComment
+ *
+ * Listens for the `QueueTask.ExecuteComment` event and executes the callback function when triggered.
+ * The callback function receives a spread of arguments as `payload`, which is destructured
+ * to obtain the `tweetId`, `authorId`, `content`, and `authorUsername` properties.
+ *
+ *
+ * @param {CommentTaskPayload} payload - The data payload for the queue task.
+ * @returns {Promise<void>} - A Promise that resolves when the quote operation is complete.
+ */
 queue.on(QueueTask.ExecuteComment, async (...[payload]) => {
   const { tweetId, authorId, content, authorUsername } =
-    payload as QuoteTaskPayload;
+    payload as CommentTaskPayload;
 
   try {
-    const author = await prisma.author.findFirst({
-      where: {
-        OR: [{ id: authorId }, { handle: authorUsername }],
-      },
+    /**
+     * @operation
+     */
+    const authorTweetObj = await lookupAuthorAndTweet({
+      tweetId,
+      authorId,
+      authorUsername,
     });
+    if (!authorTweetObj) return;
 
-    if (!author) return;
+    const { author, tweet } = authorTweetObj;
 
-    const tweet = await prisma.tweet.findUnique({
-      where: {
-        id: tweetId,
-      },
-    });
-
-    if (!tweet) return;
-
+    /**
+     * @operation
+     */
     const comment = await prisma.tweet.create({
       data: {
         content,
@@ -468,40 +464,68 @@ queue.on(QueueTask.ExecuteComment, async (...[payload]) => {
       },
     });
 
+    /**
+     * @operation
+     *
+     * Schedules a new event to the queue with the `QueueTask.EmbedOpinion` task and the `ITweetIntent.QUOTE` intent.
+     * The `args` parameter contains a JSON stringified object with the `comment` object.
+     */
     queue.schedule({
       event: QueueTask.EmbedOpinion,
       delay: 5000,
       args: [ITweetIntent.QUOTE, JSON.stringify(comment)],
     });
 
+    /**
+     * Log a success message to the console.
+     */
     console.log(`[QueueTask.ExecuteComment] successful for ${tweetId}`);
   } catch (error) {
+    /**
+     * Log an error message to the console if an error occurs.
+     */
     console.error(
       `[QueueTask.ExecuteComment] ${authorUsername} error ${error}`,
     );
   }
 });
 
+/**
+ * @listens QueueTask.ExecuteRetweet
+ *
+ * Listens for the `QueueTask.ExecuteRetweet` event and executes the callback function when triggered.
+ * The callback function receives a spread of arguments as `payload`, which is destructured to obtain
+ * the `tweetId`, `authorId`, and `authorUsername` properties.
+ *
+ * The function performs the following operations:
+ * 1. Looks up the author and tweet by calling the `lookupAuthorAndTweet` function.
+ * 2. Creates a retweet entry in the database by calling the `prisma.retweet.create` method.
+ * 3. Sends a new event to the queue with the `QueueTask.EmbedReaction` task and the `ITweetIntent.RETWEET` intent.
+ * 4. Logs a success message or error message to the console.
+ *
+ * @param {RetweetTaskPayload} payload - The data payload for the queue task.
+ * @returns {Promise<void>} - A Promise that resolves when the retweet operation is complete.
+ */
 queue.on(QueueTask.ExecuteRetweet, async (...[payload]) => {
-  const { tweetId, authorId, authorUsername } = payload as QuoteTaskPayload;
+  const { tweetId, authorId, authorUsername } = payload as RetweetTaskPayload;
 
   try {
-    const author = await prisma.author.findFirst({
-      where: {
-        OR: [{ id: authorId }, { handle: authorUsername }],
-      },
+    /**
+     * @operation
+     */
+    const authorTweetObj = await lookupAuthorAndTweet({
+      tweetId,
+      authorId,
+      authorUsername,
     });
 
-    if (!author) return;
+    if (!authorTweetObj) return;
 
-    const tweet = await prisma.tweet.findUnique({
-      where: {
-        id: tweetId,
-      },
-    });
+    const { author, tweet } = authorTweetObj;
 
-    if (!tweet) return;
-
+    /**
+     * @operation
+     */
     const retweet = await prisma.retweet.create({
       data: {
         author_id: author.id,
@@ -532,3 +556,55 @@ queue.on(QueueTask.ExecuteRetweet, async (...[payload]) => {
     );
   }
 });
+
+/**
+ * Finds an author and a tweet using their respective IDs or handles from the database.
+ *
+ * @param {Object} payload - An object containing identifiers for the author and tweet.
+ * @param {string} payload.authorId - The ID of the author to find.
+ * @param {string} payload.tweetId - The ID of the tweet to find.
+ * @param {string} payload.authorUsername - The username of the author to find.
+ *
+ * @returns {Promise<{author: Author; tweet: Tweet} | null>} - A Promise that resolves with the Author and Tweet entities or `null` if not found.
+ *
+ * @example
+ * const { author, tweet } = await lookupAuthorAndTweet({ authorId: "someId", authorUsername: "username", tweetId: "someTweetId" });
+ */
+
+async function lookupAuthorAndTweet(
+  payload: Omit<LikeTaskPayload, 'delay'>,
+): Promise<{ author: Author; tweet: Tweet } | null> {
+  const { authorId, tweetId, authorUsername } = payload;
+
+  /**
+   * @operation
+   *
+   * This is a fail safe find operation to ensure we have a
+   * valid author from the agent executor
+   */
+  const author = await prisma.author.findFirst({
+    where: {
+      OR: [{ id: authorId }, { handle: authorUsername }],
+    },
+  });
+
+  if (!author) {
+    console.warn(
+      `[lookupAuthorAndTweet] Author not found for ID: ${authorId} or username: ${authorUsername}`,
+    );
+    return null;
+  }
+
+  const tweet = await prisma.tweet.findUnique({
+    where: {
+      id: tweetId,
+    },
+  });
+
+  if (!tweet) {
+    console.warn(`[lookupAuthorAndTweet] Tweet not found for ID: ${tweetId}`);
+    return null;
+  }
+
+  return { author, tweet };
+}
