@@ -84,8 +84,8 @@ model Sentiment {
   timestamp     DateTime    @default(now())
   
   // **** Relationship mapping ****
-  author     Author   @relation(fields: [author_id], references: [id])
   tweet      Tweet    @relation(fields: [tweet_id], references: [id])
+  author     Author   @relation(fields: [author_id], references: [id])
 }
 
 model Follow {
@@ -111,8 +111,8 @@ model Tweet {
   author_id         String
   intent            String
   is_pinned         Boolean   @default(false)
-  is_quote_tweet    Boolean   
-  is_reply_tweet    Boolean   
+  is_quote_tweet    Boolean   @default(false)
+  is_reply_tweet    Boolean   @default(false)
   liked_by          Like[]
   retweeted_by      Retweet[] 
   sentiments        Sentiment[]
@@ -152,7 +152,7 @@ model Retweet {
 model Like {
   id              Int         @id @default(autoincrement())
   createdAt       DateTime    @default(now())
-  origin_state    String     // State of the original tweet when liked
+  origin_state    String?     // State of the original tweet when liked
   author          Author      @relation(fields: [author_id], references: [id])
   author_id       String
   tweet           Tweet       @relation(fields: [tweet_id], references: [id]) // Link to Tweet

@@ -29,6 +29,8 @@ const retweetExecutorSchema = z.object({
     ),
 });
 
+export type RetweetTaskPayload = z.infer<typeof retweetExecutorSchema>;
+
 function retweetDescription(): string {
   return 'Use this to retweet a selected tweet.';
 }

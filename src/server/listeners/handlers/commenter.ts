@@ -3,7 +3,7 @@ import queue, { QueueTask } from '@/utils/queue';
 import { DynamicStructuredTool } from 'langchain/tools';
 import { ITweetIntent } from '@/types/tweet.type';
 
-const tweetExecutorSchema = z.object({
+const commentExecutorSchema = z.object({
   delay: z
     .number()
     .min(1000)
@@ -34,12 +34,14 @@ const tweetExecutorSchema = z.object({
     ),
 });
 
+export type CommentTaskPayload = z.infer<typeof commentExecutorSchema>;
+
 function tweetDescription(): string {
   return 'Use this to create a new thread-tweet that is a response or comment to a previous tweet.';
 }
 
 async function tweetExecutor(
-  input: z.infer<typeof tweetExecutorSchema>,
+  input: z.infer<typeof commentExecutorSchema>,
 ): Promise<string> {
   try {
     const payload = {
@@ -69,7 +71,7 @@ async function tweetExecutor(
 export const xcommenter = new DynamicStructuredTool({
   name: 'TweetCommenter',
   description: tweetDescription(),
-  schema: tweetExecutorSchema,
+  schema: commentExecutorSchema,
   func: tweetExecutor,
 });
 

@@ -3,7 +3,7 @@
 import { env } from '@/env.mjs';
 import { prisma } from '@/server/db';
 import { queue, QueueTask } from '@/utils/queue';
-import { type ITweetIntent } from '@/types/tweet.type';
+import { ITweetIntent } from '@/types/tweet.type';
 import { type Author, type Follow, type Tweet } from '@prisma/client';
 import { MetricType, OpenAIEmbeddingFunction, connect } from 'vectordb';
 import {
@@ -15,8 +15,8 @@ import {
 
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { initializeAgentExecutorWithOptions } from 'langchain/agents';
-import xquoter from './handlers/quoter';
-import xliker from './handlers/liker';
+import xquoter, { QuoteTaskPayload } from './handlers/quoter';
+import xliker, { LikeTaskPayload } from './handlers/liker';
 import xcommenter from './handlers/commenter';
 import xretweeter from './handlers/retweeter';
 import { BroadcastOpinionPrompt } from './prompts';
@@ -28,7 +28,9 @@ export type EmbeddingRequestData = Partial<Tweet> & {
   intent: ITweetIntent;
 };
 
-export type BroadcastEventData = EmbeddingRequestData & {
+export type BroadcastOpinionData = Tweet & {
+  actor: Author;
+  context: string;
   followers: Follow[];
   following: Follow[];
 };
@@ -173,7 +175,7 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
  * It then constructs a context and calls an agent executor function to react to new tweets on the follower's timeline.
  *
  * @param {string} args.intent - The type of broadcast operation.
- * @param {BroadcastEventData} args.payload - The data payload for the broadcast event.
+ * @param {BroadcastOpinionData} args.payload - The data payload for the broadcast event.
  * @param {Array<Following>} args.payload.following - The array of authors they are following.
  * @param {Array<Followers>} args.payload.followers - The array of followers.
  *
@@ -212,7 +214,7 @@ queue.on(QueueTask.BroadcastOpinion, async (...[intent, payload]) => {
     followers,
     following,
     ...meta
-  } = payload as BroadcastEventData;
+  } = payload as BroadcastOpinionData;
 
   // 1. Iterate through the array of followers
   for (const follower of followers) {
@@ -273,7 +275,24 @@ queue.on(QueueTask.BroadcastOpinion, async (...[intent, payload]) => {
       ${meta.id} with summary of this interaction: "${meta.context}"?`;
 
       // 4. Call the executor function
-      await executor.run(context);
+      const result = await executor.run(context);
+
+      /**
+       * @operation
+       *
+       * we persist the result from our LLM as sentiments
+       * We can use mine this information further to derive
+       * other intents and analysis
+       *
+       */
+      await prisma.sentiment.create({
+        data: {
+          author_id: author.id,
+          tweet_id: meta.id,
+          text: String(result),
+        },
+      });
+
       continue;
     } catch (error) {
       console.error(
@@ -287,27 +306,229 @@ queue.on(QueueTask.BroadcastOpinion, async (...[intent, payload]) => {
   console.log(`Successfully executed broadcast for  ${payload.id}`);
 });
 
-queue.on(QueueTask.ExecuteLike, (...args) =>
-  console.log(
-    '<><><><><><><><><><><><>><><><><<><><><>><><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><<><><><><><><><><><> Received a LIKE from the queue:',
-    args,
-  ),
-);
-queue.on(QueueTask.ExecuteQuote, (...args) =>
-  console.log(
-    '<><><><><><><><><><><><>><><><><<><><><>><<><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><><><><><><><><><><> Received a QUOTE from the queue:',
-    args,
-  ),
-);
-queue.on(QueueTask.ExecuteComment, (...args) =>
-  console.log(
-    '<><><><><><><><><><><><>><><><><<><><><>><><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><<><><><><><><><><><> Received a COMMENT from the queue:',
-    args,
-  ),
-);
-queue.on(QueueTask.ExecuteRetweet, (...args) =>
-  console.log(
-    '<><><><><><><><><><><><>><><><><<><><><<><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><>><><><><><><><><><><> Received a retweet from the queue:',
-    args,
-  ),
-);
+/**
+ *
+ * @listens QueueTask.ExecuteLike
+ *
+ * This function listens to a queue task and executes a "like" operation on a tweet.
+ *
+ * @param {LikeTaskPayload} payload - The data payload for the queue task.
+ * @returns {Promise<void>} - A Promise that resolves when the like operation is complete.
+ */
+queue.on(QueueTask.ExecuteLike, async (...[payload]) => {
+  const { tweetId, authorId, authorUsername } = payload as LikeTaskPayload;
+
+  try {
+    /**
+     * @operation
+     *
+     * This is a fail safe find operation to ensure we have a
+     * valid author from the agent executor
+     */
+    const author = await prisma.author.findFirst({
+      where: {
+        OR: [{ id: authorId }, { handle: authorUsername }],
+      },
+    });
+
+    if (!author) return;
+
+    const tweet = await prisma.tweet.findUnique({
+      where: {
+        id: tweetId,
+      },
+    });
+
+    if (!tweet) return;
+
+    const like = await prisma.like.create({
+      data: {
+        author_id: author.id,
+        tweet_id: tweet.id,
+        origin_state: JSON.stringify(tweet),
+      },
+    });
+
+    /**
+     * @operation
+     *
+     * Sends a new event to the queue with the `QueueTask.EmbedReaction` task and the `ITweetIntent.LIKE` intent.
+     * The `args` parameter contains a JSON stringified object with the `like`, `tweet`, and `author` objects.
+     */
+    queue.send({
+      event: QueueTask.EmbedReaction,
+      args: [ITweetIntent.LIKE, JSON.stringify({ like, tweet, author })],
+    });
+
+    /**
+     * Log a success message to the console.
+     */
+    console.log(`[QueueTask.ExecuteLike] successful for ${tweetId}`);
+  } catch (error) {
+    /**
+     * Log an error message to the console if an error occurs.
+     */
+    console.error(`[QueueTask.ExecuteLike] ${authorUsername} error ${error}`);
+  }
+});
+
+/**
+ * @listens QueueTask.ExecuteQuote
+ *
+ * This function listens to a queue task and executes a "quote" operation on a tweet.
+ *
+ * @param {QuoteTaskPayload} payload - The data payload for the queue task.
+ * @returns {Promise<void>} - A Promise that resolves when the quote operation is complete.
+ */
+queue.on(QueueTask.ExecuteQuote, async (...[payload]) => {
+  const { tweetId, authorId, authorUsername, content } =
+    payload as QuoteTaskPayload;
+
+  try {
+    const author = await prisma.author.findFirst({
+      where: {
+        OR: [{ id: authorId }, { handle: authorUsername }],
+      },
+    });
+
+    if (!author) return;
+
+    const tweet = await prisma.tweet.findUnique({
+      where: {
+        id: tweetId,
+      },
+    });
+
+    if (!tweet) return;
+
+    const quote = await prisma.tweet.create({
+      data: {
+        content,
+        intent: ITweetIntent.QUOTE,
+        author_id: author.id,
+        is_reply_tweet: false,
+        is_quote_tweet: true,
+        quote_parent_id: tweet.id,
+      },
+    });
+
+    /**
+     * @operation
+     *
+     * Schedules a new event to the queue with the `QueueTask.EmbedOpinion` task and the `ITweetIntent.QUOTE` intent.
+     * The `args` parameter contains a JSON stringified object with the `quote` object.
+     */
+    queue.schedule({
+      event: QueueTask.EmbedOpinion,
+      delay: 5000,
+      args: [ITweetIntent.QUOTE, JSON.stringify(quote)],
+    });
+
+    /**
+     * Log a success message to the console.
+     */
+    console.log(`[QueueTask.ExecuteQuote] successful for ${tweetId}`);
+  } catch (error) {
+    /**
+     * Log an error message to the console if an error occurs.
+     */
+    console.error(`[QueueTask.ExecuteQuote] ${authorUsername} error ${error}`);
+  }
+});
+
+queue.on(QueueTask.ExecuteComment, async (...[payload]) => {
+  const { tweetId, authorId, content, authorUsername } =
+    payload as QuoteTaskPayload;
+
+  try {
+    const author = await prisma.author.findFirst({
+      where: {
+        OR: [{ id: authorId }, { handle: authorUsername }],
+      },
+    });
+
+    if (!author) return;
+
+    const tweet = await prisma.tweet.findUnique({
+      where: {
+        id: tweetId,
+      },
+    });
+
+    if (!tweet) return;
+
+    const comment = await prisma.tweet.create({
+      data: {
+        content,
+        intent: ITweetIntent.REPLY,
+        author_id: author.id,
+        is_reply_tweet: true,
+        is_quote_tweet: false,
+        reply_parent_id: tweet.id,
+      },
+    });
+
+    queue.schedule({
+      event: QueueTask.EmbedOpinion,
+      delay: 5000,
+      args: [ITweetIntent.QUOTE, JSON.stringify(comment)],
+    });
+
+    console.log(`[QueueTask.ExecuteComment] successful for ${tweetId}`);
+  } catch (error) {
+    console.error(
+      `[QueueTask.ExecuteComment] ${authorUsername} error ${error}`,
+    );
+  }
+});
+
+queue.on(QueueTask.ExecuteRetweet, async (...[payload]) => {
+  const { tweetId, authorId, authorUsername } = payload as QuoteTaskPayload;
+
+  try {
+    const author = await prisma.author.findFirst({
+      where: {
+        OR: [{ id: authorId }, { handle: authorUsername }],
+      },
+    });
+
+    if (!author) return;
+
+    const tweet = await prisma.tweet.findUnique({
+      where: {
+        id: tweetId,
+      },
+    });
+
+    if (!tweet) return;
+
+    const retweet = await prisma.retweet.create({
+      data: {
+        author_id: author.id,
+        tweet_id: tweet.id,
+        origin_state: JSON.stringify(tweet),
+      },
+    });
+
+    /**
+     * @operation
+     *
+     * Sends a new event to the queue with the `QueueTask.EmbedReaction` task and the `ITweetIntent.RETWEET` intent.
+     * The `args` parameter contains a JSON stringified object with the `RETWEET`, `tweet`, and `author` objects.
+     */
+    queue.send({
+      event: QueueTask.EmbedReaction,
+      args: [ITweetIntent.RETWEET, JSON.stringify({ retweet, tweet, author })],
+    });
+
+    /**
+     * Log a success message to the console.
+     */
+
+    console.log(`[QueueTask.ExecuteRetweet] successful for ${tweetId}`);
+  } catch (error) {
+    console.error(
+      `[QueueTask.ExecuteRetweet] ${authorUsername} error ${error}`,
+    );
+  }
+});

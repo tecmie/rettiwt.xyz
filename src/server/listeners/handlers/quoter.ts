@@ -34,6 +34,8 @@ const quoteTweetExecutorSchema = z.object({
     ),
 });
 
+export type QuoteTaskPayload = z.infer<typeof quoteTweetExecutorSchema>;
+
 function quoteTweetDescription(): string {
   return 'Use this to quote a selected tweet with your comment.';
 }

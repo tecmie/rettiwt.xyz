@@ -32,6 +32,8 @@ const executorSchema = z.object({
     ),
 });
 
+export type LikeTaskPayload = z.infer<typeof executorSchema>;
+
 /**
  * Returns the default description string.
  * @returns {string} The default description string.
