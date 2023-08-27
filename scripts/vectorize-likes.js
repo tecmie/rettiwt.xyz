@@ -18,13 +18,6 @@ const processTweets = async (jsonFilePath) => {
       continue;
     }
 
-
-    /* fix the asemota issue */
-    // if(tweet.username != "asemota") {
-    //   console.log(tweet.username)
-    //   continue;
-    // }
-
     const {
       url,
       type,
@@ -87,6 +80,96 @@ const processTweets = async (jsonFilePath) => {
 
   console.log('Tweets processed successfully! Pass the virtual popcorn');
 };
+
+/**
+ * @example
+ * 
+ * 
+ * [
+  {
+    "username": "DanielRegha",
+    "type": "likes",
+    "url": "https://twitter.com/davido/status/1692864078950117474",
+    "timestamp": "2023-08-19T16:21:04.916Z",
+    "full_tweet": {
+      "id": "1692864078950117474",
+      "conversation_id": "1692864078950117474",
+      "full_text": "Praying for you my brother @wizkidayo Sadness flies away on the wings of time. ❤️",
+      "reply_count": 4665,
+      "retweet_count": 18750,
+      "favorite_count": 102872,
+      "hashtags": [],
+      "symbols": [],
+      "user_mentions": [
+        {
+          "id_str": "32660559",
+          "name": "Wizkid",
+          "screen_name": "wizkidayo",
+          "profile": "https://twitter.com/wizkidayo"
+        }
+      ],
+      "urls": [],
+      "media": [],
+      "url": "https://twitter.com/davido/status/1692864078950117474",
+      "created_at": "2023-08-19T11:40:22.000Z",
+      "view_count": 2017080,
+      "quote_count": 677,
+      "is_quote_tweet": false,
+      "is_retweet": false,
+      "is_pinned": false,
+      "is_truncated": false,
+      "startUrl": "https://twitter.com/davido/status/1692864078950117474"
+    }
+  },
+
+  {
+    "username": "Emeneks",
+    "type": "likes",
+    "url": "https://twitter.com/EzeVictr/status/1692929087159796172",
+    "timestamp": "2023-08-19T17:12:26.355Z",
+    "full_tweet": {
+      "username": "EzeVictr",
+      "user_id": "1654938641536303107",
+      "id": "1692929087159796172",
+      "conversation_id": "1692929087159796172",
+      "full_text": "My Boss @FS_Yusuf_  followed me!! Add 6 more shoulder pads for me . https://t.co/ybso1mPN89",
+      "reply_count": 16,
+      "retweet_count": 3,
+      "favorite_count": 79,
+      "hashtags": [],
+      "symbols": [],
+      "user_mentions": [
+        {
+          "id_str": "468685040",
+          "name": "FS Yusuf",
+          "screen_name": "FS_Yusuf_",
+          "profile": "https://twitter.com/FS_Yusuf_"
+        }
+      ],
+      "urls": [],
+      "media": [
+        {
+          "media_url": "https://pbs.twimg.com/media/F35-BuvWkAEsBrB.jpg",
+          "type": "photo"
+        },
+        {
+          "media_url": "https://pbs.twimg.com/media/F35-Bu3W4AAJnnf.jpg",
+          "type": "photo"
+        }
+      ],
+      "url": "https://twitter.com/EzeVictr/status/1692929087159796172",
+      "created_at": "2023-08-19T15:58:42.000Z",
+      "view_count": 5541,
+      "quote_count": 1,
+      "is_quote_tweet": false,
+      "is_retweet": false,
+      "is_pinned": false,
+      "is_truncated": false,
+      "startUrl": "https://twitter.com/EzeVictr/status/1692929087159796172"
+    }
+  },
+]
+ */
 
 const jsonFilePath = 'raw/data/parsed/dataset_twitter_scrape_likes_full_parsed.json';
 
