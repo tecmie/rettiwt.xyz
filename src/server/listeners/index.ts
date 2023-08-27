@@ -149,41 +149,33 @@ async function lookupActorAndTweet(
 ): Promise<LookupActorTweetReturnData | null> {
   const { authorId, tweetId, authorUsername } = payload;
 
-  /**
-   * @operation
-   *
-   * This is a fail safe find operation to ensure we have a
-   * valid author from the agent executor
-   */
-  const actor = await prisma.author.findFirst({
-    where: {
-      OR: [{ id: authorId }, { handle: authorUsername }],
-    },
-  });
+  try {
+    /**
+     * @operation
+     *
+     * This is a fail safe find operation [OR] Query to ensure
+     * we have a valid author from the agent executor
+     */
+    const actor = await prisma.author.findFirstOrThrow({
+      where: {
+        OR: [{ id: authorId }, { handle: authorUsername }],
+      },
+    });
 
-  if (!actor) {
-    /* prettier-ignore */
-    console.warn(`[Utils.lookupActorAndTweet] Author not found for ID: ${authorId} or username: ${authorUsername}`);
+    const tweet = await prisma.tweet.findUniqueOrThrow({
+      where: {
+        id: tweetId,
+      },
+      include: {
+        author: true,
+      },
+    });
+
+    return { actor, tweet };
+  } catch (error) {
+    console.error(`[Utils.lookupActorAndTweet] ${error}`);
     return null;
   }
-
-  const tweet = await prisma.tweet.findUnique({
-    where: {
-      id: tweetId,
-    },
-    include: {
-      author: true,
-    },
-  });
-
-  if (!tweet) {
-    console.warn(
-      `[Utils.lookupActorAndTweet] Tweet not found for ID: ${tweetId}`,
-    );
-    return null;
-  }
-
-  return { actor, tweet };
 }
 
 /**
@@ -218,7 +210,7 @@ async function creatInteractionContext(
      * If so, set the additionalInfo string accordingly.
      */
     if (tweetMeta.is_quote_tweet && tweetMeta.is_reply_tweet) {
-      const withQuotedComment = await prisma.tweet.findUnique({
+      const withQuotedComment = await prisma.tweet.findUniqueOrThrow({
         where: {
           id: tweetMeta.id,
         },
@@ -235,8 +227,6 @@ async function creatInteractionContext(
           },
         },
       });
-
-      if (!withQuotedComment) throw new Error('Quote and Comment not found');
 
       /* prettier-ignore */
       const { quote_parent: quoted, reply_parent: commented } = withQuotedComment;
@@ -255,7 +245,7 @@ async function creatInteractionContext(
        * If so, append to the additionalInfo string.
        */
       if (tweetMeta.is_quote_tweet) {
-        const withQuote = await prisma.tweet.findUnique({
+        const withQuote = await prisma.tweet.findUniqueOrThrow({
           where: {
             id: tweetMeta.id,
           },
@@ -267,8 +257,6 @@ async function creatInteractionContext(
             },
           },
         });
-
-        if (!withQuote) throw new Error('Quote Tweet not found');
 
         const { quote_parent: quoted } = withQuote;
 
@@ -286,7 +274,7 @@ async function creatInteractionContext(
        * If so, append to the additionalInfo string.
        */
       if (tweetMeta.is_reply_tweet) {
-        const withComment = await prisma.tweet.findUnique({
+        const withComment = await prisma.tweet.findUniqueOrThrow({
           where: {
             id: tweetMeta.id,
           },
@@ -298,8 +286,6 @@ async function creatInteractionContext(
             },
           },
         });
-
-        if (!withComment) throw new Error('Comment Tweet not found');
 
         const { reply_parent: commented } = withComment;
 
@@ -364,7 +350,7 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
     }
 
     // Find the unique author in the Prisma database
-    const author = await prisma.author.findUnique({
+    const author = await prisma.author.findUniqueOrThrow({
       where: { id: authorId },
       include: {
         followers: true,
@@ -372,10 +358,6 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
       },
     });
 
-    if (!author) {
-      console.error('Author not found:', authorId);
-      return;
-    }
     const { following, followers, ...actor } = author;
 
     /* prettier-ignore */
@@ -483,15 +465,13 @@ queue.on(QueueTask.EmbedReaction, async (...[intent, payload]) => {
      * @operation
      * Get all of our actors followers, and following
      */
-    const actorWithFollowers = await prisma.author.findUnique({
+    const actorWithFollowers = await prisma.author.findUniqueOrThrow({
       where: { id: actor.id },
       include: {
         followers: true,
         following: true,
       },
     });
-
-    if (!actorWithFollowers) throw new Error('Actor-Followers not found');
 
     /* prettier-ignore */
     console.log(`${_CONSOLE_LOG_ASCII_} processed query payload for << QueueTask.EmbedReaction >> ${JSON.stringify({ actor, reaction, actorWithFollowers, tweet}, null, 2)}`)
@@ -616,16 +596,11 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
   for (const follower of followers) {
     try {
       // 2. Get the full author object for each following_id
-      const author = await prisma.author.findUnique({
+      const author = await prisma.author.findUniqueOrThrow({
         where: {
           id: follower.following_id,
         },
       });
-
-      if (!author) {
-        console.warn(`Author not found for ID: ${follower.following_id}`);
-        continue;
-      }
 
       /**
        * @operation
@@ -908,6 +883,38 @@ queue.on(QueueTask.ExecuteRetweet, async (...[intent, payload]) => {
 
     /**
      * @operation
+     *
+     * We need to ensure this same user has not retweeted the same tweet
+     *
+     */
+    const retweetExists = await prisma.retweet.findFirst({
+      where: {
+        AND: [
+          {
+            author_id: actor.id,
+          },
+
+          {
+            tweet_id: tweet.id,
+          },
+        ],
+      },
+    });
+
+    /**
+     * @returns {void} - A void return type
+     *
+     * we return a void without triggering a new event
+     */
+    if (retweetExists) {
+      console.warn(
+        `[QueueTask.ExecuteRetweet] ${actor.handle} has already liked ${tweetId}`,
+      );
+      return;
+    }
+
+    /**
+     * @operation
      */
     const [retweet, updatedTweet] = await prisma.$transaction([
       prisma.like.create({
@@ -986,6 +993,37 @@ queue.on(QueueTask.ExecuteLike, async (...[intent, payload]) => {
     if (!actorTweetResponse) return;
 
     const { actor, tweet } = actorTweetResponse;
+
+    /**
+     * @operation
+     *
+     * We need to ensure this same user has not liked the same tweet
+     */
+    const likeExists = await prisma.like.findFirst({
+      where: {
+        AND: [
+          {
+            author_id: actor.id,
+          },
+
+          {
+            tweet_id: tweet.id,
+          },
+        ],
+      },
+    });
+
+    /**
+     * @returns {void} - A void return type
+     *
+     * we return a void without triggering a new event
+     */
+    if (likeExists) {
+      console.warn(
+        `[QueueTask.ExecuteLike] ${actor.handle} has already liked ${tweetId}`,
+      );
+      return;
+    }
 
     /**
      * @operation
