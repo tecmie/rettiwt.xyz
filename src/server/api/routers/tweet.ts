@@ -13,7 +13,7 @@ import queue, { QueueTask } from '@/utils/queue';
  * export * as eml from '@/server/listeners/tweet-listener';
  * import '@/server/listeners/tweet-listener';
  */
-export * as ximl from '@/server/listeners';
+export * as ximl from '@/server/listeners/default';
 
 /**
  * This is the router for tweets.

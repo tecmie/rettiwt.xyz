@@ -606,7 +606,7 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
        * @operation
        *
        * We perform the vector similarity search step here. We are using an
-       * Euclidean distance to get very similar interactions  although this could limit
+       * Euclidean distance to get very similar interactions although this could limit
        * the number of results we can retrieve due to our very small dataset
        */
       const table = await db.openTable(author.handle, embeddings);

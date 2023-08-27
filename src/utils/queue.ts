@@ -85,7 +85,7 @@ export class DefferedQueue extends EventEmitter {
      * We want to have at least 120 seconds delay so we can avoid
      * API Rate Limit Restrictions
      */
-    const delayThreshold = delay < 120000 ? 180000 : delay;
+    const delayThreshold = delay < 120000 ? 150000 : delay;
 
     void setTimeout(() => {
       this.emit(event, ...args);
