@@ -8,6 +8,13 @@ import type { Retweet, Author, Follow, Tweet, Like } from '@prisma/client';
 import { MetricType, OpenAIEmbeddingFunction, connect } from 'vectordb';
 import {
   _AI_TEMPERATURE_MEDIUM_,
+  _BROADCAST_INIT_,
+  _CONSOLE_LOG_ASCII_,
+  _CONSOLE_LOG_COMMENT_,
+  _CONSOLE_LOG_EMBEDDINGS_,
+  _CONSOLE_LOG_LIKE_,
+  _CONSOLE_LOG_RETWEET_,
+  _CONSOLE_LOG_TWEET_,
   _GPT316K_MODEL_,
   _VECTOR_SOURCE_COLUMN_,
 } from '@/utils/constants';
@@ -91,6 +98,11 @@ export async function embeddingsFromInteraction(payload: EmbeddingRequestData) {
 
   const { id, intent, context, timestamp, actor } = payload;
 
+  console.log(`
+  ${_CONSOLE_LOG_EMBEDDINGS_}
+  ${JSON.stringify({ payload }, null, 2)}
+  `);
+
   /**
    * @note
    * Something to note when working with LanceDB is that the order
@@ -154,9 +166,8 @@ async function lookupActorAndTweet(
   });
 
   if (!actor) {
-    console.warn(
-      `[lookupActorAndTweet] Author not found for ID: ${authorId} or username: ${authorUsername}`,
-    );
+    /* prettier-ignore */
+    console.warn(`[Utils.lookupActorAndTweet] Author not found for ID: ${authorId} or username: ${authorUsername}`);
     return null;
   }
 
@@ -170,7 +181,9 @@ async function lookupActorAndTweet(
   });
 
   if (!tweet) {
-    console.warn(`[lookupActorAndTweet] Tweet not found for ID: ${tweetId}`);
+    console.warn(
+      `[Utils.lookupActorAndTweet] Tweet not found for ID: ${tweetId}`,
+    );
     return null;
   }
 
@@ -190,96 +203,31 @@ async function creatInteractionContext(
   params: CreateContextParams,
 ): Promise<string> {
   const { tweetAuthor, tweetMeta, intent, timestamp } = params;
-  /**
-   * Additional information string initialized as empty.
-   * It will contain extra details about the tweet if it's a quote or reply.
-   * @type {string}
-   */
-  let additionalInfo = '';
 
-  /**
-   * @operation
-   *
-   * Check if the tweet is both a quote and a reply.
-   * If so, set the additionalInfo string accordingly.
-   */
-  if (tweetMeta.is_quote_tweet && tweetMeta.is_reply_tweet) {
-    const withQuotedComment = await prisma.tweet.findUnique({
-      where: {
-        id: tweetMeta.id,
-      },
-      include: {
-        reply_parent: {
-          include: {
-            author: true,
-          },
-        },
-        quote_parent: {
-          include: {
-            author: true,
-          },
-        },
-      },
-    });
-    if (withQuotedComment) {
-      const { quote_parent: quoted, reply_parent: commented } =
-        withQuotedComment;
+  console.log(`
+  ${_BROADCAST_INIT_}
+  ${intent} Utils.creatInteractionContext ${JSON.stringify(
+    { tweetAuthor, tweetMeta, intent, timestamp },
+    null,
+    2,
+  )}
+  `);
 
-      additionalInfo = `
-      Additional Context:
-        This Tweet is both a QUOTE-TWEET ACTION to  ${quoted?.author.name} "@${
-        quoted?.author.handle
-      }" Tweet "${quoted?.content}" at time "${
-        quoted?.timestamp ?? 'unknown'
-      }". 
-        and a THREAD-TWEET ACTION to ${commented?.author.name} "@${
-        commented?.author.handle
-      }" Tweet "${commented?.content}" at time "${
-        commented?.timestamp ?? 'unknown'
-      }"
-      `;
-    }
-  } else {
+  try {
     /**
-     * @operation
-     *
-     * Check if the tweet is a quote.
-     * If so, append to the additionalInfo string.
+     * Additional information string initialized as empty.
+     * It will contain extra details about the tweet if it's a quote or reply.
+     * @type {string}
      */
-    if (tweetMeta.is_quote_tweet) {
-      const withQuote = await prisma.tweet.findUnique({
-        where: {
-          id: tweetMeta.id,
-        },
-        include: {
-          quote_parent: {
-            include: {
-              author: true,
-            },
-          },
-        },
-      });
-      if (withQuote) {
-        const { quote_parent: quoted } = withQuote;
-
-        additionalInfo += `
-        Additional Context:
-        This Tweet is a QUOTE-TWEET ACTION to  ${quoted?.author.name} "@${
-          quoted?.author.handle
-        }" Tweet "${quoted?.content}" at time "${
-          quoted?.timestamp ?? 'unknown'
-        }". 
-        `;
-      }
-    }
+    let additionalInfo = '';
 
     /**
      * @operation
      *
-     * Check if the tweet is a reply.
-     * If so, append to the additionalInfo string.
+     * Check if the tweet is both a quote and a reply.
+     * If so, set the additionalInfo string accordingly.
      */
-    if (tweetMeta.is_reply_tweet) {
+    if (tweetMeta.is_quote_tweet && tweetMeta.is_reply_tweet) {
       const withQuotedComment = await prisma.tweet.findUnique({
         where: {
           id: tweetMeta.id,
@@ -290,38 +238,105 @@ async function creatInteractionContext(
               author: true,
             },
           },
+          quote_parent: {
+            include: {
+              author: true,
+            },
+          },
         },
       });
-      if (withQuotedComment) {
-        const { reply_parent: commented } = withQuotedComment;
 
+      if (!withQuotedComment) throw new Error('Quote and Comment not found');
+
+      /* prettier-ignore */
+      const { quote_parent: quoted, reply_parent: commented } = withQuotedComment;
+
+      /* prettier-ignore */
+      additionalInfo = `
+        Additional Context:
+          This Tweet is both a QUOTE-TWEET ACTION to  ${quoted?.author.name} "@${quoted?.author.handle}" Tweet "${quoted?.content}" at time "${quoted?.timestamp ?? 'unknown'}". 
+          and a THREAD-TWEET ACTION to ${commented?.author.name} "@${commented?.author.handle}" Tweet "${commented?.content}" at time "${commented?.timestamp ?? 'unknown'}"
+        `;
+    } else {
+      /**
+       * @operation
+       *
+       * Check if the tweet is a quote.
+       * If so, append to the additionalInfo string.
+       */
+      if (tweetMeta.is_quote_tweet) {
+        const withQuote = await prisma.tweet.findUnique({
+          where: {
+            id: tweetMeta.id,
+          },
+          include: {
+            quote_parent: {
+              include: {
+                author: true,
+              },
+            },
+          },
+        });
+
+        if (!withQuote) throw new Error('Quote Tweet not found');
+
+        const { quote_parent: quoted } = withQuote;
+
+        /* prettier-ignore */
+        additionalInfo += `
+          Additional Context:
+          This Tweet is a QUOTE-TWEET ACTION to  ${quoted?.author.name} "@${quoted?.author.handle}" Tweet "${quoted?.content}" at time "${quoted?.timestamp ?? 'unknown'}".
+          `;
+      }
+
+      /**
+       * @operation
+       *
+       * Check if the tweet is a reply.
+       * If so, append to the additionalInfo string.
+       */
+      if (tweetMeta.is_reply_tweet) {
+        const withComment = await prisma.tweet.findUnique({
+          where: {
+            id: tweetMeta.id,
+          },
+          include: {
+            reply_parent: {
+              include: {
+                author: true,
+              },
+            },
+          },
+        });
+
+        if (!withComment) throw new Error('Comment Tweet not found');
+
+        const { reply_parent: commented } = withComment;
+
+        /* prettier-ignore */
         additionalInfo = `
         Additional Context:
-        This Tweet is a THREAD-TWEET ACTION to ${commented?.author.name} "@${
-          commented?.author.handle
-        }" Tweet "${commented?.content}" at time "${
-          commented?.timestamp ?? 'unknown'
-        }"
+        This Tweet is a THREAD-TWEET ACTION to ${commented?.author.name} "@${commented?.author.handle}" Tweet "${commented?.content}" at time "${commented?.timestamp ?? 'unknown'}"
         `;
       }
     }
-  }
 
-  /**
-   * Construct the context string incorporating all provided details.
-   * @type {string}
-   */
-  const context = `At ${timestamp ?? 'unknown'}, ${String(
-    intent,
-  ).toUpperCase()} 
-    with content: ${tweetMeta.content}
-    This tweet was written by ${tweetAuthor.name} "@${tweetAuthor.handle}"
-    at time "${tweetMeta.timestamp ?? 'unknown'}".
+    /**
+     * Construct the context string incorporating all provided details.
+     * @type {string}
+     */
+    /* prettier-ignore */
+    const context = `At ${timestamp ?? 'unknown'}, ${String(intent)} with content: ${tweetMeta.content}
+    This tweet was written by ${tweetAuthor.name} "@${tweetAuthor.handle}" at time "${tweetMeta.timestamp ?? 'unknown'}".
 
     ${additionalInfo}
   `;
 
-  return context;
+    return context;
+  } catch (error) {
+    console.error('Error creating interaction context:', error);
+    return '';
+  }
 }
 
 /**
@@ -340,6 +355,9 @@ async function creatInteractionContext(
  * @returns {Promise<void>} - A promise that resolves when the tweet has been embedded.
  */
 queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
+  /* prettier-ignore */
+  console.log(`${_BROADCAST_INIT_} ${intent} QueueTask.EmbedOpinion ${payload}`)
+
   try {
     const {
       intent: tweetIntent,
@@ -370,11 +388,18 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
     }
     const { following, followers, ...actor } = author;
 
+    console.log(`
+    ${_CONSOLE_LOG_ASCII_}
+    destructured object for << QueueTask.EmbedOpinion >>
+    ${JSON.stringify({ author, actor, following, followers }, null, 2)}
+    `);
+
     /**
      * @var
      * Build the sentence for our engagement intent
      */
-    const opinionIntent = `${actor.name} "@${actor.handle}" wrote a new post as a ${intent} ACTION`;
+    /* prettier-ignore */
+    const opinionIntent = `${actor.name} "@${actor.handle}" wrote a new tweet as a ${intent} ACTION`;
 
     /**
      * @operation
@@ -388,7 +413,7 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
       timestamp: tweet.timestamp ?? 'unknown',
       intent: tweetIntent as ITweetIntent,
       context: await creatInteractionContext({
-        tweetAuthor: author,
+        tweetAuthor: actor,
 
         /**
          * @field
@@ -405,10 +430,9 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
       }),
     };
 
-    console.log(
-      { data },
-      '<><><><><><><><><><><><><><><><><><><><><><><><>><><><><><><><><><><><><><><><><><><><><><><><><><>><><><><><><',
-    );
+    /**
+     * @operation
+     */
     await embeddingsFromInteraction(data);
 
     /**
@@ -455,15 +479,16 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
  * @returns {Promise<void>} - A promise that resolves when the reaction has been embedded.
  */
 queue.on(QueueTask.EmbedReaction, async (...[intent, payload]) => {
-  try {
-    const {
-      reaction,
-      actor: author,
-      tweet,
-    } = JSON.parse(payload) as TaskEmbedReactionData;
+  /* prettier-ignore */
+  console.log(`${_BROADCAST_INIT_} ${intent} << QueueTask.EmbedReaction >> ${payload} `)
 
-    if (!author || !tweet) {
-      console.error('Author or Tweet is missing');
+  try {
+    const { reaction, actor, tweet } = JSON.parse(
+      payload,
+    ) as TaskEmbedReactionData;
+
+    if (!actor || !tweet) {
+      console.error('Actor or Tweet is missing');
       return;
     }
 
@@ -471,24 +496,36 @@ queue.on(QueueTask.EmbedReaction, async (...[intent, payload]) => {
      * @operation
      * Get all of our actors followers, and following
      */
-    const actor = await prisma.author.findUnique({
-      where: { id: author.id },
+    const actorWithFollowers = await prisma.author.findUnique({
+      where: { id: actor.id },
       include: {
         followers: true,
         following: true,
       },
     });
 
+    if (!actorWithFollowers) throw new Error('Actor-Followers not found');
+
+    /* prettier-ignore */
+    console.log(`${_CONSOLE_LOG_ASCII_} processed query payload for << QueueTask.EmbedReaction >> ${JSON.stringify({ actor, reaction, actorWithFollowers, tweet}, null, 2)}`)
+
     if (!actor) {
-      console.error('[QueueTask.EmbedReaction] Actor not found:', author.id);
+      console.error(
+        '[QueueTask.EmbedReaction] Actor not found:',
+        actorWithFollowers?.id,
+      );
       return;
     }
 
     /* Javascript destructing for objects */
-    const { author: tweetAuthor, ...tweetMeta } = tweet;
-    const { following, followers, ...actorProfile } = actor;
+    const { author, ...tweetMeta } = tweet;
+    const { following, followers, ...actorProfile } = actorWithFollowers;
 
-    const reactionIntent = `${actor.name} "@${actor.handle}" performed a ${intent} ACTION`;
+    /* prettier-ignore */
+    console.log(` ${_CONSOLE_LOG_ASCII_} destructured object for << QueueTask.EmbedReaction >> ${JSON.stringify({ author, actorProfile, followers,  tweetMeta}, null, 2)}`)
+
+    /* prettier-ignore */
+    const reactionIntent = `${actor.name} "@${actor.handle}" performed a new ${String(intent)} ACTION on a Tweet`;
 
     /**
      * @operation
@@ -502,16 +539,15 @@ queue.on(QueueTask.EmbedReaction, async (...[intent, payload]) => {
       timestamp: reaction.timestamp ?? 'unknown',
       intent: intent,
       context: await creatInteractionContext({
-        tweetAuthor,
+        tweetAuthor: author,
         tweetMeta,
         timestamp: tweet.timestamp ?? 'unknown',
         intent: reactionIntent,
       }),
     };
-    console.log(
-      { reaction: data },
-      '<><><><><><><><><><><><><><><><><><><><><><><><>><><><><><><><><><><><><><><><><><><><><><><><><><>><><><><><><',
-    );
+
+    /* prettier-ignore */
+    console.log(` ${_CONSOLE_LOG_ASCII_} ${JSON.stringify({ data, followers, following, tweet, tweetMeta}, null, 2)} `)
 
     /**
      * @operation
@@ -543,7 +579,7 @@ queue.on(QueueTask.EmbedReaction, async (...[intent, payload]) => {
       ],
     });
 
-    console.log(`Successfully embedded reaction for ${author.name}`);
+    console.log(`Successfully embedded reaction for ${actorProfile.name}`);
   } catch (error) {
     console.error('Error embedding reaction:', error);
   }
@@ -563,6 +599,9 @@ queue.on(QueueTask.EmbedReaction, async (...[intent, payload]) => {
  * @returns {Promise<void>} - A Promise that resolves when the broadcast operation is complete.
  */
 queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
+  /* prettier-ignore */
+  console.log(`${_BROADCAST_INIT_} Kickstarting a <<QueueTask.GlobalBroadcast>> for ${intent} ${JSON.stringify(payload, null, 2)}`)
+
   /**
    * Agent Executor with Langchain Tools
    * This uses the OpenAI Function Call kwargs available in GPT3.5 and GPT4
@@ -639,13 +678,9 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
         },
       });
 
-      // 3. Construct the context
-      const context = `
-        Your current time is ${new Date().toDateString()} 
-        How are you going to react to ${meta.intent}
-        where Tweet.ID is ${meta.id} with summary of this engagement: 
-        "${meta.context}" ?
-      `;
+      /* prettier-ignore */
+      const context = `Your current time is ${new Date().toISOString()}. How are you going to react to ${meta.intent} where Tweet.ID is ${meta.id} 
+      with summary of this engagement: "${meta.context}" ?`;
 
       /**
        * @operation
@@ -696,10 +731,7 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
 queue.on(QueueTask.ExecuteQuote, async (...[intent, payload]) => {
   console.log(`Received a ${intent} from the queue:`, payload);
 
-  console.log(
-    '<><><><><><><><><><><><>><><><><<><><><>><><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><<><><><><><><><><><> Received a QUOTE from the queue:',
-    payload,
-  );
+  console.log(_CONSOLE_LOG_TWEET_, [intent, payload]);
 
   const { tweetId, authorId, authorUsername, content } =
     payload as QuoteTaskPayload;
@@ -742,6 +774,8 @@ queue.on(QueueTask.ExecuteQuote, async (...[intent, payload]) => {
       }),
     ]);
 
+    const opinionatedQuote = Object.assign(quote, { author: actor });
+
     /**
      * @operation
      *
@@ -750,7 +784,7 @@ queue.on(QueueTask.ExecuteQuote, async (...[intent, payload]) => {
      */
     queue.send({
       event: QueueTask.EmbedOpinion,
-      args: [ITweetIntent.QUOTE, JSON.stringify(quote)],
+      args: [ITweetIntent.QUOTE, JSON.stringify(opinionatedQuote)],
     });
 
     /**
@@ -780,10 +814,7 @@ queue.on(QueueTask.ExecuteQuote, async (...[intent, payload]) => {
 queue.on(QueueTask.ExecuteComment, async (...[intent, payload]) => {
   console.log(`Received a ${intent} from the queue:`, payload);
 
-  console.log(
-    '<><><><><><><><><><><><>><><><><<><><><>><><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><<><><><><><><><><><> Received a COMMENT from the queue:',
-    payload,
-  );
+  console.log(_CONSOLE_LOG_COMMENT_, [intent, payload]);
 
   const { tweetId, authorId, content, authorUsername } =
     payload as CommentTaskPayload;
@@ -804,7 +835,7 @@ queue.on(QueueTask.ExecuteComment, async (...[intent, payload]) => {
     /**
      * @operation
      */
-    const trans = await prisma.$transaction([
+    const [comment] = await prisma.$transaction([
       prisma.tweet.create({
         data: {
           content,
@@ -826,6 +857,8 @@ queue.on(QueueTask.ExecuteComment, async (...[intent, payload]) => {
       }),
     ]);
 
+    const opinionatedComment = Object.assign(comment, { author: actor });
+
     /**
      * @operation
      *
@@ -834,7 +867,7 @@ queue.on(QueueTask.ExecuteComment, async (...[intent, payload]) => {
      */
     queue.send({
       event: QueueTask.EmbedOpinion,
-      args: [ITweetIntent.QUOTE, JSON.stringify({ ...trans[0] })],
+      args: [ITweetIntent.REPLY, JSON.stringify(opinionatedComment)],
     });
 
     /**
@@ -870,11 +903,7 @@ queue.on(QueueTask.ExecuteComment, async (...[intent, payload]) => {
 queue.on(QueueTask.ExecuteRetweet, async (...[intent, payload]) => {
   console.log(`Received a ${intent} from the queue:`, payload);
 
-  console.log(
-    '<><><><><><><><><><><><>><><><><<><><><>><><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><<><><><><><><><><><> Received a RETWEET from the queue:',
-    payload,
-    intent,
-  );
+  console.log(_CONSOLE_LOG_RETWEET_, [intent, payload]);
 
   const { tweetId, authorId, authorUsername } = payload as RetweetTaskPayload;
 
@@ -913,6 +942,8 @@ queue.on(QueueTask.ExecuteRetweet, async (...[intent, payload]) => {
       }),
     ]);
 
+    const retweetedTweetWithAuthor = Object.assign(tweet, updatedTweet);
+
     /**
      * @operation
      *
@@ -923,7 +954,11 @@ queue.on(QueueTask.ExecuteRetweet, async (...[intent, payload]) => {
       event: QueueTask.EmbedReaction,
       args: [
         ITweetIntent.RETWEET,
-        JSON.stringify({ reaction: retweet, tweet: updatedTweet, actor }),
+        JSON.stringify({
+          reaction: retweet,
+          tweet: retweetedTweetWithAuthor,
+          actor,
+        }),
       ],
     });
 
@@ -953,10 +988,7 @@ queue.on(QueueTask.ExecuteRetweet, async (...[intent, payload]) => {
 queue.on(QueueTask.ExecuteLike, async (...[intent, payload]) => {
   console.log(`Received a ${intent} from the queue:`, payload);
 
-  console.log(
-    '<><><><><><><><><><><><>><><><><<><><><>><><><><><><><><><><><><><><><><><><><><><><<><><><><><><><><<><><><><><><><><><> Received a LIKE from the queue:',
-    payload,
-  );
+  console.log(_CONSOLE_LOG_LIKE_, [intent, payload]);
 
   const { tweetId, authorId, authorUsername } = payload as LikeTaskPayload;
 
@@ -973,7 +1005,7 @@ queue.on(QueueTask.ExecuteLike, async (...[intent, payload]) => {
     /**
      * @operation
      */
-    const trans = await prisma.$transaction([
+    const [like, updatedTweet] = await prisma.$transaction([
       prisma.like.create({
         data: {
           author_id: actor.id,
@@ -991,6 +1023,8 @@ queue.on(QueueTask.ExecuteLike, async (...[intent, payload]) => {
       }),
     ]);
 
+    const likedTweetWithAuthor = Object.assign({}, tweet, updatedTweet);
+
     /**
      * @operation
      *
@@ -1001,7 +1035,7 @@ queue.on(QueueTask.ExecuteLike, async (...[intent, payload]) => {
       event: QueueTask.EmbedReaction,
       args: [
         ITweetIntent.LIKE,
-        JSON.stringify({ reaction: trans[0], tweet: trans[1], actor }),
+        JSON.stringify({ reaction: like, tweet: likedTweetWithAuthor, actor }),
       ],
     });
 
