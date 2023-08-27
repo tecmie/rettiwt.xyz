@@ -63,10 +63,11 @@ model Author {
   id                   String     @id @default(cuid())
   handle               String     @unique
   name                 String
-  avatar               String?
+  tone_of_voice        String
   bio                  String?
-  has_custom_timelines Boolean   @default(false)
+  avatar               String?
   url                  String?
+  has_custom_timelines Boolean   @default(false)
   verified             Boolean   @default(false)
   following            Follow[]  @relation("Following")
   followers            Follow[]  @relation("Followers")

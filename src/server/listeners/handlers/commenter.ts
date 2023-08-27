@@ -4,7 +4,7 @@ import { DynamicStructuredTool } from 'langchain/tools';
 import { ITweetIntent } from '@/types/tweet.type';
 
 const commentExecutorSchema = z.object({
-  delayNumberInMilliseconds: z
+  delay: z
     .number()
     .max(1.44e7)
     .default(180000)
@@ -44,22 +44,22 @@ async function commentExecutor(
 ): Promise<string> {
   try {
     const payload = {
-      intent: ITweetIntent.REPLY,
-      delay: input.delayNumberInMilliseconds,
-      authorId: input.authorId,
-      authorHandle: input.authorUsername,
+      delay: input.delay,
       content: input.content,
-      replyParentId: input.tweetId,
+      tweetId: input.tweetId,
+      authorId: input.authorId,
+      intent: ITweetIntent.REPLY,
+      authorUsername: input.authorUsername,
     };
 
     queue.schedule({
       event: QueueTask.ExecuteComment,
-      delay: input.delayNumberInMilliseconds,
+      delay: input.delay,
       args: [payload.intent, payload],
     });
 
     return Promise.resolve(
-      `We have dispatched the [CommentExecutor] to create a new tweet in ${input.delayNumberInMilliseconds}ms.`,
+      `We have dispatched the [CommentExecutor] to create a new tweet in ${input.delay}ms.`,
     );
   } catch (error) {
     console.error(error);

@@ -50,10 +50,11 @@ async function executor(
 ): Promise<string> {
   try {
     const payload = {
-      intent: ITweetIntent.LIKE,
       tweetId: input.tweetId,
       authorId: input.authorId,
-      authorHandle: input.authorUsername,
+      intent: ITweetIntent.LIKE,
+      authorUsername: input.authorUsername,
+      delay: input.delayNumberInMilliseconds,
     };
 
     /* Trigger a new Event to Schedule this event for execution */

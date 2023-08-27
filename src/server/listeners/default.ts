@@ -581,7 +581,7 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
     modelName: _GPT316K_MODEL_,
     temperature: _AI_TEMPERATURE_MEDIUM_,
     openAIApiKey: env.OAK,
-    verbose: true,
+    // verbose: true,
   });
 
   /**

@@ -4,7 +4,7 @@ import { DynamicStructuredTool } from 'langchain/tools';
 import { ITweetIntent } from '@/types/tweet.type';
 
 const quoteTweetExecutorSchema = z.object({
-  delayNumberInMilliseconds: z
+  delay: z
     .number()
     .max(1.44e7)
     .default(180000)
@@ -44,22 +44,22 @@ async function quoteTweetExecutor(
 ): Promise<string> {
   try {
     const payload = {
-      intent: ITweetIntent.QUOTE,
-      delay: input.delayNumberInMilliseconds,
-      quoteParentId: input.tweetId,
-      authorId: input.authorId,
-      authorHandle: input.authorUsername,
       content: input.content,
+      /** Here TweetID is the QuoteParentID  */
+      tweetId: input.tweetId,
+      authorId: input.authorId,
+      intent: ITweetIntent.QUOTE,
+      authorUsername: input.authorUsername,
     };
 
     queue.schedule({
       event: QueueTask.ExecuteQuote,
-      delay: input.delayNumberInMilliseconds,
+      delay: input.delay,
       args: [payload.intent, payload],
     });
 
     return Promise.resolve(
-      `We have dispatched the [QuoteTweetExecutor] to quote a tweet in ${input.delayNumberInMilliseconds}ms.`,
+      `We have dispatched the [QuoteTweetExecutor] to quote a tweet in ${input.delay}ms.`,
     );
   } catch (error) {
     console.error(error);

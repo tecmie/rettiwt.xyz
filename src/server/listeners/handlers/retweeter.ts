@@ -39,10 +39,11 @@ async function retweetExecutor(
 ): Promise<string> {
   try {
     const payload = {
-      intent: ITweetIntent.RETWEET,
       tweetId: input.tweetId,
       authorId: input.authorId,
-      authorHandle: input.authorUsername,
+      intent: ITweetIntent.RETWEET,
+      authorUsername: input.authorUsername,
+      delay: input.delayNumberInMilliseconds,
     };
 
     queue.schedule({

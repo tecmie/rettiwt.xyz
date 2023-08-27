@@ -1,3 +1,7 @@
+const { OpenAIEmbeddingFunction, connect } = require('vectordb');
+const { PromptTemplate } = require('langchain/prompts');
+const { ChatOpenAI } = require('langchain/chat_models/openai');
+
 // import {prisma} from '@/server/db';
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -10,10 +14,63 @@ const shuffle = require('lodash/shuffle');
  * @returns {Promise<string[]>} - A promise that resolves to an array of author IDs.
  */
 async function createAuthors() {
+  /**
+   * Vector Retrieval step for our authors
+   **/
+  const db = await connect('vectors');
+  const embeddings = new OpenAIEmbeddingFunction(
+    'text',
+    process.env.OAK as string,
+  );
+
   const authorIds = [];
 
   for (const handle in profiles) {
     const user = profiles[handle as '0x'];
+
+    const table = await db.openTable(user.screen_name, embeddings);
+
+    const prompt = PromptTemplate.fromTemplate(`
+      {name}, with username {username} has a Twitter bio that says {bio}. 
+      Their opinion is relevant to their followers and below is subcontext retrieved from their previous timeline activity:
+
+      {context}
+          
+      based on the above subcontext, how would you describe {name} ({username})'s, writing style?`);
+
+    /**
+     * Fetch tweets from vector db
+     */
+    const queryContext = await (
+      await table
+        .search(user.name as string)
+        .where(`type IN ("tweet", "thread-tweet", "quote-tweet")`)
+        .select(['text'])
+        .limit(10)
+        .execute()
+    )
+      .map((r: { text: string }) => r.text)
+      .join('\n\n---\n\n')
+      .substring(0, 7000);
+
+    const modelPrompt = await prompt.format({
+      context: queryContext,
+      name: user.name,
+      username: handle,
+      bio: user.description,
+    });
+
+    const model = new ChatOpenAI({
+      temperature: 0.777,
+      modelName: 'gpt-4',
+      openAIApiKey: process.env.OAK,
+      verbose: true,
+    });
+
+    /* Generate tone of voice and persist */
+    const toneOfVoice = await model.invoke(modelPrompt);
+    console.log({ table, toneOfVoice });
+
     try {
       const createdAuthor = await prisma.author.create({
         data: {
@@ -21,6 +78,7 @@ async function createAuthors() {
           handle: handle,
           name: user.name,
           bio: user.description,
+          tone_of_voice: toneOfVoice.content,
           avatar: user.profile_image_url_https,
           has_custom_timelines: user.has_custom_timelines,
           url: user.profile_banner_url,
