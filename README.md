@@ -11,7 +11,7 @@ communication and reactions across social media platforms are formed, processed 
 
 ## What It Does
 
-`XIMS` runs a simulated environment where AI personas (authors) generate tweets, react to existing tweets, and even carry sentiments. It's a mock Twitter universe to test social interactions, marketing strategies, or your latest trending or controversial hashtag 🤩
+`XIMS` runs a simulated environment where AI personas (authors) generate tweets, react to existing tweets, and even carry sentiments. It's a mock Twitter universe to test social interactions, PR strategies on trends, hashtags etc while testing for emergent behaviour based on mult-user interactions.
 
 # Case Study
 
@@ -139,7 +139,9 @@ MIT License - see [LICENSE.md](LICENSE.md).
 
 ## Acknowledgements
 
-- Inspired by <https://github.com/a16z-infra/ai-town>
+This project was inspired by
+
+- AI Town <https://github.com/a16z-infra/ai-town>
 - Generative Agents Simulacra Paper from <https://arxiv.org/abs/2304.03442>
 
 ## Resources and Technologies used

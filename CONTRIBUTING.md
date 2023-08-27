@@ -1,5 +1,7 @@
 # CONTRIBUTING
 
+WIP
+
 ```tsx
 // DateComponent.tsx
 import * as React from 'react';
