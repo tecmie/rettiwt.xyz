@@ -20,17 +20,17 @@ import {
 const stats = [
   {
     label: 'Total Interactions',
-    value: randomWholeInt(5000, 299000),
-    delta: { value: randomWholeInt(2000, 50000), isUpwardsTrend: true },
+    value: `${randomWholeInt(5000, 299000)}`,
+    delta: { value: `${randomWholeInt(2000, 50000)}`, isUpwardsTrend: true },
   },
   {
     label: 'Positive Intent Ratio',
-    value: randomInt(31.6, 72.63) + '%',
+    value: `${randomInt(31.6, 72.63)}%`,
     delta: { value: '5.1%', isUpwardsTrend: true },
   },
   {
     label: 'Negative Intent Ratio',
-    value: randomInt(25, 40.5) + '%',
+    value: `${randomInt(25, 40.5)}%`,
     delta: { value: '7.90%', isUpwardsTrend: false },
   },
 ];

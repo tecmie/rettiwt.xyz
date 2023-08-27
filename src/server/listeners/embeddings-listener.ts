@@ -14,11 +14,11 @@ import {
 
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { initializeAgentExecutorWithOptions } from 'langchain/agents';
-import xquoter, { QuoteTaskPayload } from './handlers/quoter';
-import xliker, { LikeTaskPayload } from './handlers/liker';
-import xcommenter, { CommentTaskPayload } from './handlers/commenter';
-import xretweeter, { RetweetTaskPayload } from './handlers/retweeter';
-import { BroadcastOpinionPrompt } from './prompts';
+import xquoter, { type QuoteTaskPayload } from './handlers/quoter';
+import xliker, { type LikeTaskPayload } from './handlers/liker';
+import xcommenter, { type CommentTaskPayload } from './handlers/commenter';
+import xretweeter, { type RetweetTaskPayload } from './handlers/retweeter';
+import { BroadcastPrompt } from './prompts';
 import _ from 'lodash';
 
 /**
@@ -47,7 +47,7 @@ export type LookupActorTweetReturnData = {
 };
 
 export interface CreateContextParams {
-  timestamp: Date;
+  timestamp: Date | string;
   intent: string;
   tweetMeta: Tweet;
   tweetAuthor: Author;
@@ -226,8 +226,17 @@ async function creatInteractionContext(
         withQuotedComment;
 
       additionalInfo = `
-      AS both a QUOTE-TWEET ACTION to  ${quoted?.author.name} "@${quoted?.author.handle}" Tweet "${quoted?.content}" at time "${quoted?.timestamp}". 
-      and a THREAD-TWEET ACTION to ${commented?.author.name} "@${commented?.author.handle}" Tweet "${commented?.content}" at time "${commented?.timestamp}"
+      Additional Context:
+        This Tweet is both a QUOTE-TWEET ACTION to  ${quoted?.author.name} "@${
+        quoted?.author.handle
+      }" Tweet "${quoted?.content}" at time "${
+        quoted?.timestamp ?? 'unknown'
+      }". 
+        and a THREAD-TWEET ACTION to ${commented?.author.name} "@${
+        commented?.author.handle
+      }" Tweet "${commented?.content}" at time "${
+        commented?.timestamp ?? 'unknown'
+      }"
       `;
     }
   } else {
@@ -254,7 +263,12 @@ async function creatInteractionContext(
         const { quote_parent: quoted } = withQuote;
 
         additionalInfo += `
-        AS a QUOTE-TWEET ACTION to  ${quoted?.author.name} "@${quoted?.author.handle}" Tweet "${quoted?.content}" at time "${quoted?.timestamp}". 
+        Additional Context:
+        This Tweet is a QUOTE-TWEET ACTION to  ${quoted?.author.name} "@${
+          quoted?.author.handle
+        }" Tweet "${quoted?.content}" at time "${
+          quoted?.timestamp ?? 'unknown'
+        }". 
         `;
       }
     }
@@ -282,7 +296,12 @@ async function creatInteractionContext(
         const { reply_parent: commented } = withQuotedComment;
 
         additionalInfo = `
-        AS a THREAD-TWEET ACTION to ${commented?.author.name} "@${commented?.author.handle}" Tweet "${commented?.content}" at time "${commented?.timestamp}"
+        Additional Context:
+        This Tweet is a THREAD-TWEET ACTION to ${commented?.author.name} "@${
+          commented?.author.handle
+        }" Tweet "${commented?.content}" at time "${
+          commented?.timestamp ?? 'unknown'
+        }"
         `;
       }
     }
@@ -292,14 +311,14 @@ async function creatInteractionContext(
    * Construct the context string incorporating all provided details.
    * @type {string}
    */
-  const context = `At ${timestamp}, ${String(intent)} with content: ${
-    tweetMeta.content
-  }
-  This tweet was written by ${tweetAuthor.name} "@${
-    tweetAuthor.handle
-  }" at time "${tweetMeta.timestamp}". 
+  const context = `At ${timestamp ?? 'unknown'}, ${String(
+    intent,
+  ).toUpperCase()} 
+    with content: ${tweetMeta.content}
+    This tweet was written by ${tweetAuthor.name} "@${tweetAuthor.handle}"
+    at time "${tweetMeta.timestamp ?? 'unknown'}".
 
-  ${additionalInfo}
+    ${additionalInfo}
   `;
 
   return context;
@@ -355,9 +374,7 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
      * @var
      * Build the sentence for our engagement intent
      */
-    //  const opinionIntent
-    const opinionIntent =
-      `${actor.name} "@${actor.handle}" wrote a new post as a ${intent} ACTION`.toUpperCase();
+    const opinionIntent = `${actor.name} "@${actor.handle}" wrote a new post as a ${intent} ACTION`;
 
     /**
      * @operation
@@ -368,23 +385,40 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
     const data = {
       actor,
       id: tweet.id,
-      timestamp: tweet.timestamp,
+      timestamp: tweet.timestamp ?? 'unknown',
       intent: tweetIntent as ITweetIntent,
       context: await creatInteractionContext({
         tweetAuthor: author,
-        tweetMeta: payload,
+
+        /**
+         * @field
+         * We have to do this because payload is a string
+         */
+        tweetMeta: {
+          ...tweet,
+          intent: tweetIntent,
+          author_id: authorId,
+          content: tweet.content,
+        },
         timestamp: tweet.timestamp,
         intent: opinionIntent,
       }),
     };
+
+    console.log(
+      { data },
+      '<><><><><><><><><><><><><><><><><><><><><><><><>><><><><><><><><><><><><><><><><><><><><><><><><><>><><><><><><',
+    );
     await embeddingsFromInteraction(data);
 
     /**
+     * @operation
+     *
      * This is where we now broadcast this new intent to the rest of the listeners
      * Notifying all our followers of a new opinion activity from a X user.
      */
     queue.send({
-      event: QueueTask.BroadcastOpinion,
+      event: QueueTask.GlobalBroadcast,
       args: [
         tweetIntent,
         {
@@ -454,8 +488,7 @@ queue.on(QueueTask.EmbedReaction, async (...[intent, payload]) => {
     const { author: tweetAuthor, ...tweetMeta } = tweet;
     const { following, followers, ...actorProfile } = actor;
 
-    const reactionIntent =
-      `${actor.name} "@${actor.handle}" performed a ${intent} ACTION`.toUpperCase();
+    const reactionIntent = `${actor.name} "@${actor.handle}" performed a ${intent} ACTION`;
 
     /**
      * @operation
@@ -466,24 +499,30 @@ queue.on(QueueTask.EmbedReaction, async (...[intent, payload]) => {
     const data = {
       actor: actorProfile,
       id: tweet.id,
-      timestamp: reaction.timestamp,
+      timestamp: reaction.timestamp ?? 'unknown',
       intent: intent,
       context: await creatInteractionContext({
         tweetAuthor,
         tweetMeta,
-        timestamp: tweet.timestamp,
+        timestamp: tweet.timestamp ?? 'unknown',
         intent: reactionIntent,
       }),
     };
+    console.log(
+      { reaction: data },
+      '<><><><><><><><><><><><><><><><><><><><><><><><>><><><><><><><><><><><><><><><><><><><><><><><><><>><><><><><><',
+    );
 
     /**
      * @operation
      */
     await embeddingsFromInteraction(data);
 
-    // Broadcasting this reaction to listeners
+    /**
+     * @operation
+     */
     queue.send({
-      event: QueueTask.BroadcastReaction,
+      event: QueueTask.GlobalBroadcast,
       args: [
         intent,
         {
@@ -497,7 +536,7 @@ queue.on(QueueTask.EmbedReaction, async (...[intent, payload]) => {
           actor: data.actor,
           intent: data.intent,
           context: data.context,
-          timestamp: data.timestamp,
+          timestamp: data.timestamp ?? 'unknown',
           followers: followers,
           following: following,
         },
@@ -511,7 +550,7 @@ queue.on(QueueTask.EmbedReaction, async (...[intent, payload]) => {
 });
 
 /**
- * @listens QueueTask.BroadcastOpinion
+ * @listens QueueTask.GlobalBroadcast
  *
  * This function listens to a broadcast event and performs a vector similarity search step for each follower.
  * It then constructs a context and calls an agent executor function to react to new tweets on the follower's timeline.
@@ -523,7 +562,7 @@ queue.on(QueueTask.EmbedReaction, async (...[intent, payload]) => {
  *
  * @returns {Promise<void>} - A Promise that resolves when the broadcast operation is complete.
  */
-queue.on(QueueTask.BroadcastOpinion, async (...[intent, payload]) => {
+queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
   /**
    * Agent Executor with Langchain Tools
    * This uses the OpenAI Function Call kwargs available in GPT3.5 and GPT4
@@ -582,7 +621,7 @@ queue.on(QueueTask.BroadcastOpinion, async (...[intent, payload]) => {
        */
       const subContext = results.map((r) => r.text).join('\n\n---\n\n');
 
-      const prefix = await BroadcastOpinionPrompt.format({
+      const prefix = await BroadcastPrompt.format({
         author_name: author.name,
         author_handle: author.handle,
         author_id: author.id,
@@ -602,13 +641,15 @@ queue.on(QueueTask.BroadcastOpinion, async (...[intent, payload]) => {
 
       // 3. Construct the context
       const context = `
-      Your current time is ${new Date().toDateString()} 
-      How are you going to react to ${
-        meta.actor.name
-      }'s ${meta.intent.toUpperCase()} ACTION to Tweet.ID 
-      ${meta.id} with summary of this interaction: "${meta.context}" ?`;
+        Your current time is ${new Date().toDateString()} 
+        How are you going to react to ${meta.intent}
+        to Tweet.ID ${meta.id} with summary of this engagement: 
+        "${meta.context}" ?
+      `;
 
-      // 4. Call the executor function
+      /**
+       * @operation
+       */
       const result = await executor.run(context);
 
       /**
@@ -891,7 +932,6 @@ queue.on(QueueTask.ExecuteRetweet, async (...[intent, payload]) => {
     /**
      * Log a success message to the console.
      */
-
     console.log(`[QueueTask.ExecuteRetweet] successful for ${tweetId}`);
   } catch (error) {
     console.error(

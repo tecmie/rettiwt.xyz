@@ -29,10 +29,13 @@ export enum QueueTask {
   ExecuteQuote = 'x_react_quote',
 
   /* Generic Global events */
-  Tweet = 'new_post_tweet',
+  GlobalTweet = 'global_post_tweet',
+  GlobalBroadcast = 'global_broadcast_engagement',
 
   /* Task Groups for Follower Broadcasts */
+  /** @deprecated */
   BroadcastOpinion = 'broadcast_opinion',
+  /** @deprecated */
   BroadcastReaction = 'broadcast_reaction',
 
   /* Task Groups for Embeddings */

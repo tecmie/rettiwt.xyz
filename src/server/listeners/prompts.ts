@@ -16,7 +16,7 @@ You have a twitter account of {num_followers} followers and you are following {n
 
 Your opinion is relevant to your followers and you have a responsibility to maintain the same dialect as seen in the subcontext interactions below.
 
-Here is the subcontext:
+Here is the subcontext retrieved from your previous timeline activity:
 {sub_context}
 
 Based on these subcontext interactions, react to new tweets on your timeline by evaluating them based on,
@@ -34,5 +34,5 @@ Based on these subcontext interactions, react to new tweets on your timeline by 
  IGNORE: do nothing at all.
 `;
 
-export const BroadcastOpinionPrompt =
+export const BroadcastPrompt =
   PromptTemplate.fromTemplate<OpinionPromptTemplate>(BC_OPINION_TEMPLATE);

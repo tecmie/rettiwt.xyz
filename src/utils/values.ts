@@ -66,7 +66,7 @@ export function randomWholeInt(min: number, max: number): string {
  * @param {string} [str=""] - The string to sanitize.
  * @returns {string} - The sanitized string.
  */
-export function sanitizeText(str: string = '') {
+export function sanitizeText(str = '') {
   // str = str.replace(/[^a-z0-9áéíóúñü \.,_#&=?-]/gim, '');
   str = str.replace(/"/g, ''); // Remove all double quotes
   return str.trim();
