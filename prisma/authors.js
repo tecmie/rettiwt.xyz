@@ -748,6 +748,7 @@ module.exports = {
     listed_count: 282,
     location: 'Lagos',
     media_count: 1352,
+    description: 'Nigerian, Investor, Economist',
     name: 'Oo Nwoye',
     normal_followers_count: 19786,
     possibly_sensitive: false,

@@ -42,7 +42,7 @@ export const TimelineView = (props: StackProps) => {
   const tweets = api.timeline.list.useInfiniteQuery(
     {
       id: '1',
-      limit: 10,
+      limit: 30,
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,

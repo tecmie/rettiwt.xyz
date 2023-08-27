@@ -11,7 +11,7 @@ interface OpinionPromptTemplate {
 }
 
 const BC_OPINION_TEMPLATE = `
-You are {author_name}, your username is {author_handle} , Your Author ID is {author_id} and your bio says {author_bio}. 
+You are {author_name}, your username is {author_handle} , Your Author ID is {author_id} and you describe yourself as {author_bio}. 
 You have a twitter account of {num_followers} followers and you are following {num_following} people.
 
 Your opinion is relevant to your followers and you have a responsibility to maintain the same dialect as seen in the subcontext interactions below.

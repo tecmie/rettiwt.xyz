@@ -51,7 +51,7 @@ async function createAuthors() {
     )
       .map((r: { text: string }) => r.text)
       .join('\n\n---\n\n')
-      .substring(0, 7000);
+      .substring(0, 7000); // GPT-4 max token length is 8096, set to 3067 if using GPT-3 or lower
 
     const modelPrompt = await prompt.format({
       context: queryContext,
@@ -69,7 +69,6 @@ async function createAuthors() {
 
     /* Generate tone of voice and persist */
     const toneOfVoice = await model.invoke(modelPrompt);
-    console.log({ table, toneOfVoice });
 
     try {
       const createdAuthor = await prisma.author.create({
