@@ -9,7 +9,6 @@ import { ITweetIntent } from '@/types/tweet.type';
 const executorSchema = z.object({
   delayNumberInMilliseconds: z
     .number()
-    .min(120000)
     .max(1.44e7)
     .default(180000)
     .describe(

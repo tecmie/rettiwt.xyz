@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { EventEmitter } from 'eventemitter3';
+import { randomInt } from '@/utils/values';
 
 /**
  * `object` should be in either of the following forms:
@@ -82,10 +83,15 @@ export class DefferedQueue extends EventEmitter {
   schedule({ event, delay, args }: EmitScheduleOptions): void {
     /**
      * @var
-     * We want to have at least 120 seconds delay so we can avoid
+     * We want to have at least 180 seconds delay so we can avoid
      * API Rate Limit Restrictions
+     *
+     * @note Our current AI model isn't performing well with providing
+     * delay numbers in function call, so we will randomize this between
+     * 3 minutes and 15 minutes.
      */
-    const delayThreshold = delay < 120000 ? 150000 : delay;
+    const delayThreshold =
+      Number(delay) < 180000 ? randomInt(delay, 900000) : Number(delay);
 
     void setTimeout(() => {
       this.emit(event, ...args);
