@@ -299,6 +299,31 @@ type TimelineDeckProps = {
   post: ITimelineTweet;
 };
 
+export const MainTweetDeckComponent = ({ post }: TimelineDeckProps) => {
+  return (
+    post && (
+      <Fragment>
+        <HStack fontSize={['xs', 'sm']} spacing="1" mt={1.5}>
+          <Text fontWeight="bold" color="emphasized">
+            {post.author.name}
+          </Text>
+          <Text opacity={0.6} color="muted">
+            {/* @{post.author.handle} */}
+          </Text>
+          <Text opacity={0.6} color={'muted'}>
+            {' '}
+            • {post.timestamp && format(post.timestamp)}
+          </Text>
+        </HStack>
+
+        <Stack spacing="1" pb={2} pt={0.5} fontSize="sm" lineHeight="1.25rem">
+          <RenderContentText text={post.content} />
+        </Stack>
+      </Fragment>
+    )
+  );
+};
+
 export const TweetDeckComponent = ({ post }: TimelineDeckProps) => {
   return (
     post && (
@@ -519,7 +544,7 @@ export const TimelineDeckBody = ({ post }: TimelineDeckProps) => {
     case ITweetIntent.REPLY:
       return <ReplyDeckComponent post={post} />;
     default:
-      return <TweetDeckComponent post={post} />;
+      return <MainTweetDeckComponent post={post} />;
   }
 };
 

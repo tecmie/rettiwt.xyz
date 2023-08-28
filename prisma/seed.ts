@@ -1,3 +1,4 @@
+const shuffle = require('lodash/shuffle');
 const { OpenAIEmbeddingFunction, connect } = require('vectordb');
 const { PromptTemplate } = require('langchain/prompts');
 const { ChatOpenAI } = require('langchain/chat_models/openai');
@@ -7,7 +8,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const profiles = require('./authors');
-const shuffle = require('lodash/shuffle');
+const personaJSON = require('./aupersona.json');
 
 /**
  * Creates authors in the database based on the provided profiles.
@@ -69,9 +70,7 @@ async function createAuthors() {
     // /* Generate tone of voice and persist */
     // const userPersona = await model.invoke(modelPrompt);
 
-    const personaJSON = require('./aupersona.json');
-
-    const tovObject = personaJSON.find(
+    const tovObject = await personaJSON.find(
       (obj: { id: string }) => obj.id === String(user.id_str),
     );
 
@@ -83,7 +82,7 @@ async function createAuthors() {
           name: user.name,
           bio: user.description,
           tone_of_voice: tovObject.tone_of_voice,
-          persona: personaJSON.persona,
+          persona: tovObject.persona,
           avatar: user.profile_image_url_https,
           has_custom_timelines: user.has_custom_timelines,
           url: user.profile_banner_url,

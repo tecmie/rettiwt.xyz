@@ -1,15 +1,16 @@
-import { Fragment } from 'react';
 import SeoMeta from '@/components/seo-meta';
+import { Fragment } from 'react';
+import { SplitShell } from '@/layout/split-shell';
+import { createInnerTRPCContext } from '@/server/api/trpc';
 import { FollowRecommendation } from '@/components/follow-recommendation';
 import SidebarSlot from '@/layout/slots/SidebarSlot';
 import TimelineSlot from '@/layout/slots/TimelineSlot';
-import { SplitShell } from '@/layout/split-shell';
 import { type GetServerSidePropsContext } from 'next';
-import { createInnerTRPCContext } from '@/server/api/trpc';
 
 import nookies from 'nookies';
-import { api } from '@/utils/api';
+import dynamic from 'next/dynamic';
 import superjson from 'superjson';
+import { api } from '@/utils/api';
 
 import { appRouter } from '@/server/api/root';
 import { createServerSideHelpers } from '@trpc/react-query/server';
@@ -17,7 +18,6 @@ import { NewTimelinePost, TimelineView } from '@/features/timeline';
 import { Center, chakra, Spinner } from '@chakra-ui/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-import dynamic from 'next/dynamic';
 const TimelineStatDeck = dynamic(() => import('@/components/timeline-stat'), {
   ssr: false,
 });
@@ -40,6 +40,9 @@ export default function RouterPage() {
             <Spinner colorScheme="twitter" />
           </Center>
         </TimelineSlot>
+        <SidebarSlot>
+          <FollowRecommendation />
+        </SidebarSlot>
       </>
     );
   }

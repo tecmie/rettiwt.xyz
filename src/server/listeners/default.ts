@@ -413,11 +413,7 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
      * Notifying all our followers of a new opinion activity from a X user.
      */
     queue.send({
-      /**
-       * intentionally calling a void broadcast, so that
-       * likes don't generate intents
-       */
-      event: QueueTask.BroadcastReaction,
+      event: QueueTask.GlobalBroadcast,
       args: [
         tweetIntent,
         {
@@ -531,7 +527,14 @@ queue.on(QueueTask.EmbedReaction, async (...[intent, payload]) => {
      * @operation
      */
     queue.send({
-      event: QueueTask.GlobalBroadcast,
+      /**
+       * we are intentionally calling a void broadcast, so that
+       * likes don't generate intents that spill out of control.
+       *
+       * We need to find an efficient way to handle broadcasts of
+       * reactions .. likes and retweets
+       */
+      event: QueueTask.BroadcastReaction,
       args: [
         intent,
         {

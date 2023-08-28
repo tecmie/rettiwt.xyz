@@ -15,8 +15,6 @@ export const timelineRouter = createTRPCRouter({
       const cursor = input.cursor ? { id: input.cursor } : undefined;
       const limit = input.limit ?? 25;
 
-      console.log({ limit, cursor });
-
       const posts = await ctx.prisma.tweet.findMany({
         take: limit + 1, // get an extra item at the end which we'll use as next cursor,
         orderBy: {
