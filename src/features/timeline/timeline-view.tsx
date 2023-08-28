@@ -16,6 +16,7 @@ import {
   Spinner,
   Center,
 } from '@chakra-ui/react';
+import { env } from '@/env.mjs';
 import { api } from '@/utils/api';
 import { Fragment, useState } from 'react';
 import { format } from 'timeago.js';
@@ -37,7 +38,38 @@ import { useProfilePersona } from '@/hooks/use-persona';
 import { PersonaModal } from '@/features/persona/persona-modal';
 import { useRouter } from 'next/router';
 import { randomWholeInt, sanitizeText } from '@/utils/values';
-import { env } from '@/env.mjs';
+import InfiniteScroll from 'react-infinite-scroll-component';
+
+// class App extends React.Component {
+//   state = {
+//     items: Array.from({ length: 20 })
+//   };
+
+//   fetchMoreData = () => {
+//     // a fake async api call like which sends
+//     // 20 more records in 1.5 secs
+//     setTimeout(() => {
+//       this.setState({
+//         items: this.state.items.concat(Array.from({ length: 20 }))
+//       });
+//     }, 1500);
+//   };
+
+//   render() {
+//     return (
+//       <div>
+//         <h1>demo: react-infinite-scroll-component</h1>
+//         <hr />
+
+//           {this.state.items.map((i, index) => (
+//             <div style={style} key={index}>
+//               div - #{index}
+//             </div>
+//           ))}
+//       </div>
+//     );
+//   }
+// }
 
 export const TimelineView = (props: StackProps) => {
   const [currCursor, setCurrCursor] = useState(0);
@@ -60,43 +92,62 @@ export const TimelineView = (props: StackProps) => {
     );
 
   return (
-    <Stack
-      spacing={{ base: '1px', lg: '1' }}
-      py="3"
-      divider={<StackDivider />}
-      {...props}
+    <InfiniteScroll
+      dataLength={tweets.data?.pages[currCursor]?.tweets.length || 0}
+      next={tweets.fetchNextPage}
+      hasMore={true}
+      pullDownToRefresh
+      refreshFunction={tweets.refetch}
+      pullDownToRefreshThreshold={50}
+      pullDownToRefreshContent={
+        <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+      }
+      releaseToRefreshContent={
+        <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
+      }
+      scrollableTarget="scrollableDiv"
+      style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
+      // inverse={false}
+      loader={<h4>Loading...</h4>}
     >
-      {tweets.data?.pages[currCursor]?.tweets.map((post: ITweet) => {
-        console.log({ post });
-        return (
-          <HStack align="start" key={post.id} px={4} pt={2}>
-            <Box w={'40px'} mr={1} px={0}>
-              <Avatar
-                src={post.author.avatar ?? post.author.name}
-                name={post.author.handle}
-                boxSize="9"
-              ></Avatar>
-            </Box>
+      <Stack
+        spacing={{ base: '1px', lg: '1' }}
+        py="3"
+        divider={<StackDivider />}
+        {...props}
+      >
+        {tweets.data?.pages[currCursor]?.tweets.map((post: ITweet) => {
+          console.log({ post });
+          return (
+            <HStack align="start" key={post.id} px={4} pt={2}>
+              <Box w={'40px'} mr={1} px={0}>
+                <Avatar
+                  src={post.author.avatar ?? post.author.name}
+                  name={post.author.handle}
+                  boxSize="9"
+                ></Avatar>
+              </Box>
 
-            <Link
-              key={post.id}
-              aria-current={post.id === '2' ? 'page' : undefined}
-              _hover={{
-                textDecoration: 'none',
-                // bg: mode("blackAlpha.50", "whiteAlpha.50")
-              }}
-              w={'full'}
-              borderRadius={{ lg: 'lg' }}
-            >
-              <TimelineDeckBody post={post} />
+              <Link
+                key={post.id}
+                aria-current={post.id === '2' ? 'page' : undefined}
+                _hover={{
+                  textDecoration: 'none',
+                  // bg: mode("blackAlpha.50", "whiteAlpha.50")
+                }}
+                w={'full'}
+                borderRadius={{ lg: 'lg' }}
+              >
+                <TimelineDeckBody post={post} />
 
-              <TimelineDeckFooter post={post} />
-            </Link>
-          </HStack>
-        );
-      })}
-      <StackDivider />
-    </Stack>
+                <TimelineDeckFooter post={post} />
+              </Link>
+            </HStack>
+          );
+        })}
+        <StackDivider />
+      </Stack>
+    </InfiniteScroll>
   );
 };
 
