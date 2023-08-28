@@ -29,6 +29,29 @@ export const tweetRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
+        include: {
+          replies: {
+            include: {
+              author: true,
+              replies: {
+                /* This is as deep as we can go */
+                include: {
+                  author: true,
+                },
+              },
+            },
+          },
+          liked_by: {
+            include: {
+              author: true,
+            },
+          },
+          retweeted_by: {
+            include: {
+              author: true,
+            },
+          },
+        },
       });
     }),
 

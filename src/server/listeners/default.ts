@@ -28,6 +28,7 @@ import xliker, { type LikeTaskPayload } from './handlers/liker';
 import xcommenter, { type CommentTaskPayload } from './handlers/commenter';
 import xretweeter, { type RetweetTaskPayload } from './handlers/retweeter';
 import { BroadcastPrompt } from './prompts';
+import xignore from './handlers/ignore';
 
 /**
  * @typedef Actor
@@ -584,7 +585,7 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
    *
    * @see https://js.langchain.com/docs/modules/agents/agent_types/openai_functions_agent
    */
-  const tools = [xquoter, xliker, xcommenter, xretweeter];
+  const tools = [xquoter, xliker, xignore, xcommenter, xretweeter];
 
   const chat = new ChatOpenAI({
     modelName: _GPT316K_MODEL_,

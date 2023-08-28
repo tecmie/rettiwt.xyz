@@ -156,3 +156,8 @@ a {
     transform: rotate(360deg);
   }
 }
+
+/* infinite scroll hack */
+.infinite-scroll-component {
+  overflow: hidden !important;
+}
