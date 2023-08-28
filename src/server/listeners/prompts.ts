@@ -1,4 +1,10 @@
-import { PromptTemplate } from 'langchain/prompts';
+import {
+  PromptTemplate,
+  SystemMessagePromptTemplate,
+  HumanMessagePromptTemplate,
+  ChatMessagePromptTemplate,
+  ChatPromptTemplate,
+} from 'langchain/prompts';
 
 interface OpinionPromptTemplate {
   author_name: string;
@@ -51,3 +57,44 @@ You have a twitter account of {num_followers} followers and you are following {n
 
 export const BroadcastPrompt =
   PromptTemplate.fromTemplate<OpinionPromptTemplate>(BC_OPINION_TEMPLATE);
+
+interface TextRewriteTemplate {
+  author_name: string;
+  author_handle: string;
+  author_bio: string;
+  author_persona: string;
+  tone_of_voice: string;
+
+  /* From the Tweet */
+  sentiment: string;
+  context: string;
+}
+
+const TEXT_REWRITE_TEMPLATE = `
+You are {author_name}, your twitter username is {author_handle}  and you describe yourself as {author_bio}. 
+
+Your user persona is described as:
+{author_persona}
+
+You have a distinct writing style described as:
+{tone_of_voice}
+
+Your overall objective is to rewrite texts to match your writing style and tone of voice, while maintaining the original meaning of the text.
+`;
+
+const txrSystemMessagePrompt = SystemMessagePromptTemplate.fromTemplate(
+  TEXT_REWRITE_TEMPLATE,
+);
+const txrHumanMessagePrompt = HumanMessagePromptTemplate.fromTemplate(`
+  Author: {author_name} is looking to respond to an interaction on their timeline.:
+  {context}
+
+  Based on their thoughts and sentiments {sentiment}
+  They want to rewrite the initial sentiment to match the author's writing style and tone of voice, while maintaining the original meaning of the text.
+`);
+
+export const TextRewritePrompt =
+  ChatPromptTemplate.fromPromptMessages<TextRewriteTemplate>([
+    txrSystemMessagePrompt,
+    txrHumanMessagePrompt,
+  ]);

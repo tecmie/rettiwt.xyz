@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 
-import _ from 'lodash';
+import _, { Dictionary } from 'lodash';
 import { format } from 'timeago.js';
 import { env } from '@/env.mjs';
 import { prisma } from '@/server/db';
@@ -9,6 +9,7 @@ import { ITweetIntent } from '@/types/tweet.type';
 import type { Retweet, Author, Follow, Tweet, Like } from '@prisma/client';
 import { MetricType, OpenAIEmbeddingFunction, connect } from 'vectordb';
 import {
+  _AI_TEMPERATURE_MAX_,
   _AI_TEMPERATURE_MEDIUM_,
   _BROADCAST_INIT_,
   _CONSOLE_LOG_ASCII_,
@@ -18,6 +19,7 @@ import {
   _CONSOLE_LOG_RETWEET_,
   _CONSOLE_LOG_TWEET_,
   _GPT316K_MODEL_,
+  _GPT4_MODEL_,
   _VECTOR_SOURCE_COLUMN_,
 } from '@/utils/constants';
 
@@ -27,7 +29,7 @@ import xquoter, { type QuoteTaskPayload } from './handlers/quoter';
 import xliker, { type LikeTaskPayload } from './handlers/liker';
 import xcommenter, { type CommentTaskPayload } from './handlers/commenter';
 import xretweeter, { type RetweetTaskPayload } from './handlers/retweeter';
-import { BroadcastPrompt } from './prompts';
+import { BroadcastPrompt, TextRewritePrompt } from './prompts';
 import xignore from './handlers/ignore';
 
 /**
@@ -714,172 +716,6 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
 });
 
 /**
- * @listens QueueTask.ExecuteQuote
- *
- * This function listens for the `QueueTask.ExecuteQuote` event from the queue and executes a "quote" operation on a tweet.
- *
- * @param {Object[]} args - An array containing the intent and the payload for the queue task.
- * @param {string} args[0].intent - The operation type (e.g., "QUOTE").
- * @param {QuoteTaskPayload} args[0].payload - The data payload containing `tweetId`, `authorId`, `authorUsername`, and `content`.
- *
- * @returns {Promise<void>} - A Promise that resolves when the quote operation is complete.
- *
- */
-queue.on(QueueTask.ExecuteQuote, async (...[intent, payload]) => {
-  console.log(_CONSOLE_LOG_TWEET_, [intent, payload]);
-
-  const { tweetId, authorId, authorUsername, content } =
-    payload as QuoteTaskPayload;
-
-  try {
-    /**
-     * @operation
-     */
-    const actorTweetObj = await lookupActorAndTweet({
-      tweetId,
-      authorId,
-      authorUsername,
-    });
-
-    if (!actorTweetObj) return;
-    const { actor, tweet } = actorTweetObj;
-
-    /**
-     * @operation
-     */
-    const [quote] = await prisma.$transaction([
-      prisma.tweet.create({
-        data: {
-          content,
-          intent: ITweetIntent.QUOTE,
-          author_id: actor.id,
-          is_reply_tweet: false,
-          is_quote_tweet: true,
-          quote_parent_id: tweet.id,
-        },
-      }),
-
-      prisma.tweet.update({
-        where: { id: tweet.id },
-        data: {
-          quote_count: {
-            increment: 1,
-          },
-        },
-      }),
-    ]);
-
-    const opinionatedQuote = Object.assign(quote, { author: actor });
-
-    /**
-     * @operation
-     *
-     * Schedules a new event to the queue with the `QueueTask.EmbedOpinion` task and the `ITweetIntent.QUOTE` intent.
-     * The `args` parameter contains a JSON stringified object with the `quote` object.
-     */
-    queue.send({
-      event: QueueTask.EmbedOpinion,
-      args: [ITweetIntent.QUOTE, JSON.stringify(opinionatedQuote)],
-    });
-
-    /**
-     * Log a success message to the console.
-     */
-    console.log(`[QueueTask.ExecuteQuote] successful for ${tweetId}`);
-  } catch (error) {
-    /**
-     * Log an error message to the console if an error occurs.
-     */
-    console.error(`[QueueTask.ExecuteQuote] ${authorUsername} error ${error}`);
-  }
-});
-
-/**
- * @listens QueueTask.ExecuteComment
- *
- * Listens for the `QueueTask.ExecuteComment` event and executes the callback function when triggered.
- * The callback function receives a spread of arguments as `payload`, which is destructured
- * to obtain the `tweetId`, `authorId`, `content`, and `authorUsername` properties.
- *
- * @param {Object[]} args - An array containing the intent and the payload for the queue task.
- * @param {string} args[0].intent - The operation type (e.g., "QUOTE").
- * @param {CommentTaskPayload} args[1] - The data payload for the queue task.
- * @returns {Promise<void>} - A Promise that resolves when the quote operation is complete.
- */
-queue.on(QueueTask.ExecuteComment, async (...[intent, payload]) => {
-  console.log(`Received a ${intent} from the queue:`, payload);
-
-  console.log(_CONSOLE_LOG_COMMENT_, [intent, payload]);
-
-  const { tweetId, authorId, content, authorUsername } =
-    payload as CommentTaskPayload;
-
-  try {
-    /**
-     * @operation
-     */
-    const actorTweetResponse = await lookupActorAndTweet({
-      tweetId,
-      authorId,
-      authorUsername,
-    });
-    if (!actorTweetResponse) return;
-
-    const { actor, tweet } = actorTweetResponse;
-
-    /**
-     * @operation
-     */
-    const [comment] = await prisma.$transaction([
-      prisma.tweet.create({
-        data: {
-          content,
-          intent: ITweetIntent.REPLY,
-          author_id: actor.id,
-          is_reply_tweet: true,
-          is_quote_tweet: false,
-          reply_parent_id: tweet.id,
-        },
-      }),
-
-      prisma.tweet.update({
-        where: { id: tweet.id },
-        data: {
-          reply_count: {
-            increment: 1,
-          },
-        },
-      }),
-    ]);
-
-    const opinionatedComment = Object.assign(comment, { author: actor });
-
-    /**
-     * @operation
-     *
-     * Schedules a new event to the queue with the `QueueTask.EmbedOpinion` task and the `ITweetIntent.QUOTE` intent.
-     * The `args` parameter contains a JSON stringified object with the `comment` object.
-     */
-    queue.send({
-      event: QueueTask.EmbedOpinion,
-      args: [ITweetIntent.REPLY, JSON.stringify(opinionatedComment)],
-    });
-
-    /**
-     * Log a success message to the console.
-     */
-    console.log(`[QueueTask.ExecuteComment] successful for ${tweetId}`);
-  } catch (error) {
-    /**
-     * Log an error message to the console if an error occurs.
-     */
-    console.error(
-      `[QueueTask.ExecuteComment] ${authorUsername} error ${error}`,
-    );
-  }
-});
-
-/**
  * @listens QueueTask.ExecuteRetweet
  *
  * Listens for the `QueueTask.ExecuteRetweet` event and executes the callback function when triggered.
@@ -1108,3 +944,251 @@ queue.on(QueueTask.ExecuteLike, async (...[intent, payload]) => {
     console.error(`[QueueTask.ExecuteLike] ${authorUsername} error ${error}`);
   }
 });
+
+/**
+ * @listens QueueTask.ExecuteQuote
+ *
+ * This function listens for the `QueueTask.ExecuteQuote` event from the queue and executes a "quote" operation on a tweet.
+ *
+ * @param {Object[]} args - An array containing the intent and the payload for the queue task.
+ * @param {string} args[0].intent - The operation type (e.g., "QUOTE").
+ * @param {QuoteTaskPayload} args[0].payload - The data payload containing `tweetId`, `authorId`, `authorUsername`, and `content`.
+ *
+ * @returns {Promise<void>} - A Promise that resolves when the quote operation is complete.
+ *
+ */
+queue.on(QueueTask.ExecuteQuote, async (...[intent, payload]) => {
+  console.log(_CONSOLE_LOG_TWEET_, [intent, payload]);
+
+  const {
+    tweetId,
+    authorId,
+    authorUsername,
+    content: contentFromBroadcast,
+  } = payload as QuoteTaskPayload;
+
+  try {
+    /**
+     * @operation
+     */
+    const actorTweetObj = await lookupActorAndTweet({
+      tweetId,
+      authorId,
+      authorUsername,
+    });
+
+    if (!actorTweetObj) return;
+    const { actor, tweet } = actorTweetObj;
+
+    /**
+     * @operation
+     *
+     * Use GPT-4 to rewrite our response to match author persona
+     * also in our best interest for this process to take time.
+     */
+    const rewrittenContent = await rewriteText(actor, {
+      context: tweet.content,
+      sentiment: contentFromBroadcast,
+    });
+
+    /**
+     * @operation
+     */
+    const [quote] = await prisma.$transaction([
+      prisma.tweet.create({
+        data: {
+          content: rewrittenContent,
+          intent: ITweetIntent.QUOTE,
+          author_id: actor.id,
+          is_reply_tweet: false,
+          is_quote_tweet: true,
+          quote_parent_id: tweet.id,
+        },
+      }),
+
+      prisma.tweet.update({
+        where: { id: tweet.id },
+        data: {
+          quote_count: {
+            increment: 1,
+          },
+        },
+      }),
+    ]);
+
+    const opinionatedQuote = Object.assign(quote, { author: actor });
+
+    /**
+     * @operation
+     *
+     * Schedules a new event to the queue with the `QueueTask.EmbedOpinion` task and the `ITweetIntent.QUOTE` intent.
+     * The `args` parameter contains a JSON stringified object with the `quote` object.
+     */
+    queue.send({
+      event: QueueTask.EmbedOpinion,
+      args: [ITweetIntent.QUOTE, JSON.stringify(opinionatedQuote)],
+    });
+
+    /**
+     * Log a success message to the console.
+     */
+    console.log(`[QueueTask.ExecuteQuote] successful for ${tweetId}`);
+  } catch (error) {
+    /**
+     * Log an error message to the console if an error occurs.
+     */
+    console.error(`[QueueTask.ExecuteQuote] ${authorUsername} error ${error}`);
+  }
+});
+
+/**
+ * @listens QueueTask.ExecuteComment
+ *
+ * Listens for the `QueueTask.ExecuteComment` event and executes the callback function when triggered.
+ * The callback function receives a spread of arguments as `payload`, which is destructured
+ * to obtain the `tweetId`, `authorId`, `content`, and `authorUsername` properties.
+ *
+ * @param {Object[]} args - An array containing the intent and the payload for the queue task.
+ * @param {string} args[0].intent - The operation type (e.g., "QUOTE").
+ * @param {CommentTaskPayload} args[1] - The data payload for the queue task.
+ * @returns {Promise<void>} - A Promise that resolves when the quote operation is complete.
+ */
+queue.on(QueueTask.ExecuteComment, async (...[intent, payload]) => {
+  console.log(`Received a ${intent} from the queue:`, payload);
+
+  console.log(_CONSOLE_LOG_COMMENT_, [intent, payload]);
+
+  const {
+    tweetId,
+    authorId,
+    content: contentFromBroadcast,
+    authorUsername,
+  } = payload as CommentTaskPayload;
+
+  try {
+    /**
+     * @operation
+     */
+    const actorTweetResponse = await lookupActorAndTweet({
+      tweetId,
+      authorId,
+      authorUsername,
+    });
+    if (!actorTweetResponse) return;
+
+    const { actor, tweet } = actorTweetResponse;
+
+    /**
+     * @operation
+     *
+     * Use GPT-4 to rewrite our response to match author persona
+     * also in our best interest for this process to take time.
+     */
+    const rewrittenContent = await rewriteText(actor, {
+      context: tweet.content,
+      sentiment: contentFromBroadcast,
+    });
+
+    /**
+     * @operation
+     */
+    const [comment] = await prisma.$transaction([
+      prisma.tweet.create({
+        data: {
+          content: rewrittenContent,
+          intent: ITweetIntent.REPLY,
+          author_id: actor.id,
+          is_reply_tweet: true,
+          is_quote_tweet: false,
+          reply_parent_id: tweet.id,
+        },
+      }),
+
+      prisma.tweet.update({
+        where: { id: tweet.id },
+        data: {
+          reply_count: {
+            increment: 1,
+          },
+        },
+      }),
+    ]);
+
+    const opinionatedComment = Object.assign(comment, { author: actor });
+
+    /**
+     * @operation
+     *
+     * Schedules a new event to the queue with the `QueueTask.EmbedOpinion` task and the `ITweetIntent.QUOTE` intent.
+     * The `args` parameter contains a JSON stringified object with the `comment` object.
+     */
+    queue.send({
+      event: QueueTask.EmbedOpinion,
+      args: [ITweetIntent.REPLY, JSON.stringify(opinionatedComment)],
+    });
+
+    /**
+     * Log a success message to the console.
+     */
+    console.log(`[QueueTask.ExecuteComment] successful for ${tweetId}`);
+  } catch (error) {
+    /**
+     * Log an error message to the console if an error occurs.
+     */
+    console.error(
+      `[QueueTask.ExecuteComment] ${authorUsername} error ${error}`,
+    );
+  }
+});
+
+/**
+ * rewriteText function to rewrite an initial text input.
+ *
+ * @async
+ * @param {Author} author - The context or setting for rewriting the text.
+ * @param {Object} meta - The initial text to be rewritten.
+ * @returns {Promise<string>} A promise that resolves to the rewritten text.
+ */
+async function rewriteText(author: Author, meta: Dictionary<string>) {
+  const { sentiment, context } = meta;
+  const { name, handle, persona, tone_of_voice, bio } = author;
+  try {
+    const chat = new ChatOpenAI({
+      modelName: _GPT4_MODEL_,
+      temperature: _AI_TEMPERATURE_MAX_,
+      openAIApiKey: env.OAK,
+    });
+
+    const conversation = await TextRewritePrompt.formatMessages({
+      context,
+      sentiment,
+      tone_of_voice,
+      author_bio: bio,
+      author_name: name,
+      author_handle: handle,
+      author_persona: persona,
+    });
+
+    // Use the chat model to rewrite the text
+    const response = await chat.call(conversation);
+
+    if (!response.content)
+      throw new Error("Couldn't rewrite the text. Please try again.");
+
+    // Print or return the rewritten text
+    console.log('Rewritten Text:', response.content);
+    return response.content;
+  } catch (error) {
+    console.error('[Utils.rewriteText] Error rewriting text:', error);
+    throw new Error('error rewriting text');
+  }
+}
+
+// Usage Example
+// (async () => {
+//   const context = "Rewrite the following text in a more professional tone:";
+//   const text = "Hey there! Our socks are super comfy, you gotta try 'em!";
+
+//   const rewrittenText = await TextWriter(context, text);
+//   console.log("Final Rewritten Text:", rewrittenText);
+// })();
