@@ -85,8 +85,6 @@ export type TimelineViewProps = StackProps & {
 };
 
 export const TimelineView = ({ tweets, ...rest }: TimelineViewProps) => {
-  const [currCursor, setCurrCursor] = useState(0);
-
   return (
     <Stack
       spacing={{ base: '1px', lg: '1' }}
@@ -129,7 +127,7 @@ export const TimelineView = ({ tweets, ...rest }: TimelineViewProps) => {
   );
 };
 
-const RenderContentText = ({ text }: { text: string }) => {
+export const RenderContentText = ({ text }: { text: string }) => {
   const regex = /#(\w+)/g;
 
   if (!text) return;

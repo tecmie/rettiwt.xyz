@@ -30,12 +30,12 @@ const SidebarSlot: React.FC<SidebarSlotProps> = ({ children }) => {
     <Box
       borderLeftWidth="1px"
       pl={6}
-      position={'sticky'}
-      right={0}
+      // position={'sticky'}
+      // right={0}
       w={'full'}
       maxW={'md'}
       display={{ base: 'none', md: 'initial' }}
-      overflowY="auto"
+      overflow="hidden"
       onScroll={(x) => setSidebarIsScrolled(x.currentTarget.scrollTop > 32)}
     >
       <ColumnHeader shadow={sidebarIsScrolled ? 'base' : 'none'}>
@@ -53,7 +53,7 @@ const SidebarSlot: React.FC<SidebarSlotProps> = ({ children }) => {
                 <Navbar onClose={onClose} />
               </DrawerContent>
             </Drawer>
-            {/* <ColumnHeading>Audience</ColumnHeading> */}
+            <ColumnHeading>Overall Sentiments</ColumnHeading>
           </HStack>
           <ColumnButton leftIcon={<MdCheckBoxOutlineBlank />}>
             Customize

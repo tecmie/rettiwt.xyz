@@ -1,4 +1,9 @@
-import { useColorModeValue as mode, Box, HStack } from '@chakra-ui/react';
+import {
+  useColorModeValue as mode,
+  chakra,
+  Box,
+  HStack,
+} from '@chakra-ui/react';
 import React, { Ref, useState } from 'react';
 import { FiArrowLeft, FiHeart } from 'react-icons/fi';
 import {
@@ -25,9 +30,9 @@ const TimelineSlot: React.FC<TimelineSlotProps> = ({
       flex="1"
       alignItems={'center'}
       // overflow="hidden"
-      // maxW={'2xl'}
-      // minW={['sm', 'md', '2xl']}
-      // minH={'100vh'}
+      maxW={'2xl'}
+      minW={['sm', 'md', '2xl']}
+      minH={'97vh'}
       w={'full'}
       onScroll={(x) => setmMainIsScrolled(x.currentTarget.scrollTop > 32)}
     >
@@ -45,7 +50,8 @@ const TimelineSlot: React.FC<TimelineSlotProps> = ({
               </ColumnHeading>
             )}
           </HStack>
-          <ColumnButton leftIcon={<FiHeart />}>12 Followers</ColumnButton>
+          <chakra.small mr={2}>Knowledge Cutoff: Mon Aug 16 2023</chakra.small>
+          {/* <ColumnButton leftIcon={<FiHeart />}>12 Followers</ColumnButton> */}
         </HStack>
       </ColumnHeader>
 

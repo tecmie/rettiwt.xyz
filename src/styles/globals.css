@@ -161,3 +161,7 @@ a {
 .infinite-scroll-component {
   overflow: hidden !important;
 }
+/* 
+.detail__sentiment-scroll {
+  overflow: scroll !important;
+} */

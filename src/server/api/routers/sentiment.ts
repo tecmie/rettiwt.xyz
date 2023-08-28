@@ -48,7 +48,7 @@ export const sentimentRouter = createTRPCRouter({
       nextCursor = nextItem?.id;
     }
     return {
-      tweets: sentiments,
+      sentiments: sentiments,
       nextCursor,
     };
   }),

@@ -18,12 +18,13 @@ import { createServerSideHelpers } from '@trpc/react-query/server';
 import { NewTimelinePost, TimelineView } from '@/features/timeline';
 import { Center, chakra, Spinner } from '@chakra-ui/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { TimelineSentiments } from '@/features/timeline/timeline-sentiments';
 
 const TimelineStatDeck = dynamic(() => import('@/components/timeline-stat'), {
   ssr: false,
 });
 
-export default function DetailPage() {
+export default function DetailPage({ id }: any) {
   const tweets = api.timeline.list.useInfiniteQuery(
     {
       limit: 20,
@@ -37,7 +38,7 @@ export default function DetailPage() {
     return (
       <>
         <TimelineSlot>
-          <Center h={'100vh'}>
+          <Center h={'100vh'} w={'full'}>
             <Spinner colorScheme="twitter" />
           </Center>
         </TimelineSlot>
@@ -64,7 +65,7 @@ export default function DetailPage() {
         maxW={'2xl'}
         minW={['sm', 'md', '2xl']}
         minH={'100vh'}
-        overflow={'auto'}
+        overflowY={'scroll'}
       >
         <InfiniteScroll
           dataLength={pageTotal}
@@ -80,11 +81,11 @@ export default function DetailPage() {
             </Center>
           }
           scrollableTarget="scrollable_timeline"
-          style={{
-            overflow: 'hidden',
-          }}
-          // style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
-          // inverse={true}
+          style={
+            {
+              // overflow: 'hidden',
+            }
+          }
           loader={
             <Center>
               <Spinner colorScheme="twitter" />
@@ -100,8 +101,7 @@ export default function DetailPage() {
       </chakra.div>
 
       <SidebarSlot>
-        <TimelineStatDeck />
-        <FollowRecommendation />
+        <TimelineSentiments tweetId={id} />
       </SidebarSlot>
     </Fragment>
   );
@@ -132,6 +132,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   // Make sure to return { props: { trpcState: helpers.dehydrate() } }
   return {
     props: {
+      id,
       trpcState,
     },
   };

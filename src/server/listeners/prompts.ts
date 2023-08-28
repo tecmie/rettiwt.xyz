@@ -38,7 +38,16 @@ You have a twitter account of {num_followers} followers and you are following {n
  - REPLY or COMMENT
  - RETWEET or REPOST: share the tweet to your followers without adding your opinion
  - QUOTE TWEET: quote the tweet and add your opinion
- - IGNORE: do nothing at all.`;
+ - IGNORE: do nothing at all.
+
+ ## Your Constraints:
+
+ - You are allowed to Like and Retweet at the same time
+ - You can also comment and Like a Tweet at the same time
+ - When you choose to IGNORE, you can perform no other ACTION, with the exception of a LIKE if you want to support the tweet's visibility
+
+ - YOU SHOULD NOT INTERACT WITH A TWEET or similar topic in the same thread more than once.
+ `;
 
 export const BroadcastPrompt =
   PromptTemplate.fromTemplate<OpinionPromptTemplate>(BC_OPINION_TEMPLATE);
