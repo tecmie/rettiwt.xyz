@@ -17,14 +17,21 @@ import { createServerSideHelpers } from '@trpc/react-query/server';
 import { NewTimelinePost, TimelineView } from '@/features/timeline';
 import { Center, chakra, Spinner } from '@chakra-ui/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { DehydratedState } from '@tanstack/react-query';
 
 const TimelineStatDeck = dynamic(() => import('@/components/timeline-stat'), {
   ssr: false,
 });
 
-export default function RouterPage() {
+type RouterPageProps = {
+  persona: string;
+  trpcState?: DehydratedState;
+};
+
+export default function RouterPage({ persona }: RouterPageProps) {
   const tweets = api.timeline.list.useInfiniteQuery(
     {
+      actorHandle: persona,
       limit: 20,
     },
     {
@@ -61,7 +68,7 @@ export default function RouterPage() {
       <chakra.div
         id="scrollable_timeline"
         maxW={'2xl'}
-        minW={['sm', 'md', '2xl']}
+        minW={['sm', 'md', 'calc(100% - 48.5%)']}
         minH={'100vh'}
         overflow={'auto'}
       >
@@ -135,7 +142,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
    * `prefetch` does not return the result and never throws - if you need that behavior, use `fetch` instead.
    */
   await helpers.author.get.prefetch({ handle: persona });
-  await helpers.timeline.list.prefetch({ limit: 3 });
+  await helpers.timeline.list.prefetch({ limit: 3, actorHandle: persona });
 
   const trpcState = helpers.dehydrate();
 

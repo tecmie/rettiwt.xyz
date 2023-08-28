@@ -1,4 +1,4 @@
-import { timelineRouter } from '@/features/timeline/router';
+import { timelineRouter } from '@/server/api/routers/timeline';
 import { authorRouter } from '@/server/api/routers/author';
 import { createTRPCRouter } from '@/server/api/trpc';
 import { tweetRouter } from './routers/tweet';

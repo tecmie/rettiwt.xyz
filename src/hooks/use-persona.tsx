@@ -44,6 +44,14 @@ export const useProfilePersona = () => {
       path: '/',
     });
 
+    /* We automatically signIn the User pre-API request */
+    //  signIn("credentials", {
+    //   username: newProfilePersona.handle,
+    //   name: newProfilePersona.name,
+    //   redirect: false,
+    //   callbackUrl: undefined,
+    // });
+
     setProfilePersona(newProfilePersona);
   };
 

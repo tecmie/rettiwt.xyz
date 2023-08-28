@@ -535,7 +535,7 @@ queue.on(QueueTask.EmbedReaction, async (...[intent, payload]) => {
        * We need to find an efficient way to handle broadcasts of
        * reactions .. likes and retweets
        */
-      event: QueueTask.BroadcastReaction,
+      event: QueueTask.GlobalBroadcast,
       args: [
         intent,
         {
@@ -589,7 +589,7 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
 
   const chat = new ChatOpenAI({
     modelName: _GPT316K_MODEL_,
-    temperature: _AI_TEMPERATURE_MEDIUM_,
+    temperature: 0,
     openAIApiKey: env.OAK,
     // verbose: true,
   });

@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
-import { type ITimelineTweet } from '@/types/timeline.type';
 
 const queryTimelineSchema = z.object({
   limit: z.number().min(1).max(100).nullish(),
+  actorHandle: z.string(),
   // <-- "cursor" needs to exist, but can be any type
   cursor: z.string().nullish().describe('our timestamp is our cursor'),
 });
@@ -15,8 +15,31 @@ export const timelineRouter = createTRPCRouter({
       const cursor = input.cursor ? { id: input.cursor } : undefined;
       const limit = input.limit ?? 25;
 
+      const actor = await ctx.prisma.author.findUnique({
+        where: {
+          handle: input.actorHandle,
+        },
+        include: {
+          following: {
+            select: {
+              /* ID of people our persona follows */
+              follower_id: true,
+            },
+          },
+        },
+      });
+
+      console.log();
+
+      const influencers = actor?.following.map((val) => val.follower_id);
+
       const posts = await ctx.prisma.tweet.findMany({
         take: limit + 1, // get an extra item at the end which we'll use as next cursor,
+        where: {
+          author_id: {
+            in: influencers,
+          },
+        },
         orderBy: {
           timestamp: 'desc',
         },

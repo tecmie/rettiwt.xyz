@@ -46,7 +46,14 @@ export const tweetRouter = createTRPCRouter({
         include: {
           replies: {
             include: {
-              author: true,
+              author: {
+                select: {
+                  id: true,
+                  name: true,
+                  handle: true,
+                  avatar: true,
+                },
+              },
               replies: {
                 /* This is as deep as we can go */
                 include: {
