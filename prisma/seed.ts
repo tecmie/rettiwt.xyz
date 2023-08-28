@@ -17,58 +17,63 @@ async function createAuthors() {
   /**
    * Vector Retrieval step for our authors
    **/
-  const db = await connect('vectors');
-  const embeddings = new OpenAIEmbeddingFunction(
-    'text',
-    process.env.OAK as string,
-  );
+  // const db = await connect('vectors');
+  // const embeddings = new OpenAIEmbeddingFunction(
+  //   'text',
+  //   process.env.OAK as string,
+  // );
 
   const authorIds = [];
 
   for (const handle in profiles) {
     const user = profiles[handle as '0x'];
 
-    const table = await db.openTable(user.screen_name, embeddings);
+    // const table = await db.openTable(user.screen_name, embeddings);
 
-    const prompt = PromptTemplate.fromTemplate(`
-      {name}, with username {username} has a Twitter bio that says {bio}. 
-      Their opinion is relevant to their followers and below is subcontext retrieved from their previous timeline activity:
+    // const prompt = PromptTemplate.fromTemplate(`
+    //   {name}, with username {username} has a Twitter bio that says {bio}.
+    //   Their thoughts and opinions are relevant to their followers. Below is subcontext retrieved from their previous timeline activity:
 
-      {context}
-          
-      based on the above subcontext, how would you describe {name} ({username})'s, writing style?`);
+    //   {context}
 
-    /**
-     * Fetch tweets from vector db
-     */
-    const queryContext = await (
-      await table
-        .search(user.name as string)
-        .where(`type IN ("tweet", "thread-tweet", "quote-tweet")`)
-        .select(['text'])
-        .limit(10)
-        .execute()
-    )
-      .map((r: { text: string }) => r.text)
-      .join('\n\n---\n\n')
-      .substring(0, 7000); // GPT-4 max token length is 8096, set to 3067 if using GPT-3 or lower
+    //   based on the above subcontext, how would you describe {name} ({username})'s, Twitter Persona?`);
 
-    const modelPrompt = await prompt.format({
-      context: queryContext,
-      name: user.name,
-      username: handle,
-      bio: user.description,
-    });
+    // /**
+    //  * Fetch tweets from vector db
+    //  */
+    // const queryContext = await (
+    //   await table
+    //     .search(user.name as string)
+    //     .select(['text'])
+    //     .limit(10)
+    //     .execute()
+    // )
+    //   .map((r: { text: string }) => r.text)
+    //   .join('\n\n---\n\n')
+    //   .substring(0, 7072); // GPT-4 max token length is 8096, set to 3067 if using GPT-3 or lower
 
-    const model = new ChatOpenAI({
-      temperature: 0.777,
-      modelName: 'gpt-4',
-      openAIApiKey: process.env.OAK,
-      verbose: true,
-    });
+    // const modelPrompt = await prompt.format({
+    //   context: queryContext,
+    //   name: user.name,
+    //   username: handle,
+    //   bio: user.description,
+    // });
 
-    /* Generate tone of voice and persist */
-    const toneOfVoice = await model.invoke(modelPrompt);
+    // const model = new ChatOpenAI({
+    //   temperature: 0.777,
+    //   modelName: 'gpt-4',
+    //   openAIApiKey: process.env.OAK,
+    //   verbose: true,
+    // });
+
+    // /* Generate tone of voice and persist */
+    // const userPersona = await model.invoke(modelPrompt);
+
+    const personaJSON = require('./aupersona.json');
+
+    const tovObject = personaJSON.find(
+      (obj: { id: string }) => obj.id === String(user.id_str),
+    );
 
     try {
       const createdAuthor = await prisma.author.create({
@@ -77,7 +82,8 @@ async function createAuthors() {
           handle: handle,
           name: user.name,
           bio: user.description,
-          tone_of_voice: toneOfVoice.content,
+          tone_of_voice: tovObject.tone_of_voice,
+          persona: personaJSON.persona,
           avatar: user.profile_image_url_https,
           has_custom_timelines: user.has_custom_timelines,
           url: user.profile_banner_url,

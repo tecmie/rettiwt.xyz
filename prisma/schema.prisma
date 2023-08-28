@@ -63,6 +63,7 @@ model Author {
   id                   String     @id @default(cuid())
   handle               String     @unique
   name                 String
+  persona              String
   tone_of_voice        String
   bio                  String?
   avatar               String?
