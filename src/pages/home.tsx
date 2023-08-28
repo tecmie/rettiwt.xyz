@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from 'react';
+import { Fragment } from 'react';
 import SeoMeta from '@/components/seo-meta';
 import { FollowRecommendation } from '@/components/follow-recommendation';
 import SidebarSlot from '@/layout/slots/SidebarSlot';
@@ -8,18 +8,16 @@ import { type GetServerSidePropsContext } from 'next';
 import { createInnerTRPCContext } from '@/server/api/trpc';
 
 import nookies from 'nookies';
+import { api } from '@/utils/api';
+import superjson from 'superjson';
 
 import { appRouter } from '@/server/api/root';
 import { createServerSideHelpers } from '@trpc/react-query/server';
-import superjson from 'superjson';
-import { api } from '@/utils/api';
-import { Center, chakra, Spinner, useBreakpointValue } from '@chakra-ui/react';
+import { NewTimelinePost, TimelineView } from '@/features/timeline';
+import { Center, chakra, Spinner } from '@chakra-ui/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-import { NewTimelinePost, TimelineView } from '@/features/timeline';
-
 import dynamic from 'next/dynamic';
-import { usePageTotal } from '@/hooks/use-page-total';
 const TimelineStatDeck = dynamic(() => import('@/components/timeline-stat'), {
   ssr: false,
 });
@@ -49,14 +47,9 @@ export default function RouterPage() {
   /**
    * Get the page length total
    */
-  const { pageTotal } = usePageTotal({
-    pages: tweets.data.pages,
-    key: 'tweets',
-  });
-
-  // const pageTotal = tweets.data.pages.reduce((acc: number, page: any) => {
-  //   return acc + page.tweets.length;
-  // }, 0);
+  const pageTotal = tweets.data.pages.reduce((acc: number, page: any) => {
+    return acc + Number(page.tweets.length);
+  }, 0);
 
   return (
     <Fragment>

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEffect, useState, useCallback } from 'react';
 
 type QPage = {

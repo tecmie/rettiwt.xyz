@@ -413,7 +413,11 @@ queue.on(QueueTask.EmbedOpinion, async (...[intent, payload]) => {
      * Notifying all our followers of a new opinion activity from a X user.
      */
     queue.send({
-      event: QueueTask.GlobalBroadcast,
+      /**
+       * intentionally calling a void broadcast, so that
+       * likes don't generate intents
+       */
+      event: QueueTask.BroadcastReaction,
       args: [
         tweetIntent,
         {
