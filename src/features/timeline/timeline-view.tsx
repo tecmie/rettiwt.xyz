@@ -6,7 +6,6 @@ import {
   HStack,
   Icon,
   Input,
-  Link,
   Stack,
   StackDivider,
   type StackProps,
@@ -16,9 +15,10 @@ import {
   Spinner,
   Center,
 } from '@chakra-ui/react';
+import { Link } from '@chakra-ui/next-js';
 import { env } from '@/env.mjs';
 import { api } from '@/utils/api';
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import { format } from 'timeago.js';
 import { ColumnIconButton } from '@/layout/split-shell/Column';
 import { useChat } from 'ai/react';
@@ -38,7 +38,6 @@ import { useProfilePersona } from '@/hooks/use-persona';
 import { PersonaModal } from '@/features/persona/persona-modal';
 import { useRouter } from 'next/router';
 import { randomWholeInt, sanitizeText } from '@/utils/values';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { post } from 'needle';
 
 // class App extends React.Component {
@@ -105,8 +104,8 @@ export const TimelineView = ({ tweets, ...rest }: TimelineViewProps) => {
               </Box>
 
               <Link
+                href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
                 key={post.id}
-                aria-current={post.id === '2' ? 'page' : undefined}
                 _hover={{
                   textDecoration: 'none',
                   // bg: mode("blackAlpha.50", "whiteAlpha.50")
@@ -362,13 +361,13 @@ export const LikeDeckComponent = ({ post }: TimelineDeckProps) => {
         <Icon as={AiFillHeart} color={'red.500'} />
         <Text>
           <chakra.span>{post.author.name} liked</chakra.span>
-          <chakra.a
+          <Link
             px={1}
             color={'link'}
             href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
           >
             @{post.author.handle}&apos;s
-          </chakra.a>
+          </Link>
           <chakra.span>tweet</chakra.span>
         </Text>
       </HStack>
@@ -401,13 +400,13 @@ export const RetweetDeckComponent = ({ post }: TimelineDeckProps) => {
         <Icon as={RetweetIcon} color={'green.500'} />
         <Text>
           <chakra.span>{post.author.name} retweeted</chakra.span>
-          <chakra.a
+          <Link
             px={1}
             color={'link'}
             href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
           >
             @{post.author.handle}&apos;s
-          </chakra.a>
+          </Link>
           <chakra.span>tweet</chakra.span>
         </Text>
       </HStack>
@@ -514,17 +513,21 @@ export const QuoteDeckComponent = ({ post }: TimelineDeckProps) => {
         <RenderContentText text={post.content} />
       </Stack>
       {post.is_quote_tweet && (
-        <Stack
-          borderWidth={'1px'}
-          borderStyle={'solid'}
-          px={3}
-          pt={1.5}
-          rounded={'xl'}
-          mt={1}
-          mb={2}
+        <chakra.a
+          href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.quote_parent?.id}`}
         >
-          <InnerQuoteDeckComponent post={post} />
-        </Stack>
+          <Stack
+            borderWidth={'1px'}
+            borderStyle={'solid'}
+            px={3}
+            pt={1.5}
+            rounded={'xl'}
+            mt={1}
+            mb={2}
+          >
+            <InnerQuoteDeckComponent post={post} />
+          </Stack>
+        </chakra.a>
       )}
     </Fragment>
   );

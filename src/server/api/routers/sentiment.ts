@@ -19,7 +19,7 @@ export const sentimentRouter = createTRPCRouter({
         tweet_id: input.tweetId,
       },
       orderBy: {
-        timestamp: 'desc',
+        tweet_id: 'desc',
       },
       cursor: cursor,
       include: {

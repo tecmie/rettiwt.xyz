@@ -19,14 +19,19 @@ import { NewTimelinePost, TimelineView } from '@/features/timeline';
 import { Center, chakra, Spinner } from '@chakra-ui/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { TimelineSentiments } from '@/features/timeline/timeline-sentiments';
+import {
+  TimelineThread,
+  TweetDetailDeck,
+} from '@/features/timeline/timeline-status';
 
 const TimelineStatDeck = dynamic(() => import('@/components/timeline-stat'), {
   ssr: false,
 });
 
 export default function DetailPage({ id }: any) {
-  const tweets = api.timeline.list.useInfiniteQuery(
+  const tweets = api.tweet.list_with_replies.useInfiniteQuery(
     {
+      tweetId: id,
       limit: 20,
     },
     {
@@ -93,9 +98,11 @@ export default function DetailPage({ id }: any) {
           }
         >
           <TimelineSlot>
-            <NewTimelinePost />
+            <TweetDetailDeck id={id} />
 
-            <TimelineView tweets={tweets.data} />
+            <TimelineThread id={id} />
+            {/* 
+            <TimelineView tweets={tweets.data as any} /> */}
           </TimelineSlot>
         </InfiniteScroll>
       </chakra.div>
@@ -125,7 +132,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
    * Prefetching the `post.byId` query.
    * `prefetch` does not return the result and never throws - if you need that behavior, use `fetch` instead.
    */
-  await helpers.tweet.get.prefetch({ id });
+  await helpers.tweet.list_with_join.prefetch({ id });
   await helpers.sentiment.list.prefetchInfinite({ tweetId: id });
   const trpcState = helpers.dehydrate();
 

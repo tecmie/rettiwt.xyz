@@ -2,7 +2,6 @@ import { Fragment } from 'react';
 import { format } from 'timeago.js';
 
 import { api } from '@/utils/api';
-
 import {
   Avatar,
   Box,
@@ -10,12 +9,11 @@ import {
   Center,
   chakra,
   HStack,
-  Link,
   Spinner,
   Stack,
   StackDivider,
-  LinkOverlay,
 } from '@chakra-ui/react';
+import { Link } from '@chakra-ui/next-js';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 export function TimelineSentiments({ tweetId }: any) {
@@ -106,7 +104,8 @@ export const SentimentView = ({ data, ...rest }: any) => {
         return page.sentiments.map((sentiment: any) => {
           return (
             <HStack align="start" key={sentiment.id} px={4} pt={2}>
-              <LinkOverlay
+              <Link
+                href={'#'}
                 key={sentiment.id}
                 _hover={{
                   textDecoration: 'none',
@@ -118,7 +117,7 @@ export const SentimentView = ({ data, ...rest }: any) => {
                 <SentimentalDeck sentiment={sentiment} />
 
                 {/* <TimelineDeckFooter post={post} /> */}
-              </LinkOverlay>
+              </Link>
             </HStack>
           );
         });

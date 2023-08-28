@@ -1,31 +1,30 @@
-import { PostCard } from '@/layout/split-shell';
-
-import SeoMeta from '@/components/seo-meta';
 import { Fragment } from 'react';
-import { SplitShell } from '@/layout/split-shell';
-import { createInnerTRPCContext } from '@/server/api/trpc';
-import { FollowRecommendation } from '@/components/follow-recommendation';
-import SidebarSlot from '@/layout/slots/SidebarSlot';
-import TimelineSlot from '@/layout/slots/TimelineSlot';
-import { type GetServerSidePropsContext } from 'next';
+import { format } from 'timeago.js';
 
-import dynamic from 'next/dynamic';
-import superjson from 'superjson';
 import { api } from '@/utils/api';
-
-import { appRouter } from '@/server/api/root';
-import { createServerSideHelpers } from '@trpc/react-query/server';
-import { NewTimelinePost, TimelineView } from '@/features/timeline';
-import { Center, chakra, Spinner } from '@chakra-ui/react';
+import {
+  Avatar,
+  Box,
+  Text,
+  Center,
+  chakra,
+  HStack,
+  Spinner,
+  Stack,
+  StackDivider,
+} from '@chakra-ui/react';
+import { Link } from '@chakra-ui/next-js';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import TimelineView, {
+  TimelineDeckBody,
+  TimelineDeckFooter,
+} from '@/features/timeline/timeline-view';
+import { env } from '@/env.mjs';
 
-const TimelineStatDeck = dynamic(() => import('@/components/timeline-stat'), {
-  ssr: false,
-});
-
-export default function DetailPage({ id }: any) {
-  const tweets = api.timeline.list.useInfiniteQuery(
+export function TimelineThread({ id }: any) {
+  const tweets = api.tweet.list_with_replies.useInfiniteQuery(
     {
+      tweetId: id,
       limit: 20,
     },
     {
@@ -36,14 +35,9 @@ export default function DetailPage({ id }: any) {
   if (tweets.isLoading || !tweets.data) {
     return (
       <>
-        <TimelineSlot>
-          <Center h={'100vh'} w={'full'}>
-            <Spinner colorScheme="twitter" />
-          </Center>
-        </TimelineSlot>
-        <SidebarSlot>
-          <FollowRecommendation />
-        </SidebarSlot>
+        <Center h={'100vh'} w={'full'}>
+          <Spinner colorScheme="twitter" />
+        </Center>
       </>
     );
   }
@@ -57,75 +51,101 @@ export default function DetailPage({ id }: any) {
 
   return (
     <Fragment>
-      <SeoMeta />
-
-      <chakra.div
-        id="scrollable_timeline"
-        maxW={'2xl'}
-        minW={['sm', 'md', '2xl']}
-        minH={'100vh'}
-        overflow={'auto'}
-      >
-        <InfiniteScroll
-          dataLength={pageTotal}
-          next={tweets.fetchNextPage}
-          hasMore={tweets.hasNextPage ? true : false}
-          refreshFunction={tweets.refetch}
-          pullDownToRefresh={true}
-          releaseToRefreshContent={
-            <Center>
-              <h3 style={{ textAlign: 'center' }}>
-                &#8593; Release to refresh
-              </h3>{' '}
-            </Center>
-          }
-          scrollableTarget="scrollable_timeline"
-          style={{
-            overflow: 'hidden',
-          }}
-          loader={
-            <Center>
-              <Spinner colorScheme="twitter" />
-            </Center>
-          }
+      <Center mt={6}>
+        <chakra.div
+          id="scrollable_timeline"
+          maxW={'xl'}
+          w={'full'}
+          position={'relative'}
+          height={'calc(100vh - 16px)'}
+          overflowY={'auto'}
+          overflowX={'hidden'}
         >
-          <TimelineSlot>
-            <NewTimelinePost />
+          <InfiniteScroll
+            dataLength={pageTotal}
+            next={tweets.fetchNextPage}
+            hasMore={tweets.hasNextPage ? true : false}
+            refreshFunction={tweets.refetch}
+            pullDownToRefresh={true}
+            releaseToRefreshContent={
+              <Center>
+                <h3 style={{ textAlign: 'center' }}>
+                  &#8593; Release to refresh
+                </h3>{' '}
+              </Center>
+            }
+            scrollableTarget="scrollable_timeline"
+            className="detail__sentiment-scroll"
+            loader={
+              <Center>
+                <Spinner colorScheme="twitter" />
+              </Center>
+            }
+          >
+            {/* <PostCard /> */}
 
-            <TimelineView tweets={tweets.data} />
-          </TimelineSlot>
-        </InfiniteScroll>
-      </chakra.div>
+            <TimelineView tweets={tweets.data as any} />
+          </InfiniteScroll>
+        </chakra.div>
+      </Center>
     </Fragment>
   );
 }
 
-DetailPage.getLayout = (page: React.ReactNode) => (
-  <SplitShell>{page}</SplitShell>
-);
+export const TweetDetailDeck = ({ id }: any) => {
+  const tweet = api.tweet.get.useQuery({ id });
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const id = ctx.params?.id as string;
+  if (!tweet.data) {
+    return (
+      <Center>
+        <Spinner />
+      </Center>
+    );
+  }
 
-  const helpers = createServerSideHelpers({
-    router: appRouter,
-    ctx: createInnerTRPCContext({ session: null }),
-    transformer: superjson,
-  });
+  const post = tweet.data;
 
-  /**
-   * @see https://trpc.io/docs/client/nextjs/server-side-helpers#nextjs-example
-   * Prefetching the `post.byId` query.
-   * `prefetch` does not return the result and never throws - if you need that behavior, use `fetch` instead.
-   */
-  await helpers.tweet.get.prefetch({ id });
-  await helpers.sentiment.list.prefetchInfinite({ tweetId: id });
-  const trpcState = helpers.dehydrate();
+  return (
+    post && (
+      <Fragment>
+        <Stack
+          spacing={{ base: '1px', lg: '1' }}
+          py="3"
+          divider={<StackDivider />}
+        >
+          <HStack align="start" key={post.id} px={4} pt={2} mr={3}>
+            <Box w={'40px'} mr={1} px={0}>
+              <Avatar
+                src={post.author.avatar ?? post.author.name}
+                name={post.author.handle}
+                boxSize="9"
+              ></Avatar>
+            </Box>
 
-  // Make sure to return { props: { trpcState: helpers.dehydrate() } }
-  return {
-    props: {
-      trpcState,
-    },
-  };
+            <Link
+              href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
+              key={post.id}
+              _hover={{
+                textDecoration: 'none',
+                // bg: mode("blackAlpha.50", "whiteAlpha.50")
+              }}
+              w={'full'}
+              borderRadius={{ lg: 'lg' }}
+            >
+              <TimelineDeckBody post={post as any} />
+
+              <TimelineDeckFooter post={post as any} />
+            </Link>
+          </HStack>
+
+          <StackDivider />
+
+          <Text textAlign={'center'} color={'muted'} size={'xs'}>
+            Other users response to the tweet above
+          </Text>
+          <StackDivider />
+        </Stack>
+      </Fragment>
+    )
+  );
 };
