@@ -12,8 +12,9 @@ import {
   type StackProps,
   Text,
   Textarea,
-  useColorModeValue as mode,
   useDisclosure,
+  Spinner,
+  Center,
 } from '@chakra-ui/react';
 import { api } from '@/utils/api';
 import { Fragment, useState } from 'react';
@@ -31,11 +32,12 @@ import {
 import { BsChevronDown } from 'react-icons/bs';
 import { HiRefresh } from 'react-icons/hi';
 import { type ITimelineTweet } from '@/types/timeline.type';
-import { ITweetIntent } from '@/types/tweet.type';
+import { ITweet, ITweetIntent } from '@/types/tweet.type';
 import { useProfilePersona } from '@/hooks/use-persona';
 import { PersonaModal } from '@/features/persona/persona-modal';
 import { useRouter } from 'next/router';
-import { sanitizeText } from '@/utils/values';
+import { randomWholeInt, sanitizeText } from '@/utils/values';
+import { env } from '@/env.mjs';
 
 export const TimelineView = (props: StackProps) => {
   const [currCursor, setCurrCursor] = useState(0);
@@ -50,7 +52,12 @@ export const TimelineView = (props: StackProps) => {
     },
   );
 
-  // console.log(tweets.data?.pages[0]);
+  if (tweets.isLoading)
+    return (
+      <Center h={'100vh'}>
+        <Spinner colorScheme="twitter" />
+      </Center>
+    );
 
   return (
     <Stack
@@ -59,7 +66,7 @@ export const TimelineView = (props: StackProps) => {
       divider={<StackDivider />}
       {...props}
     >
-      {tweets.data?.pages[currCursor]?.tweets.map((post) => {
+      {tweets.data?.pages[currCursor]?.tweets.map((post: ITweet) => {
         console.log({ post });
         return (
           <HStack align="start" key={post.id} px={4} pt={2}>
@@ -264,25 +271,36 @@ type TimelineDeckProps = {
 };
 
 export const TweetDeckComponent = ({ post }: TimelineDeckProps) => {
+  console.log({ authhor: post.author });
   return (
-    <Fragment>
-      <HStack spacing="1">
-        <Text fontSize="sm" fontWeight="bold" color="emphasized">
-          {post.author.name}
-        </Text>
-        <Text fontSize="sm" opacity={0.6} color="muted">
-          @{post.author.handle}
-        </Text>
-        <Text opacity={0.6} color={'muted'} fontSize={'sm'}>
-          {' '}
-          • {post.timestamp && format(post.timestamp)}
-        </Text>
-      </HStack>
+    post && (
+      <Fragment>
+        <HStack spacing="1" mt={1.5}>
+          <Box mr={1} px={0}>
+            <Avatar
+              src={post.author.avatar || post.author.name}
+              name={post.author.handle}
+              boxSize="6"
+            ></Avatar>
+          </Box>
 
-      <Stack spacing="1" pb={2} pt={0.5} fontSize="sm" lineHeight="1.25rem">
-        <RenderContentText text={post.content} />
-      </Stack>
-    </Fragment>
+          <Text fontSize="sm" fontWeight="bold" color="emphasized">
+            {post.author.name}
+          </Text>
+          <Text fontSize="sm" opacity={0.6} color="muted">
+            @{post.author.handle}
+          </Text>
+          <Text opacity={0.6} color={'muted'} fontSize={'sm'}>
+            {' '}
+            • {post.timestamp && format(post.timestamp)}
+          </Text>
+        </HStack>
+
+        <Stack spacing="1" pb={2} pt={0.5} fontSize="sm" lineHeight="1.25rem">
+          <RenderContentText text={post.content} />
+        </Stack>
+      </Fragment>
+    )
   );
 };
 
@@ -296,7 +314,7 @@ export const LikeDeckComponent = ({ post }: TimelineDeckProps) => {
           <chakra.a
             px={1}
             color={'link'}
-            href={`https://twitter.com/${post.id}`}
+            href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
           >
             @{post.author.handle}&apos;s
           </chakra.a>
@@ -335,7 +353,7 @@ export const RetweetDeckComponent = ({ post }: TimelineDeckProps) => {
           <chakra.a
             px={1}
             color={'link'}
-            href={`https://twitter.com/${post.id}`}
+            href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
           >
             @{post.author.handle}&apos;s
           </chakra.a>
@@ -365,36 +383,47 @@ export const RetweetDeckComponent = ({ post }: TimelineDeckProps) => {
 };
 
 export const ReplyDeckComponent = ({ post }: TimelineDeckProps) => {
+  console.log({ parentProps: post });
+
+  if (post.is_reply_tweet && !post.reply_parent) {
+    return (
+      <Center>
+        <Spinner colorScheme="twitter" />
+      </Center>
+    );
+  }
   return (
     <Fragment>
-      <HStack spacing="1">
-        <Text fontSize="sm" fontWeight="bold" color="emphasized">
+      <HStack spacing="1" fontSize={'md'}>
+        <Text fontWeight="bold" color="emphasized">
           {post.author.name}
         </Text>
 
-        <Text fontSize="sm" opacity={0.6} color="muted">
+        <Text opacity={0.6} color="muted">
           @{post.author.handle}
         </Text>
-        <Text opacity={0.6} color={'muted'} fontSize={'sm'}>
+        <Text opacity={0.6} color={'muted'}>
           {' '}
           • {post.timestamp && format(post.timestamp)}
         </Text>
       </HStack>
 
-      <HStack opacity={0.8} fontSize="xs" fontWeight="medium" color="muted">
-        <Icon as={CommentIcon} color={'blue.500'} />
-        <Text>
-          <chakra.span>Replying to</chakra.span>
-          <chakra.a
-            px={1}
-            color={'link'}
-            href={`https://twitter.com/${post.id}`}
-          >
-            @{post.author.handle}&apos;s
-          </chakra.a>
-          <chakra.span>tweet</chakra.span>
-        </Text>
-      </HStack>
+      {post.reply_parent && (
+        <HStack opacity={0.8} fontSize="sm" fontWeight="medium" color="muted">
+          <Icon as={CommentIcon} color={'blue.500'} />
+          <Text>
+            <chakra.span>Replying to</chakra.span>
+            <chakra.a
+              px={1}
+              color={'link'}
+              href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.reply_parent_id}`}
+            >
+              @{post.reply_parent.author.handle}&apos;s
+            </chakra.a>
+            <chakra.span>tweet</chakra.span>
+          </Text>
+        </HStack>
+      )}
 
       <Stack spacing="1" pb={2} pt={0.5} fontSize="sm" lineHeight="1.25rem">
         <RenderContentText text={post.content} />
@@ -409,7 +438,9 @@ const InnerQuoteDeckComponent = ({ post }: TimelineDeckProps) => {
     case ITweetIntent.REPLY:
       return <ReplyDeckComponent post={post} />;
     default:
-      return <TweetDeckComponent post={post} />;
+      return (
+        post.quote_parent && <TweetDeckComponent post={post.quote_parent} />
+      );
   }
 };
 
@@ -433,18 +464,19 @@ export const QuoteDeckComponent = ({ post }: TimelineDeckProps) => {
       <Stack spacing="1" pb={2} pt={0.5} fontSize="sm" lineHeight="1.25rem">
         <RenderContentText text={post.content} />
       </Stack>
-
-      <Stack
-        borderWidth={'1px'}
-        borderStyle={'solid'}
-        px={3}
-        pt={1.5}
-        rounded={'xl'}
-        mt={1}
-        mb={2}
-      >
-        <InnerQuoteDeckComponent post={post} />
-      </Stack>
+      {post.is_quote_tweet && (
+        <Stack
+          borderWidth={'1px'}
+          borderStyle={'solid'}
+          px={3}
+          pt={1.5}
+          rounded={'xl'}
+          mt={1}
+          mb={2}
+        >
+          <InnerQuoteDeckComponent post={post} />
+        </Stack>
+      )}
     </Fragment>
   );
 };
@@ -519,7 +551,7 @@ export const TimelineDeckFooter = ({ post }: { post: ITimelineTweet }) => {
           icon={<ImpressionIcon />}
         />
         <Text color="muted" fontSize={'sm'} opacity={0.7}>
-          23
+          {randomWholeInt(100, 10000)}
         </Text>
       </HStack>
       <ColumnIconButton

@@ -1,29 +1,12 @@
-import { type ITweet, type ITweetIntent } from './tweet.type';
+import { Author, Tweet } from '@prisma/client';
+import { type ITweet } from './tweet.type';
 
-export interface ITimelineTweet extends ITweet {
-  /**
-   * @memberof ITimelineTweet
-   * @description The type of interaction with the tweet.
-   */
-  intent: ITweetIntent | string;
-
-  /**
-   * @memberof ITimelineTweet
-   * @description Whether the tweet is pinned.
-   */
-  is_pinned: boolean;
-
-  /**
-   * @memberof ITimelineTweet
-   * @description Whether the tweet is a quote tweet.
-   */
-  is_quote_tweet: boolean;
-
+export interface ITimelineTweet extends Tweet {
   /**
    * @memberof ITimelineTweet
    * @description Whether the tweet is a retweet.
    */
-  is_reply_tweet: boolean;
+  author: Author;
 
   /**
    * @optional
@@ -31,7 +14,7 @@ export interface ITimelineTweet extends ITweet {
    * @description The tweet that is quoted. `quote_parent`
    * @see {@link ITweet}
    */
-  quoted_tweet?: ITweet;
+  quote_parent?: ITweet | null;
 
   /**
    * @optional
@@ -39,5 +22,5 @@ export interface ITimelineTweet extends ITweet {
    * @description The tweet that is replied to `parent_tweet`
    * @see {@link ITweet}
    */
-  parent_tweet?: ITweet;
+  reply_parent?: ITweet | null;
 }

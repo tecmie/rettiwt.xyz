@@ -10,6 +10,7 @@ import {
   Container,
   Heading,
   Center,
+  Spinner,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { Fragment } from 'react';
@@ -48,7 +49,14 @@ export default function RouterPage() {
 
   /** @note It's important for us to call this query after the form hook */
 
-  const { data: personaList } = api.author.list_form.useQuery();
+  const { data: personaList, isLoading } = api.author.list_form.useQuery();
+
+  if (!personaList || isLoading)
+    return (
+      <Center h={'100vh'}>
+        <Spinner colorScheme="twitter" />
+      </Center>
+    );
 
   return renderForm(
     <Fragment>
