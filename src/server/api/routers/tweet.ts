@@ -22,7 +22,7 @@ export * as ximl from '@/server/listeners/default';
  */
 export const tweetRouter = createTRPCRouter({
   // Get one tweet by ID
-  get: publicProcedure
+  get_with_paginated_joins: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(({ input, ctx }) => {
       return ctx.prisma.tweet.findUnique({
@@ -51,6 +51,20 @@ export const tweetRouter = createTRPCRouter({
               author: true,
             },
           },
+        },
+      });
+    }),
+  get: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ input, ctx }) => {
+      return ctx.prisma.tweet.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          replies: true,
+          liked_by: true,
+          retweeted_by: true,
         },
       });
     }),

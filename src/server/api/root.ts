@@ -2,6 +2,7 @@ import { timelineRouter } from '@/features/timeline/router';
 import { authorRouter } from '@/server/api/routers/author';
 import { createTRPCRouter } from '@/server/api/trpc';
 import { tweetRouter } from './routers/tweet';
+import { sentimentRouter } from './routers/sentiment';
 
 /**
  * This is the primary router for your server.
@@ -12,6 +13,7 @@ export const appRouter = createTRPCRouter({
   author: authorRouter,
   tweet: tweetRouter,
   timeline: timelineRouter,
+  sentiment: sentimentRouter,
 });
 
 // export type definition of API
