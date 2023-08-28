@@ -4,7 +4,7 @@ import {
   Box,
   HStack,
 } from '@chakra-ui/react';
-import React, { Ref, useState } from 'react';
+import React, { type Ref, useState } from 'react';
 import { FiArrowLeft, FiHeart } from 'react-icons/fi';
 import {
   ColumnHeader,

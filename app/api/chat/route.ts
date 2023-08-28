@@ -13,7 +13,7 @@ import {
   _GPT4_MODEL_,
   _AI_TEMPERATURE_MEDIUM_,
 } from '@/utils/constants';
-import { Author } from '@prisma/client';
+import { type Author } from '@prisma/client';
 
 /**
  * @warning

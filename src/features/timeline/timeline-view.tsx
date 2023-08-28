@@ -33,7 +33,7 @@ import {
 import { BsChevronDown } from 'react-icons/bs';
 import { HiRefresh } from 'react-icons/hi';
 import { type ITimelineTweet } from '@/types/timeline.type';
-import { ITweet, ITweetIntent } from '@/types/tweet.type';
+import { type ITweet, ITweetIntent } from '@/types/tweet.type';
 import { useProfilePersona } from '@/hooks/use-persona';
 import { PersonaModal } from '@/features/persona/persona-modal';
 import { useRouter } from 'next/router';

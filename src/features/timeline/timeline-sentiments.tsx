@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Fragment } from 'react';
 import { format } from 'timeago.js';
 
