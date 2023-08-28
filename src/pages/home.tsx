@@ -1,7 +1,6 @@
-import { Fragment } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import SeoMeta from '@/components/seo-meta';
 import { FollowRecommendation } from '@/components/follow-recommendation';
-import { NewTimelinePost, TimelineView } from '@/features/timeline';
 import SidebarSlot from '@/layout/slots/SidebarSlot';
 import TimelineSlot from '@/layout/slots/TimelineSlot';
 import { SplitShell } from '@/layout/split-shell';
@@ -10,21 +9,98 @@ import { createInnerTRPCContext } from '@/server/api/trpc';
 
 import nookies from 'nookies';
 
-import { z } from 'zod';
 import { appRouter } from '@/server/api/root';
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import superjson from 'superjson';
-import TimelineStatDeck from '@/components/timeline-stat';
+import { api } from '@/utils/api';
+import { Center, chakra, Spinner, useBreakpointValue } from '@chakra-ui/react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+
+import { NewTimelinePost, TimelineView } from '@/features/timeline';
+
+import dynamic from 'next/dynamic';
+import { usePageTotal } from '@/hooks/use-page-total';
+const TimelineStatDeck = dynamic(() => import('@/components/timeline-stat'), {
+  ssr: false,
+});
 
 export default function RouterPage() {
+  const tweets = api.timeline.list.useInfiniteQuery(
+    {
+      limit: 20,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
+  );
+
+  if (tweets.isLoading || !tweets.data) {
+    return (
+      <>
+        <TimelineSlot>
+          <Center h={'100vh'}>
+            <Spinner colorScheme="twitter" />
+          </Center>
+        </TimelineSlot>
+      </>
+    );
+  }
+
+  /**
+   * Get the page length total
+   */
+  const { pageTotal } = usePageTotal({
+    pages: tweets.data.pages,
+    key: 'tweets',
+  });
+
+  // const pageTotal = tweets.data.pages.reduce((acc: number, page: any) => {
+  //   return acc + page.tweets.length;
+  // }, 0);
+
   return (
     <Fragment>
       <SeoMeta />
 
-      <TimelineSlot>
-        <NewTimelinePost />
-        <TimelineView />
-      </TimelineSlot>
+      <chakra.div
+        id="scrollable_timeline"
+        maxW={'2xl'}
+        minW={['sm', 'md', '2xl']}
+        minH={'100vh'}
+        overflow={'auto'}
+      >
+        <InfiniteScroll
+          dataLength={pageTotal}
+          next={tweets.fetchNextPage}
+          hasMore={tweets.hasNextPage ? true : false}
+          refreshFunction={tweets.refetch}
+          pullDownToRefresh={true}
+          releaseToRefreshContent={
+            <Center>
+              <h3 style={{ textAlign: 'center' }}>
+                &#8593; Release to refresh
+              </h3>{' '}
+            </Center>
+          }
+          scrollableTarget="scrollable_timeline"
+          style={{
+            overflow: 'hidden',
+          }}
+          // style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
+          // inverse={true}
+          loader={
+            <Center>
+              <Spinner colorScheme="twitter" />
+            </Center>
+          }
+        >
+          <TimelineSlot>
+            <NewTimelinePost />
+
+            <TimelineView tweets={tweets.data} />
+          </TimelineSlot>
+        </InfiniteScroll>
+      </chakra.div>
 
       <SidebarSlot>
         <TimelineStatDeck />
@@ -63,10 +139,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
    * `prefetch` does not return the result and never throws - if you need that behavior, use `fetch` instead.
    */
   await helpers.author.get.prefetch({ handle: persona });
+  await helpers.timeline.list.prefetch({ limit: 3 });
 
   const trpcState = helpers.dehydrate();
 
-  console.log({ trpcState: JSON.stringify(trpcState) });
   // Make sure to return { props: { trpcState: helpers.dehydrate() } }
   return {
     props: {

@@ -39,6 +39,7 @@ import { PersonaModal } from '@/features/persona/persona-modal';
 import { useRouter } from 'next/router';
 import { randomWholeInt, sanitizeText } from '@/utils/values';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { post } from 'needle';
 
 // class App extends React.Component {
 //   state = {
@@ -71,53 +72,30 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 //   }
 // }
 
-export const TimelineView = (props: StackProps) => {
-  const [currCursor, setCurrCursor] = useState(0);
-  const tweets = api.timeline.list.useInfiniteQuery(
-    {
-      id: '1',
-      limit: 30,
-    },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-      initialCursor: currCursor, // <-- optional you can pass an initialCursor
-    },
-  );
+export type PagedTweet = {
+  tweets: ITweet[];
+  nextCursor: string | undefined;
+};
 
-  if (tweets.isLoading)
-    return (
-      <Center h={'100vh'}>
-        <Spinner colorScheme="twitter" />
-      </Center>
-    );
+export type TimelineViewProps = StackProps & {
+  tweets: {
+    pages: PagedTweet[];
+    pageParams: unknown[];
+  };
+};
+
+export const TimelineView = ({ tweets, ...rest }: TimelineViewProps) => {
+  const [currCursor, setCurrCursor] = useState(0);
 
   return (
-    <InfiniteScroll
-      dataLength={tweets.data?.pages[currCursor]?.tweets.length || 0}
-      next={tweets.fetchNextPage}
-      hasMore={true}
-      pullDownToRefresh
-      refreshFunction={tweets.refetch}
-      pullDownToRefreshThreshold={50}
-      pullDownToRefreshContent={
-        <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
-      }
-      releaseToRefreshContent={
-        <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
-      }
-      scrollableTarget="scrollableDiv"
-      style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
-      // inverse={false}
-      loader={<h4>Loading...</h4>}
+    <Stack
+      spacing={{ base: '1px', lg: '1' }}
+      py="3"
+      divider={<StackDivider />}
+      {...rest}
     >
-      <Stack
-        spacing={{ base: '1px', lg: '1' }}
-        py="3"
-        divider={<StackDivider />}
-        {...props}
-      >
-        {tweets.data?.pages[currCursor]?.tweets.map((post: ITweet) => {
-          console.log({ post });
+      {tweets.pages.flatMap((page: PagedTweet) => {
+        return page.tweets.map((post: ITimelineTweet) => {
           return (
             <HStack align="start" key={post.id} px={4} pt={2}>
               <Box w={'40px'} mr={1} px={0}>
@@ -144,10 +122,10 @@ export const TimelineView = (props: StackProps) => {
               </Link>
             </HStack>
           );
-        })}
-        <StackDivider />
-      </Stack>
-    </InfiniteScroll>
+        });
+      })}
+      <StackDivider />
+    </Stack>
   );
 };
 
@@ -322,11 +300,10 @@ type TimelineDeckProps = {
 };
 
 export const TweetDeckComponent = ({ post }: TimelineDeckProps) => {
-  console.log({ authhor: post.author });
   return (
     post && (
       <Fragment>
-        <HStack spacing="1" mt={1.5}>
+        <HStack fontSize={['xs', 'sm']} spacing="1" mt={1.5}>
           <Box mr={1} px={0}>
             <Avatar
               src={post.author.avatar || post.author.name}
@@ -335,13 +312,13 @@ export const TweetDeckComponent = ({ post }: TimelineDeckProps) => {
             ></Avatar>
           </Box>
 
-          <Text fontSize="sm" fontWeight="bold" color="emphasized">
+          <Text fontWeight="bold" color="emphasized">
             {post.author.name}
           </Text>
-          <Text fontSize="sm" opacity={0.6} color="muted">
-            @{post.author.handle}
+          <Text opacity={0.6} color="muted">
+            {/* @{post.author.handle} */}
           </Text>
-          <Text opacity={0.6} color={'muted'} fontSize={'sm'}>
+          <Text opacity={0.6} color={'muted'}>
             {' '}
             • {post.timestamp && format(post.timestamp)}
           </Text>
@@ -434,8 +411,6 @@ export const RetweetDeckComponent = ({ post }: TimelineDeckProps) => {
 };
 
 export const ReplyDeckComponent = ({ post }: TimelineDeckProps) => {
-  console.log({ parentProps: post });
-
   if (post.is_reply_tweet && !post.reply_parent) {
     return (
       <Center>
@@ -445,7 +420,7 @@ export const ReplyDeckComponent = ({ post }: TimelineDeckProps) => {
   }
   return (
     <Fragment>
-      <HStack spacing="1" fontSize={'md'}>
+      <HStack spacing="1" fontSize={['xs', 'sm']}>
         <Text fontWeight="bold" color="emphasized">
           {post.author.name}
         </Text>
@@ -616,3 +591,5 @@ export const TimelineDeckFooter = ({ post }: { post: ITimelineTweet }) => {
     </HStack>
   );
 };
+
+export default TimelineView;

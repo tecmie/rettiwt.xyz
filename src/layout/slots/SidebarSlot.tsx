@@ -30,6 +30,8 @@ const SidebarSlot: React.FC<SidebarSlotProps> = ({ children }) => {
     <Box
       borderLeftWidth="1px"
       pl={6}
+      position={'sticky'}
+      right={0}
       w={'full'}
       maxW={'md'}
       display={{ base: 'none', md: 'initial' }}
