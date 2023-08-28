@@ -20,28 +20,35 @@ export function formatContext(context: Record<string, unknown>[]) {
     .substring(0, 3750);
 }
 
-const TEMPLATE = `
-You are a Helpful AI Assitant to a Thought Leader named {actor} from Nigeria that has been assigned to write a tweet based on a user suggested prompt {input}.
+const _TWEET_TEMPLATE_ = `
+    You are a Twitter user named {actor} 
+    A summary of your user persona is {persona}
 
-Taking into account {actor} 's previous tweets:
-{context}
-
-
->>>>>
-mixed english: omo if you find way comot this country, your eye go clear, no even reason visa wahala .. tbh things like this can expose you to new cultures and opportunities
->>>>>
-
-Perform a new TWEET ACTION in about 280 characters that maintains the tone and dialect of {actor} online persona. 
-REMEMBER: When using mixed english keep it short to about 10 words or don't attempt it at all, when asking questions end with ?.
-
-Finally {actor} 's way of writing is a signature of their online presence ... YOU MUST NEVER COMPROMISE IT.
+    Previous Tweets and activites on your timeline include:
+    {context}
 
 
+    When Given a new idea to tweet about
+    Idea: {input} 
+
+
+    Write a New Tweet that maintains the tone and dialect of your twitter persona, while incorporating your
+    Writing style: {toneOfVoice}
+
+    New Tweet:
 `;
 
-export const prompt = PromptTemplate.fromTemplate(TEMPLATE);
+export const prompt = PromptTemplate.fromTemplate<{
+  input: string;
+  actor: string;
+  context: string;
+  persona: string;
+  toneOfVoice: string;
+}>(_TWEET_TEMPLATE_);
 
 /* ## PROMPT DUMPYARD ######################################################################################################################################################
+// Always remember to end questions end with a question mark ?.
+// {actor} 's way of writing is a signature of their online presence ... YOU MUST NEVER COMPROMISE IT.
 // The above examples not only define your personality but also exhibit a specific length and tone that your followers have come to expect.
 // Your context often focuses on Nigeria unless stated otherwise.
 // NOTES:

@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 
+import _ from 'lodash';
+import { format } from 'timeago.js';
 import { env } from '@/env.mjs';
 import { prisma } from '@/server/db';
 import { queue, QueueTask } from '@/utils/queue';
@@ -26,7 +28,6 @@ import xliker, { type LikeTaskPayload } from './handlers/liker';
 import xcommenter, { type CommentTaskPayload } from './handlers/commenter';
 import xretweeter, { type RetweetTaskPayload } from './handlers/retweeter';
 import { BroadcastPrompt } from './prompts';
-import _ from 'lodash';
 
 /**
  * @typedef Actor
@@ -75,6 +76,7 @@ export type BroadcastEventData = {
   id: Tweet['id'];
   actor: Actor;
   context: string;
+  timestamp: Date;
   intent: EngagementIntent;
   followers: Follow[];
   following: Follow[];
@@ -263,7 +265,7 @@ async function creatInteractionContext(
         /* prettier-ignore */
         additionalInfo += `
           Additional Context:
-          This Tweet is a QUOTE-TWEET ACTION to  ${quoted?.author.name} "@${quoted?.author.handle}" Tweet "${quoted?.content}" at time "${quoted?.timestamp ?? 'unknown'}".
+          This Tweet is a QUOTE-TWEET ACTION to  ${quoted?.author.name} "@${quoted?.author.handle}" Tweet "${quoted?.content}" written "${format(quoted?.timestamp ?? Date.now())}".
           `;
       }
 
@@ -292,7 +294,7 @@ async function creatInteractionContext(
         /* prettier-ignore */
         additionalInfo = `
         Additional Context:
-        This Tweet is a THREAD-TWEET ACTION to ${commented?.author.name} "@${commented?.author.handle}" Tweet "${commented?.content}" at time "${commented?.timestamp ?? 'unknown'}"
+        This Tweet is a THREAD-TWEET ACTION to ${commented?.author.name} "@${commented?.author.handle}" Tweet "${commented?.content}" at time "${format(commented?.timestamp ?? Date.now())}"
         `;
       }
     }
@@ -302,8 +304,8 @@ async function creatInteractionContext(
      * @type {string}
      */
     /* prettier-ignore */
-    const context = `At ${timestamp ?? 'unknown'}, ${String(intent)} with content: ${tweetMeta.content}
-    This tweet was written by ${tweetAuthor.name} "@${tweetAuthor.handle}" at time "${tweetMeta.timestamp ?? 'unknown'}".
+    const context = `${String(intent)} with content: "${tweetMeta.content}" ... ${format(timestamp)}.
+    This tweet was written by ${tweetAuthor.name} "@${tweetAuthor.handle}" at time "${tweetMeta.timestamp}".
 
     ${additionalInfo}
   `;
@@ -503,12 +505,12 @@ queue.on(QueueTask.EmbedReaction, async (...[intent, payload]) => {
     const data = {
       actor: actorProfile,
       id: tweet.id,
-      timestamp: reaction.timestamp ?? 'unknown',
+      timestamp: reaction.timestamp ?? new Date().toISOString(),
       intent: intent,
       context: await creatInteractionContext({
         tweetAuthor: author,
         tweetMeta,
-        timestamp: tweet.timestamp ?? 'unknown',
+        timestamp: tweet.timestamp ?? new Date().toISOString(),
         intent: reactionIntent,
       }),
     };
@@ -539,7 +541,7 @@ queue.on(QueueTask.EmbedReaction, async (...[intent, payload]) => {
           actor: data.actor,
           intent: data.intent,
           context: data.context,
-          timestamp: data.timestamp ?? 'unknown',
+          timestamp: data.timestamp,
           followers: followers,
           following: following,
         },
@@ -596,7 +598,7 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
   for (const follower of followers) {
     try {
       // 2. Get the full author object for each following_id
-      const author = await prisma.author.findUniqueOrThrow({
+      const actor = await prisma.author.findUniqueOrThrow({
         where: {
           id: follower.following_id,
         },
@@ -605,11 +607,29 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
       /**
        * @operation
        *
+       * If this user already has a sentiment to the same post, we skip
+       */
+      const sentiment = await prisma.sentiment.findFirst({
+        where: {
+          author_id: actor.id,
+          tweet_id: meta.id,
+        },
+      });
+
+      if (sentiment) {
+        /* prettier-ignore */
+        console.log(`${_CONSOLE_LOG_COMMENT_} ${actor.name} already has a sentiment for ${meta.id}`);
+        continue;
+      }
+
+      /**
+       * @operation
+       *
        * We perform the vector similarity search step here. We are using an
        * Euclidean distance to get very similar interactions although this could limit
        * the number of results we can retrieve due to our very small dataset
        */
-      const table = await db.openTable(author.handle, embeddings);
+      const table = await db.openTable(actor.handle, embeddings);
       const results = await table
         .search(meta.context)
         .metricType(MetricType.L2)
@@ -623,10 +643,11 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
       const subContext = results.map((r) => r.text).join('\n\n---\n\n');
 
       const prefix = await BroadcastPrompt.format({
-        author_name: author.name,
-        author_handle: author.handle,
-        author_id: author.id,
-        author_bio: author.bio,
+        author_name: actor.name,
+        author_handle: actor.handle,
+        author_persona: actor.persona,
+        author_id: actor.id,
+        author_bio: actor.bio,
         num_followers: followers.length,
         num_following: following.length,
         sub_context: subContext,
@@ -640,9 +661,15 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
         },
       });
 
+      /**
+       * @model HumanMessage
+       * @summary 10 minutes ago, A Tweeter user you follow, @0x performed x-action ....
+       */
+
       /* prettier-ignore */
-      const context = `Your current time is ${new Date().toISOString()}. How are you going to react to ${meta.intent} where Tweet.ID is ${meta.id} 
-      with summary of this engagement: "${meta.context}" ?`;
+      const context = `${format(meta.timestamp)}, A Tweeter user you follow, ${meta.context}
+      
+      As  ${actor.name} "@${actor.handle}" how would your respond to this user's ${intent} where Tweet.ID is ${meta.id}?`;
 
       /**
        * @operation
@@ -659,7 +686,7 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
        */
       await prisma.sentiment.create({
         data: {
-          author_id: author.id,
+          author_id: actor.id,
           tweet_id: meta.id,
           text: String(result),
         },

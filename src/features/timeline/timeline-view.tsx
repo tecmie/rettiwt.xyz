@@ -139,7 +139,11 @@ export const NewTimelinePost = () => {
     input,
     handleInputChange,
     handleSubmit,
-  } = useChat();
+  } = useChat({
+    body: {
+      author: activeProfilePersona,
+    },
+  });
 
   const write = api.tweet.create.useMutation();
 

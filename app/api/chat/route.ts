@@ -13,6 +13,7 @@ import {
   _GPT4_MODEL_,
   _AI_TEMPERATURE_MEDIUM_,
 } from '@/utils/constants';
+import { Author } from '@prisma/client';
 
 /**
  * @warning
@@ -32,6 +33,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
 
   const messages = body.messages ?? [];
+  const author = body.author as Author;
   const currentMessageContent = messages[messages.length - 1].content;
 
   /**
@@ -44,7 +46,7 @@ export async function POST(req: NextRequest) {
 
   const table = await db.openTable(actor?.value ?? '0x', embeddings);
 
-  console.log(table);
+  console.log({ table, body });
 
   /**
    * We need to filter out the messages that are not tweets
@@ -55,7 +57,7 @@ export async function POST(req: NextRequest) {
   const results = await table
     // .search("")
     .search(currentMessageContent as string)
-    .metricType(MetricType.Cosine)
+    .metricType(MetricType.L2)
     .where(`type IN ("tweet", "thread-tweet", "quote-tweet")`)
     .select(['type', 'text', 'url'])
     .limit(5)
@@ -101,9 +103,11 @@ export async function POST(req: NextRequest) {
   const chain = prompt.pipe(model).pipe(outputParser);
 
   const stream = await chain.stream({
-    actor: actor?.value,
+    persona: author.persona,
     context: formattedContext,
     input: currentMessageContent,
+    toneOfVoice: author.tone_of_voice,
+    actor: `${author.name} (${author.handle})`,
   });
 
   return new StreamingTextResponse(stream);
