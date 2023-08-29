@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 
-import _, { Dictionary } from 'lodash';
+import _, { type Dictionary } from 'lodash';
 import { format } from 'timeago.js';
 import { env } from '@/env.mjs';
 import { prisma } from '@/server/db';

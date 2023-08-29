@@ -17,7 +17,7 @@ import { createServerSideHelpers } from '@trpc/react-query/server';
 import { NewTimelinePost, TimelineView } from '@/features/timeline';
 import { Center, chakra, Spinner } from '@chakra-ui/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { DehydratedState } from '@tanstack/react-query';
+import { type DehydratedState } from '@tanstack/react-query';
 
 const TimelineStatDeck = dynamic(() => import('@/components/timeline-stat'), {
   ssr: false,

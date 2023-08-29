@@ -14,7 +14,7 @@ import {
   useDisclosure,
   Spinner,
   Center,
-  TextProps,
+  type TextProps,
   useToast,
 } from '@chakra-ui/react';
 import { Link } from '@chakra-ui/next-js';

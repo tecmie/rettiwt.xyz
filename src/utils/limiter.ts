@@ -16,7 +16,7 @@ export class RollingWindow {
    * @param {number} maxTokens - Maximum Agent actions allowed within time window
    * @param {number} windowSizeInMinutes - Time window size in minutes, default = 5
    */
-  constructor(maxTokens: number, windowSizeInMinutes: number = 10) {
+  constructor(maxTokens: number, windowSizeInMinutes = 10) {
     this.maxTokens = maxTokens;
     this.windowSizeInMinutes = windowSizeInMinutes;
   }
