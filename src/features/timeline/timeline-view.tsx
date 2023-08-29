@@ -14,6 +14,7 @@ import {
   useDisclosure,
   Spinner,
   Center,
+  TextProps,
 } from '@chakra-ui/react';
 import { Link } from '@chakra-ui/next-js';
 import { env } from '@/env.mjs';
@@ -38,38 +39,6 @@ import { useProfilePersona } from '@/hooks/use-persona';
 import { PersonaModal } from '@/features/persona/persona-modal';
 import { useRouter } from 'next/router';
 import { randomWholeInt, sanitizeText } from '@/utils/values';
-import { post } from 'needle';
-
-// class App extends React.Component {
-//   state = {
-//     items: Array.from({ length: 20 })
-//   };
-
-//   fetchMoreData = () => {
-//     // a fake async api call like which sends
-//     // 20 more records in 1.5 secs
-//     setTimeout(() => {
-//       this.setState({
-//         items: this.state.items.concat(Array.from({ length: 20 }))
-//       });
-//     }, 1500);
-//   };
-
-//   render() {
-//     return (
-//       <div>
-//         <h1>demo: react-infinite-scroll-component</h1>
-//         <hr />
-
-//           {this.state.items.map((i, index) => (
-//             <div style={style} key={index}>
-//               div - #{index}
-//             </div>
-//           ))}
-//       </div>
-//     );
-//   }
-// }
 
 export type PagedTweet = {
   tweets: ITweet[];
@@ -126,7 +95,10 @@ export const TimelineView = ({ tweets, ...rest }: TimelineViewProps) => {
   );
 };
 
-export const RenderContentText = ({ text }: { text: string }) => {
+export const RenderContentText = ({
+  text,
+  ...textProps
+}: TextProps & { text: string }) => {
   const regex = /#(\w+)/g;
 
   if (!text) return;
@@ -158,7 +130,11 @@ export const RenderContentText = ({ text }: { text: string }) => {
     return parts;
   };
 
-  return <chakra.p opacity={0.8}>{renderTextWithHashtags()}</chakra.p>;
+  return (
+    <chakra.p opacity={0.8} {...textProps}>
+      {renderTextWithHashtags()}
+    </chakra.p>
+  );
 };
 
 export const NewTimelinePost = () => {

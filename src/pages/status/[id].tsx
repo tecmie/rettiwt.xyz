@@ -9,7 +9,6 @@ import SidebarSlot from '@/layout/slots/SidebarSlot';
 import TimelineSlot from '@/layout/slots/TimelineSlot';
 import { type GetServerSidePropsContext } from 'next';
 
-import dynamic from 'next/dynamic';
 import superjson from 'superjson';
 import { api } from '@/utils/api';
 
@@ -23,10 +22,6 @@ import {
   TimelineThread,
   TweetDetailDeck,
 } from '@/features/timeline/timeline-status';
-
-const TimelineStatDeck = dynamic(() => import('@/components/timeline-stat'), {
-  ssr: false,
-});
 
 export default function DetailPage({ id }: any) {
   const tweets = api.tweet.list_with_replies.useInfiniteQuery(
@@ -132,7 +127,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
    * `prefetch` does not return the result and never throws - if you need that behavior, use `fetch` instead.
    */
   await helpers.tweet.list_with_join.prefetch({ id });
-  await helpers.sentiment.list.prefetchInfinite({ tweetId: id });
+  await helpers.sentiment.list_by.prefetchInfinite({ tweetId: id });
   const trpcState = helpers.dehydrate();
 
   // Make sure to return { props: { trpcState: helpers.dehydrate() } }

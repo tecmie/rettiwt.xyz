@@ -598,7 +598,6 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
     modelName: _GPT316K_MODEL_,
     temperature: _AI_TEMPERATURE_LOW_,
     openAIApiKey: env.OAK,
-    // verbose: true,
   });
 
   /**
@@ -673,7 +672,7 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
          * @field agentType
          * We can choose between `structured-chat-zero-shot-react-description` and `openai-functions`
          */
-        agentType: 'structured-chat-zero-shot-react-description',
+        agentType: 'openai-functions',
         verbose: true,
         agentArgs: {
           prefix,

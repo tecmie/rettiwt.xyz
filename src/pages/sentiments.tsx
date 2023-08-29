@@ -16,11 +16,12 @@ import {
 } from '@chakra-ui/react';
 import { Link } from '@chakra-ui/next-js';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { SplitShell } from '@/layout/split-shell';
+import { RenderContentText } from '@/features/timeline';
 
-export function TimelineSentiments({ tweetId }: any) {
-  const sentiments = api.sentiment.list_by.useInfiniteQuery(
+export default function Page() {
+  const sentiments = api.sentiment.list_all.useInfiniteQuery(
     {
-      tweetId,
       limit: 20,
     },
     {
@@ -47,13 +48,13 @@ export function TimelineSentiments({ tweetId }: any) {
 
   return (
     <Fragment>
-      <Center mt={6}>
+      <Center mt={6} overflow={'hidden'}>
         <chakra.div
           id="scrollable_timeline"
-          maxW={'xl'}
+          maxW={'4xl'}
           w={'full'}
           position={'relative'}
-          height={'calc(100vh - 16px)'}
+          height={'calc(100vh - 1px)'}
           overflowY={'auto'}
           overflowX={'hidden'}
         >
@@ -78,8 +79,6 @@ export function TimelineSentiments({ tweetId }: any) {
               </Center>
             }
           >
-            {/* <PostCard /> */}
-
             <SentimentView data={sentiments.data} />
           </InfiniteScroll>
         </chakra.div>
@@ -93,8 +92,6 @@ export const SentimentView = ({ data, ...rest }: any) => {
     <Stack
       spacing={{ base: '1px', lg: '1' }}
       py="3"
-      // bg={'bg-surface'}
-      // px={4}
       flexWrap={'wrap'}
       rounded={'xl'}
       mt={6}
@@ -107,7 +104,7 @@ export const SentimentView = ({ data, ...rest }: any) => {
             <HStack align="start" key={sentiment.id} px={4} pt={2}>
               <Link
                 href={'#'}
-                key={sentiment.tweet_id}
+                key={sentiment.author_id}
                 _hover={{
                   textDecoration: 'none',
                   // bg: mode("blackAlpha.50", "whiteAlpha.50")
@@ -116,6 +113,19 @@ export const SentimentView = ({ data, ...rest }: any) => {
                 borderRadius={{ lg: 'lg' }}
               >
                 <SentimentalDeck sentiment={sentiment} />
+
+                <Stack
+                  borderWidth={'1px'}
+                  borderStyle={'dashed'}
+                  px={3}
+                  pt={1.5}
+                  pb={2}
+                  rounded={'xl'}
+                  mt={1}
+                  mb={2}
+                >
+                  <QuoteDeckComponent post={sentiment.tweet} />
+                </Stack>
 
                 {/* <TimelineDeckFooter post={post} /> */}
               </Link>
@@ -147,11 +157,11 @@ export const SentimentalDeck = ({ sentiment }: any) => {
             />
           </Box>
 
-          {/* <Text fontWeight="bold" color="emphasized">
-              {sentiment.author.name}
-            </Text> */}
+          <Text fontWeight="bold" color="emphasized">
+            {sentiment.author.name}
+          </Text>
           <Text opacity={0.6} color="muted">
-            {/* @{sentiment.author.handle} */}
+            @{sentiment.author.handle}
           </Text>
           <Text opacity={0.6} color={'muted'}>
             {' '}
@@ -166,3 +176,29 @@ export const SentimentalDeck = ({ sentiment }: any) => {
     )
   );
 };
+
+export const QuoteDeckComponent = ({ post }: any) => {
+  return (
+    <Fragment>
+      <HStack spacing="1">
+        {/* <Text fontSize="sm" fontWeight="bold" color="emphasized">
+            {post.author.name}
+          </Text>
+   */}
+        <Text fontSize="xs" opacity={0.6} color="muted">
+          @{post.author.handle}
+        </Text>
+        <Text opacity={0.6} color={'muted'} fontSize={'xs'}>
+          {' '}
+          • {post.timestamp && format(post.timestamp)}
+        </Text>
+      </HStack>
+
+      <Stack spacing="1" pb={2} pt={0.5} fontSize="xs" lineHeight="1.25rem">
+        <RenderContentText noOfLines={4} text={post.content} />
+      </Stack>
+    </Fragment>
+  );
+};
+
+Page.getLayout = (page: React.ReactNode) => <SplitShell>{page}</SplitShell>;
