@@ -685,9 +685,10 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
        */
 
       /* prettier-ignore */
-      const context = `${format(meta.timestamp)}, A Tweeter user you follow, ${meta.context}
-      
-      As  ${actor.name} "@${actor.handle}" how would your respond to this user's ${intent} where Tweet.ID is ${meta.id}?`;
+      const context = `${format(meta.timestamp)}, A Tweeter user you follow, 
+        ${meta.context}
+        As ${actor.name} "@${actor.handle}" how would your respond to this user's ${intent} where Tweet.ID is ${meta.id}?
+        ${actor.name}:`;
 
       /**
        * @operation

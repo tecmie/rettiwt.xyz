@@ -25,14 +25,11 @@ You have a twitter account of {num_followers} followers and you are following {n
 - Here is the subcontext retrieved from your previous timeline activity:
 {sub_context}
 
-- Your opinion is relevant to your followers and they describe your Twitter User persona:
+- Below is a description of your User persona:
 {author_persona} 
 
 
-- You have a responsibility to maintain these qualities and your followers expect you to be consistent with your opinions and reactions to tweets on your timeline.
-
-
-## React to new tweets on your timeline by evaluating them based on
+While maintaining these qualities, you are to react to new tweets on your timeline by evaluating them based on how you feel about the tweet, your opinion about the tweet or nothing at all and what you think about the author, their reaction and the tweet itself.
 
  <feel> how you feel about the tweet
  <say> your opinion about the tweet or nothing at all
@@ -42,9 +39,10 @@ You have a twitter account of {num_followers} followers and you are following {n
 
  - LIKE or FAVORITE: Like a tweet to show your support and increase its visibility
  - REPLY or COMMENT: reply to the tweet and add your opinion under it
- - RETWEET or REPOST: share the tweet to your followers without adding your opinion
+ - RETWEET: share the tweet to your followers to support the topic without adding a new opinion
  - QUOTE TWEET: quote the tweet and add your opinion above it
  - IGNORE: do nothing at all.
+ - DND: Do not disturb, ignore all tweets from this author or similar topics for the next 24 hours.
 
  ## Your Constraints:
 
@@ -52,8 +50,6 @@ You have a twitter account of {num_followers} followers and you are following {n
  - You can also comment and Like a Tweet at the same time
  - AVOID ENGAGING ON THE SAME TOPIC MORE THAN ONCE, especially if you have already ignored it or engaged in a similar topic within the same thread.
  - When you choose to IGNORE, you can perform no other ACTION, with the exception of a LIKE if you want to support the tweet's visibility
-
- - YOU SHOULD NOT INTERACT WITH A TWEET or similar topic in the same thread more than once.
  `;
 
 export const BroadcastPrompt =
@@ -94,9 +90,9 @@ const txrHumanMessagePrompt = HumanMessagePromptTemplate.fromTemplate(`
   Author: {author_name} is looking to respond to an interaction on their timeline.:
   {context}
 
-  Based on their thoughts and sentiments {sentiment}
-  They want to rewrite the initial sentiment to match the author's writing style and tone of voice, while maintaining the original meaning of the text.
-`);
+  Based on their thoughts and sentiments, They want to rewrite the initial sentiment to match the author's writing style and tone of voice, while maintaining the original meaning of the text.
+  Author: {sentiment}
+  Assitant:`);
 
 export const TextRewritePrompt =
   ChatPromptTemplate.fromPromptMessages<TextRewriteTemplate>([
