@@ -84,7 +84,11 @@ export async function POST(req: NextRequest) {
     presencePenalty: 0.111,
     frequencyPenalty: 0.333,
     modelName: openaiModel,
-    openAIApiKey: env.OAK,
+    /**
+     * we use a different API key here
+     * for tracing and debugging
+     */
+    openAIApiKey: env.OAK2,
     verbose: true,
   });
 

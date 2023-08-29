@@ -86,11 +86,11 @@ async function ignoreTweetExecutor(
       id: tweet.id,
       intent: ITweetIntent.DND,
       context: `As ${actor?.name} "@${actor?.handle}" 
-  I have chosen to ignore this tweet, thread-tweet, like or retweet
+      I have chosen to ignore this tweet, thread-tweet, like or retweet
 
-  ${JSON.stringify(tweet, null, 2)}
-  
-  AND any of it's related events and interactions for ${input.reason}.`,
+      ${JSON.stringify(tweet, null, 2)}
+      
+      AND any of it's related events and interactions for ${input.reason}.`,
       timestamp: tweet.timestamp,
     };
 
