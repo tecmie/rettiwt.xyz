@@ -35,7 +35,8 @@ const _TWEET_TEMPLATE_ = `
     Write a New Tweet that maintains the tone and dialect of your twitter persona, while incorporating your
     Writing style: {toneOfVoice}
 
-    New Tweet:`;
+    New Tweet:
+`;
 
 export const prompt = PromptTemplate.fromTemplate<{
   input: string;

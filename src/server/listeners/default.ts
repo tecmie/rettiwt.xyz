@@ -33,6 +33,7 @@ import xretweeter, { type RetweetTaskPayload } from './handlers/retweeter';
 import { BroadcastPrompt, TextRewritePrompt } from './prompts';
 import xignore from './handlers/ignore';
 import xdnd from './handlers/dnd';
+import { RollingWindow } from '@/utils/limiter';
 
 /**
  * @typedef Actor
@@ -608,7 +609,6 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
 
   const { followers, following, ...meta } = payload as BroadcastEventData;
 
-  // 1. Iterate through the array of followers
   for (const follower of followers) {
     try {
       // 2. Get the full author object for each following_id
@@ -623,18 +623,15 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
        *
        * If this user already has a sentiment to the same post, we skip
        */
-      const sentiment = await prisma.sentiment.findFirst({
-        where: {
-          author_id: actor.id,
-          tweet_id: meta.id,
-        },
-      });
+      const maxNumOfRollingSentiments = 2;
+      const limiter = new RollingWindow(maxNumOfRollingSentiments);
 
-      if (sentiment) {
-        /* prettier-ignore */
-        console.log(`${_CONSOLE_LOG_COMMENT_} ${actor.name} already has a sentiment for ${meta.id}`);
-        continue;
-      }
+      /**
+       * This would throw an error if the user has hit their limit
+       * within a rolling time window, e.g.
+       * 2:00 PM, 10 sentiments, 2:30 PM, 10 sentiments
+       */
+      await limiter.canConsumeOrThrow(actor.id);
 
       /**
        * @operation

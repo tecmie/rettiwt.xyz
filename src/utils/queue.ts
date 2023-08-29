@@ -88,14 +88,14 @@ export class DefferedQueue extends EventEmitter {
      *
      * @note Our current AI model isn't performing well with providing
      * delay numbers in function call, so we will randomize this between
-     * 3 minutes and 30 minutes.
+     * 5 minutes and 20 minutes.
      */
-    const throttle = delay <= 180000 ? randomInt(450000, 1800000) : delay;
+    const throttle = delay <= 180000 ? randomInt(300000, 1_200_000) : delay;
     console.log(`[DefferedQueue] Scheduling ${String(event)} in ${throttle}ms`);
 
     void setTimeout(() => {
       this.emit(event, ...args);
-    }, throttle);
+    }, 100);
   }
 
   /**

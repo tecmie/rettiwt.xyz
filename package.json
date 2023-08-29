@@ -1,6 +1,7 @@
 {
   "name": "xims",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "build": "next build",
@@ -42,7 +43,6 @@
     "archiver": "^5.3.2",
     "boring-avatars": "^1.7.0",
     "eventemitter3": "^5.0.1",
-    "file-loader": "^6.2.0",
     "focus-visible": "^5.2.0",
     "framer-motion": "^10.12.18",
     "immer": "^10.0.2",

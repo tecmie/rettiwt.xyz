@@ -27,14 +27,12 @@ export default function RouterPage() {
 
   const { activeProfilePersona, setNewProfilePersona } = useProfilePersona();
 
-  console.log({ activeProfilePersona, setNewProfilePersona });
-
   const handleOnSubmit = async (data: z.infer<typeof personaFormSchema>) => {
     const author = JSON.parse(data.personaProfile);
 
     setNewProfilePersona(author);
 
-    console.log({ author });
+    console.log({ usePersonaActor: author });
 
     await router.push('/home');
   };
