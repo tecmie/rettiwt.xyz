@@ -100,9 +100,8 @@ export default function DetailPage({ id }: any) {
           <TimelineSlot>
             <TweetDetailDeck id={id} />
 
-            <TimelineThread id={id} />
-            {/* 
-            <TimelineView tweets={tweets.data as any} /> */}
+            {/* <TimelineThread id={id} /> */}
+            {/* <TimelineView tweets={tweets.data as any} /> */}
           </TimelineSlot>
         </InfiniteScroll>
       </chakra.div>

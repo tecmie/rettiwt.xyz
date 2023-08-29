@@ -39,25 +39,32 @@ export const tweetRouter = createTRPCRouter({
           reply_parent_id: input.tweetId,
         },
         orderBy: {
-          // timestamp: 'desc',
           reply_parent_id: 'desc',
         },
         cursor: cursor,
         include: {
-          replies: {
+          quote_parent: {
+            include: {
+              author: {
+                select: {
+                  id: true,
+                  avatar: true,
+                  name: true,
+                  handle: true,
+                  bio: true,
+                },
+              },
+            },
+          },
+          reply_parent: {
             include: {
               author: {
                 select: {
                   id: true,
                   name: true,
-                  handle: true,
                   avatar: true,
-                },
-              },
-              replies: {
-                /* This is as deep as we can go */
-                include: {
-                  author: true,
+                  handle: true,
+                  bio: true,
                 },
               },
             },

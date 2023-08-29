@@ -31,7 +31,12 @@ export const timelineRouter = createTRPCRouter({
 
       console.log();
 
-      const influencers = actor?.following.map((val) => val.follower_id);
+      const influencers = actor?.following.map(
+        (val) => val.follower_id,
+      ) as string[];
+
+      /* Author activity should be included too */
+      influencers.push(actor?.id as string);
 
       const posts = await ctx.prisma.tweet.findMany({
         take: limit + 1, // get an extra item at the end which we'll use as next cursor,

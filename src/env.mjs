@@ -24,7 +24,8 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
     /** Open AI API Key  */
-    OAK: z.string(),
+    OAK: z.string().startsWith('sk'),
+    OAK2: z.string().startsWith('sk'),
     AUTH_EMAIL_SERVER: z.string().optional(),
     GOOGLE_APPLICATION_KEY: z.string().min(50).optional(),
   },
@@ -55,6 +56,7 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     /** Open AI API Key  */
     OAK: process.env.OAK,
+    OAK2: process.env.OAK2,
     AUTH_EMAIL_SERVER: process.env.AUTH_EMAIL_SERVER,
     GOOGLE_APPLICATION_KEY: process.env.GOOGLE_APPLICATION_KEY, // base64 encoded
     /** ----------------------------------------- */

@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import { DynamicStructuredTool } from 'langchain/tools';
-import { ITweetIntent } from '@/types/tweet.type';
+import { prisma } from '@/server/db';
 import { embeddingsFromInteraction } from '../default';
+import { ITweetIntent } from '@/types/tweet.type';
 
-const ignoreTweetExecutorSchema = z.object({
+const executorSchema = z.object({
   delay: z
     .number()
     .max(10000)
@@ -24,19 +25,14 @@ const ignoreTweetExecutorSchema = z.object({
     .describe(
       'The unique identifier for the tweet. This will help in referencing the specific tweet in any operation.',
     ),
-  reason: z
-    .string()
-    .describe(
-      'Why are you ignoring this interaction, there is no burden to please anyone with your response',
-    ),
 });
 
-function ignoreTweetDescription(): string {
-  return 'Use this to essentially ignore the engaging in a topic if it feels similar, if you have engaged with it most recently or just not interested in what anybody thinks.';
+function handlerDescription(): string {
+  return 'Use this to trigger a Do not Disturb mode for a specific tweet.';
 }
 
-async function ignoreTweetExecutor(
-  input: z.infer<typeof ignoreTweetExecutorSchema>,
+async function handlerFunction(
+  input: z.infer<typeof executorSchema>,
 ): Promise<string> {
   try {
     const tweet = await prisma.tweet.findUniqueOrThrow({
@@ -86,31 +82,30 @@ async function ignoreTweetExecutor(
       id: tweet.id,
       intent: ITweetIntent.DND,
       context: `As ${actor?.name} "@${actor?.handle}" 
-  I have chosen to ignore this tweet, thread-tweet, like or retweet
+    I no longer want to be disturbed by this tweet, thread-tweet, like or retweet
 
-  ${JSON.stringify(tweet, null, 2)}
-  
-  AND any of it's related events and interactions for ${input.reason}.`,
+    ${JSON.stringify(tweet, null, 2)}
+    
+    AND any of it's related events and interactions in the future.`,
       timestamp: tweet.timestamp,
     };
 
     await embeddingsFromInteraction(payload);
 
-    // No real operations are performed here. It's a No-Op.
     return Promise.resolve(
-      `This interaction has been ignored. You can proceed to the next task.`,
+      `I have updated my Do not Disturb preference for this interaction. You can proceed to the next task.`,
     );
   } catch (error) {
     console.error(error);
-    return 'An unexpected error occurred while ignoring the comment.';
+    return 'An unexpected error occurred while triggering a Do not Disturb.';
   }
 }
 
-export const xignore = new DynamicStructuredTool({
-  name: 'SelectiveIgnorance',
-  description: ignoreTweetDescription(),
-  schema: ignoreTweetExecutorSchema,
-  func: ignoreTweetExecutor,
+export const xdnd = new DynamicStructuredTool({
+  name: 'DoNotDisturb',
+  description: handlerDescription(),
+  schema: executorSchema,
+  func: handlerFunction,
 });
 
-export default xignore;
+export default xdnd;

@@ -9,6 +9,7 @@ import { ITweetIntent } from '@/types/tweet.type';
 import type { Retweet, Author, Follow, Tweet, Like } from '@prisma/client';
 import { MetricType, OpenAIEmbeddingFunction, connect } from 'vectordb';
 import {
+  _AI_TEMPERATURE_LOW_,
   _AI_TEMPERATURE_MAX_,
   _AI_TEMPERATURE_MEDIUM_,
   _BROADCAST_INIT_,
@@ -89,7 +90,10 @@ export type BroadcastEventData = {
  * Embedding function for our vector database.
  * @see https://lancedb.github.io/lancedb
  */
-const embeddings = new OpenAIEmbeddingFunction(_VECTOR_SOURCE_COLUMN_, env.OAK);
+export const embeddings = new OpenAIEmbeddingFunction(
+  _VECTOR_SOURCE_COLUMN_,
+  env.OAK,
+);
 
 /**
  * @function embeddingsFromInteraction
@@ -591,7 +595,7 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
 
   const chat = new ChatOpenAI({
     modelName: _GPT316K_MODEL_,
-    temperature: 0,
+    temperature: _AI_TEMPERATURE_LOW_,
     openAIApiKey: env.OAK,
     // verbose: true,
   });
@@ -664,7 +668,11 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
       });
 
       const executor = await initializeAgentExecutorWithOptions(tools, chat, {
-        agentType: 'openai-functions',
+        /**
+         * @field agentType
+         * We can choose between `structured-chat-zero-shot-react-description` and `openai-functions`
+         */
+        agentType: 'structured-chat-zero-shot-react-description',
         verbose: true,
         agentArgs: {
           prefix,
@@ -1183,12 +1191,3 @@ async function rewriteText(author: Author, meta: Dictionary<string>) {
     throw new Error('error rewriting text');
   }
 }
-
-// Usage Example
-// (async () => {
-//   const context = "Rewrite the following text in a more professional tone:";
-//   const text = "Hey there! Our socks are super comfy, you gotta try 'em!";
-
-//   const rewrittenText = await TextWriter(context, text);
-//   console.log("Final Rewritten Text:", rewrittenText);
-// })();

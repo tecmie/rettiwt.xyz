@@ -97,6 +97,11 @@ export interface ITweet extends Tweet {
 export enum ITweetIntent {
   /**
    * @memberof ITweetIntent
+   * @description A DND action on a tweet.
+   */
+  DND = 'do-not-disturb',
+  /**
+   * @memberof ITweetIntent
    * @description A direct tweet.
    */
   TWEET = 'tweet',
