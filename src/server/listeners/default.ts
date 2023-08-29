@@ -621,10 +621,19 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
       /**
        * @operation
        *
-       * If this user already has a sentiment to the same post, we skip
+       * We limit actor interactions in a rolling time window
+       * to prevent spamming of the API
+       *
+       * @example
+       * a limit of 5 over a 10 minute window gives us approx.
+       * 990 sentiments per hour for all 33 actors
+       * Approx 1.65M tokens every 10 minutes
+       *
+       * We should leave room for a +10% error margin
        */
-      const maxNumOfRollingSentiments = 2;
-      const limiter = new RollingWindow(maxNumOfRollingSentiments);
+      const limit = 5;
+      const windowSizeInMinutes = 10;
+      const limiter = new RollingWindow(limit, windowSizeInMinutes);
 
       /**
        * This would throw an error if the user has hit their limit
@@ -1162,7 +1171,7 @@ async function rewriteText(author: Author, meta: Dictionary<string>) {
     const chat = new ChatOpenAI({
       modelName: _GPT4_MODEL_,
       temperature: _AI_TEMPERATURE_MAX_,
-      openAIApiKey: env.OAK,
+      openAIApiKey: env.OAK2,
     });
 
     /**
@@ -1181,7 +1190,6 @@ async function rewriteText(author: Author, meta: Dictionary<string>) {
       .execute();
 
     const conversation = await TextRewritePrompt.formatMessages({
-      context,
       sub_context: results.map((r) => r.text).join('\n\n---\n\n'),
       sentiment,
       tone_of_voice,

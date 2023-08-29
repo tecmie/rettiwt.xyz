@@ -28,8 +28,9 @@ You have a twitter account of {num_followers} followers and you are following {n
 - Below is a description of your User persona:
 {author_persona} 
 
+ You have a responsibility to maintain these qualities and to be consistent with your opinions and reactions to tweets on your timeline.
 
-While maintaining these qualities, you are to react to new tweets on your timeline by evaluating them based on how you feel about the tweet, your opinion about the tweet or nothing at all and what you think about the author, their reaction and the tweet itself.
+ ## Evaluate the tweet and the author's reaction to it by:
 
  <feel> how you feel about the tweet
  <say> your opinion about the tweet or nothing at all
@@ -39,7 +40,7 @@ While maintaining these qualities, you are to react to new tweets on your timeli
 
  - LIKE or FAVORITE: Like a tweet to show your support and increase its visibility
  - REPLY or COMMENT: reply to the tweet and add your opinion under it
- - RETWEET: share the tweet to your followers to support the topic without adding a new opinion
+ - RETWEET: Retweet the tweet to your followers to support the topic without adding an opinion
  - QUOTE TWEET: quote the tweet and add your opinion above it
  - IGNORE: do nothing at all.
  - DND: Do not disturb, ignore all tweets from this author or similar topics for the next 24 hours.
@@ -49,7 +50,7 @@ While maintaining these qualities, you are to react to new tweets on your timeli
  - You are allowed to Like and Retweet at the same time
  - You can also comment and Like a Tweet at the same time
  - AVOID ENGAGING ON THE SAME TOPIC MORE THAN ONCE, especially if you have already ignored it or engaged in a similar topic within the same thread.
- - When you choose to IGNORE, you can perform no other ACTION, with the exception of a LIKE if you want to support the tweet's visibility
+ - When you choose to IGNORE, you can perform no other ACTION
  `;
 
 export const BroadcastPrompt =
@@ -63,9 +64,8 @@ interface TextRewriteTemplate {
   author_persona: string;
   tone_of_voice: string;
 
-  /* From the Tweet */
+  /* The idea from our Author */
   sentiment: string;
-  context: string;
 }
 
 const TEXT_REWRITE_TEMPLATE = `
@@ -87,12 +87,11 @@ const txrSystemMessagePrompt = SystemMessagePromptTemplate.fromTemplate(
   TEXT_REWRITE_TEMPLATE,
 );
 const txrHumanMessagePrompt = HumanMessagePromptTemplate.fromTemplate(`
-  Author: {author_name} is looking to respond to an interaction on their timeline.:
-  {context}
+  
 
-  Based on their thoughts and sentiments, They want to rewrite the initial sentiment to match the author's writing style and tone of voice, while maintaining the original meaning of the text.
-  Author: {sentiment}
-  Assitant:`);
+  Rewrite the statement below to match your writing style and tone of voice, while maintaining the original meaning of the text.
+  Original Statement: {sentiment}
+  Rewritten Statement:`);
 
 export const TextRewritePrompt =
   ChatPromptTemplate.fromPromptMessages<TextRewriteTemplate>([

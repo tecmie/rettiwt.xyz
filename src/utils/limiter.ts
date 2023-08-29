@@ -16,7 +16,7 @@ export class RollingWindow {
    * @param {number} maxTokens - Maximum Agent actions allowed within time window
    * @param {number} windowSizeInMinutes - Time window size in minutes, default = 5
    */
-  constructor(maxTokens: number, windowSizeInMinutes: number = 5) {
+  constructor(maxTokens: number, windowSizeInMinutes: number = 10) {
     this.maxTokens = maxTokens;
     this.windowSizeInMinutes = windowSizeInMinutes;
   }
@@ -37,8 +37,8 @@ export class RollingWindow {
 
       /**
        * @deprecated
-       * Fallback to system date, although could be
-       * error prone and inconsistent
+       * Fallback to system date, because this is
+       * error prone and can lead to inconsistencies
        */
       return new Date();
     }
