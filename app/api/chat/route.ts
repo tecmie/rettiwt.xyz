@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
    * https://js.langchain.com/docs/modules/model_io/models/
    */
   const model = new ChatOpenAI({
-    temperature: 1,
+    temperature: _AI_TEMPERATURE_MEDIUM_,
 
     /**
      * @args

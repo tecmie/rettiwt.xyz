@@ -81,6 +81,8 @@ const TEXT_REWRITE_TEMPLATE = `
   {tone_of_voice}
 
   Your overall objective is to rewrite given texts as 280 character limit tweets that match your writing style and tone of voice, while maintaining the original meaning of the text.
+  Important Note: Pidgin is more effective in short form. and should be used sparingly or mixed with english
+
 `;
 
 const txrSystemMessagePrompt = SystemMessagePromptTemplate.fromTemplate(

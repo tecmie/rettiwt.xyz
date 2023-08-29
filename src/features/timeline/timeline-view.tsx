@@ -15,6 +15,7 @@ import {
   Spinner,
   Center,
   TextProps,
+  useToast,
 } from '@chakra-ui/react';
 import { Link } from '@chakra-ui/next-js';
 import { env } from '@/env.mjs';
@@ -155,6 +156,7 @@ export const NewTimelinePost = () => {
   });
 
   const write = api.tweet.create.useMutation();
+  const toast = useToast();
 
   const _handlePostTweet = async () => {
     const result = await write.mutateAsync(
@@ -164,6 +166,15 @@ export const NewTimelinePost = () => {
         intent: ITweetIntent.TWEET,
       },
       {
+        onError: (error) => {
+          console.log(error);
+          toast({
+            status: 'error',
+            title: 'We cannot process your request right now.',
+            // description: String(error.message),
+            isClosable: true,
+          });
+        },
         onSuccess() {
           /* Clear the AI form input */
           setMessages([]);

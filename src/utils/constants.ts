@@ -9,7 +9,7 @@ export const _GPT316K_MODEL_ = 'gpt-3.5-turbo-16k-0613';
 
 export const _AI_TEMPERATURE_MEDIUM_ = 0.666;
 export const _AI_TEMPERATURE_MAX_ = 0.999;
-export const _AI_TEMPERATURE_LOW_ = 0.111;
+export const _AI_TEMPERATURE_LOW_ = 0.333;
 
 /* console.log ASCII */
 export const _BROADCAST_INIT_ = `
