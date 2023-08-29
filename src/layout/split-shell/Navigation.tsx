@@ -90,7 +90,11 @@ export const Navbar = (props: NavbarProps) => {
             <NavLink href="https://x.com/0xalzzy" icon={FiTwitter} isExternal>
               Twitter
             </NavLink>
-            <NavLink href="https://x.com/0xalzzy" icon={FiGithub} isExternal>
+            <NavLink
+              href="https://github.com/koolamusic/rettiwt.xyz"
+              icon={FiGithub}
+              isExternal
+            >
               GitHub
             </NavLink>
 
