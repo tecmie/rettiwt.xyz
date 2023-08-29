@@ -25,7 +25,7 @@ import {
 } from 'react-icons/fi';
 import { ColumnHeader, ColumnIconButton } from './Column';
 import XLogo from '@/components/logo';
-import { MdHome, MdPersonOutline } from 'react-icons/md';
+import { MdHome, MdInfoOutline, MdPersonOutline } from 'react-icons/md';
 import { Link, type LinkProps } from '@chakra-ui/next-js';
 
 interface NavbarProps extends FlexProps {
@@ -70,11 +70,14 @@ export const Navbar = (props: NavbarProps) => {
 
         <Stack pt={[4, 8]} px="3" spacing="6">
           <Stack spacing="1">
-            <NavLink href="/home" icon={MdHome} aria-current="page">
+            <NavLink p={2} href="/home" icon={MdHome}>
               Home
             </NavLink>
-            <NavLink href="/" icon={MdPersonOutline}>
-              Profile
+            <NavLink p={2} href="/sentiments" icon={MdInfoOutline}>
+              Logs
+            </NavLink>
+            <NavLink p={2} href="/" icon={MdPersonOutline}>
+              Persona
             </NavLink>
           </Stack>
         </Stack>

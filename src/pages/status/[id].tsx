@@ -18,10 +18,7 @@ import { NewTimelinePost, TimelineView } from '@/features/timeline';
 import { Center, chakra, Spinner } from '@chakra-ui/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { TimelineSentiments } from '@/features/timeline/timeline-sentiments';
-import {
-  TimelineThread,
-  TweetDetailDeck,
-} from '@/features/timeline/timeline-status';
+import { TweetDetailDeck } from '@/features/timeline/timeline-status';
 
 export default function DetailPage({ id }: any) {
   const tweets = api.tweet.list_with_replies.useInfiniteQuery(
@@ -95,8 +92,7 @@ export default function DetailPage({ id }: any) {
           <TimelineSlot>
             <TweetDetailDeck id={id} />
 
-            {/* <TimelineThread id={id} /> */}
-            {/* <TimelineView tweets={tweets.data as any} /> */}
+            <TimelineView tweets={tweets.data as any} />
           </TimelineSlot>
         </InfiniteScroll>
       </chakra.div>

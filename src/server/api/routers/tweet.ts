@@ -43,6 +43,14 @@ export const tweetRouter = createTRPCRouter({
         },
         cursor: cursor,
         include: {
+          author: {
+            select: {
+              id: true,
+              avatar: true,
+              name: true,
+              handle: true,
+            },
+          },
           quote_parent: {
             include: {
               author: {
@@ -142,9 +150,17 @@ export const tweetRouter = createTRPCRouter({
           id: input.id,
         },
         include: {
-          liked_by: true,
+          liked_by: {
+            select: {
+              author_id: true,
+            },
+          },
           replies: true,
-          retweeted_by: true,
+          retweeted_by: {
+            select: {
+              author_id: true,
+            },
+          },
           author: true,
           quote_parent: {
             include: {

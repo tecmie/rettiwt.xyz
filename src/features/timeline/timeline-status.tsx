@@ -1,6 +1,4 @@
 import { Fragment } from 'react';
-import { format } from 'timeago.js';
-
 import { api } from '@/utils/api';
 import {
   Avatar,
@@ -21,6 +19,10 @@ import TimelineView, {
 } from '@/features/timeline/timeline-view';
 import { env } from '@/env.mjs';
 
+/**
+ * @deprecated
+ * @returns JSX.Element
+ */
 export function TimelineThread({ id }: any) {
   const tweets = api.tweet.list_with_replies.useInfiniteQuery(
     {
@@ -54,7 +56,7 @@ export function TimelineThread({ id }: any) {
       <Center mt={6}>
         <chakra.div
           id="scrollable_timeline"
-          maxW={'xl'}
+          maxW={'3xl'}
           w={'full'}
           position={'relative'}
           height={'calc(100vh - 16px)'}
@@ -82,7 +84,7 @@ export function TimelineThread({ id }: any) {
               </Center>
             }
           >
-            {/* <PostCard /> */}
+            <TweetDetailDeck id={id} />
 
             <TimelineView tweets={tweets.data as any} />
           </InfiniteScroll>
@@ -124,7 +126,7 @@ export const TweetDetailDeck = ({ id }: any) => {
 
             <Link
               href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
-              key={post.id}
+              key={post.author_id}
               _hover={{
                 textDecoration: 'none',
                 // bg: mode("blackAlpha.50", "whiteAlpha.50")
@@ -137,8 +139,6 @@ export const TweetDetailDeck = ({ id }: any) => {
               <TimelineDeckFooter post={post as any} />
             </Link>
           </HStack>
-
-          <StackDivider />
 
           <Text textAlign={'center'} color={'muted'} size={'xs'}>
             Other users response to the tweet above
