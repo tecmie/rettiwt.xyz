@@ -63,6 +63,7 @@ interface TextRewriteTemplate {
   author_name: string;
   author_handle: string;
   author_bio: string;
+  sub_context: string;
   author_persona: string;
   tone_of_voice: string;
 
@@ -76,6 +77,9 @@ const TEXT_REWRITE_TEMPLATE = `
 
   Your user persona is described as:
   {author_persona}
+
+  Your previous interactions with regards to similar topics are;
+  {sub_context}
 
   You have a distinct writing style described as:
   {tone_of_voice}

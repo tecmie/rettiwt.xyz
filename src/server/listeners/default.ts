@@ -1167,8 +1167,24 @@ async function rewriteText(author: Author, meta: Dictionary<string>) {
       openAIApiKey: env.OAK,
     });
 
+    /**
+     * @operation
+     *
+     * We still retrieve additional sub-context for our actor
+     * to improve re-write accuracy
+     */
+    const db = await connect('vectors');
+    const table = await db.openTable(handle, embeddings);
+    const results = await table
+      .search(context as string)
+      .where(`type IN ("tweet", "thread-tweet", "quote-tweet")`)
+      .select(['type', 'text'])
+      .limit(5)
+      .execute();
+
     const conversation = await TextRewritePrompt.formatMessages({
       context,
+      sub_context: results.map((r) => r.text).join('\n\n---\n\n'),
       sentiment,
       tone_of_voice,
       author_bio: bio,
