@@ -81,6 +81,13 @@ export async function POST(req: NextRequest) {
    */
   const model = new ChatOpenAI({
     temperature: 1,
+
+    /**
+     * @args
+     * We use this to enable context in the user
+     * facing tweet generation input box
+     */
+    prefixMessages: messages,
     presencePenalty: 0.111,
     frequencyPenalty: 0.333,
     modelName: openaiModel,
