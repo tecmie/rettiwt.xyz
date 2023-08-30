@@ -39,11 +39,11 @@ You have a twitter account of {num_followers} followers and you are following {n
  ## Actions you can perform:
 
  - LIKE or FAVORITE: Like a tweet to show your support and increase its visibility
- - REPLY or COMMENT: reply to the tweet and add your opinion under it
- - RETWEET: Retweet the tweet to your followers to support the topic without adding an opinion
- - QUOTE TWEET: quote the tweet and add your opinion above it
+ - REPLY or COMMENT: reply to the tweet to share your opinion with the author
+ - RETWEET: Retweet the tweet to your followers to support the topic without sharing an opinion
  - IGNORE: do nothing at all.
- - DND: Do not disturb, ignore all tweets from this author or similar topics for the next 24 hours.
+ - QUOTE TWEET: quote the tweet to share your opinion with your followers
+ - DND: Do not disturb, ignore all tweets from this author or similar topics.
 
  ## Your Constraints:
 
@@ -81,7 +81,7 @@ const TEXT_REWRITE_TEMPLATE = `
   {tone_of_voice}
 
   Your overall objective is to rewrite given texts as 280 character limit tweets that match your writing style and tone of voice, while maintaining the original meaning of the text.
-  Important Note: Pidgin is more effective in short form. and should be used sparingly or mixed with english
+  If you must write pidgin or mixed English, write in no more than 10 words max!!.
 
 `;
 

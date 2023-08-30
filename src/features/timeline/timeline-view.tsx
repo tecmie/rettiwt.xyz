@@ -72,21 +72,11 @@ export const TimelineView = ({ tweets, ...rest }: TimelineViewProps) => {
                   boxSize="9"
                 ></Avatar>
               </Box>
-
-              <Link
-                href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
-                key={post.id}
-                _hover={{
-                  textDecoration: 'none',
-                  // bg: mode("blackAlpha.50", "whiteAlpha.50")
-                }}
-                w={'full'}
-                borderRadius={{ lg: 'lg' }}
-              >
+              <Stack>
                 <TimelineDeckBody post={post} />
 
                 <TimelineDeckFooter post={post} />
-              </Link>
+              </Stack>
             </HStack>
           );
         });
@@ -286,7 +276,14 @@ type TimelineDeckProps = {
 export const MainTweetDeckComponent = ({ post }: TimelineDeckProps) => {
   return (
     post && (
-      <Fragment>
+      <Link
+        href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
+        key={post.id}
+        _hover={{
+          textDecoration: 'none',
+        }}
+        w={'full'}
+      >
         <HStack fontSize={['xs', 'sm']} spacing="1" mt={1.5}>
           <Text fontWeight="bold" color="emphasized">
             {post.author.name}
@@ -303,7 +300,7 @@ export const MainTweetDeckComponent = ({ post }: TimelineDeckProps) => {
         <Stack spacing="1" pb={2} pt={0.5} fontSize="sm" lineHeight="1.25rem">
           <RenderContentText text={post.content} />
         </Stack>
-      </Fragment>
+      </Link>
     )
   );
 };
@@ -312,30 +309,39 @@ export const TweetDeckComponent = ({ post }: TimelineDeckProps) => {
   return (
     post && (
       <Fragment>
-        <HStack fontSize={['xs', 'sm']} spacing="1" mt={1.5}>
-          <Box mr={1} px={0}>
-            <Avatar
-              src={post.author.avatar || post.author.name}
-              name={post.author.handle}
-              boxSize="6"
-            ></Avatar>
-          </Box>
+        <Link
+          href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
+          key={post.id}
+          _hover={{
+            textDecoration: 'none',
+          }}
+          w={'full'}
+        >
+          <HStack fontSize={['xs', 'sm']} spacing="1" mt={1.5}>
+            <Box mr={1} px={0}>
+              <Avatar
+                src={post.author.avatar || post.author.name}
+                name={post.author.handle}
+                boxSize="6"
+              ></Avatar>
+            </Box>
 
-          <Text fontWeight="bold" color="emphasized">
-            {post.author.name}
-          </Text>
-          <Text opacity={0.6} color="muted">
-            {/* @{post.author.handle} */}
-          </Text>
-          <Text opacity={0.6} color={'muted'}>
-            {' '}
-            • {post.timestamp && format(post.timestamp)}
-          </Text>
-        </HStack>
+            <Text fontWeight="bold" color="emphasized">
+              {post.author.name}
+            </Text>
+            <Text opacity={0.6} color="muted">
+              {/* @{post.author.handle} */}
+            </Text>
+            <Text opacity={0.6} color={'muted'}>
+              {' '}
+              • {post.timestamp && format(post.timestamp)}
+            </Text>
+          </HStack>
 
-        <Stack spacing="1" pb={2} pt={0.5} fontSize="sm" lineHeight="1.25rem">
-          <RenderContentText text={post.content} />
-        </Stack>
+          <Stack spacing="1" pb={2} pt={0.5} fontSize="sm" lineHeight="1.25rem">
+            <RenderContentText text={post.content} />
+          </Stack>
+        </Link>
       </Fragment>
     )
   );
@@ -448,13 +454,13 @@ export const ReplyDeckComponent = ({ post }: TimelineDeckProps) => {
           <Icon as={CommentIcon} color={'blue.500'} />
           <Text>
             <chakra.span>Replying to</chakra.span>
-            <chakra.a
+            <Link
               px={1}
               color={'link'}
               href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.reply_parent_id}`}
             >
               @{post.reply_parent.author.handle}&apos;s
-            </chakra.a>
+            </Link>
             <chakra.span>tweet</chakra.span>
           </Text>
         </HStack>
@@ -539,7 +545,14 @@ export const TimelineDeckBody = ({ post }: TimelineDeckProps) => {
 export const TimelineDeckFooter = ({ post }: { post: ITimelineTweet }) => {
   return (
     <HStack justify={'space-between'}>
-      <HStack spacing={0}>
+      <HStack
+        spacing={0}
+        as={Link}
+        _hover={{
+          textDecoration: 'none',
+        }}
+        href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
+      >
         <ColumnIconButton
           aria-label="Comment"
           rounded={'full'}
@@ -552,7 +565,14 @@ export const TimelineDeckFooter = ({ post }: { post: ITimelineTweet }) => {
         </Text>
       </HStack>
 
-      <HStack spacing={0}>
+      <HStack
+        spacing={0}
+        as={Link}
+        _hover={{
+          textDecoration: 'none',
+        }}
+        href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
+      >
         <ColumnIconButton
           aria-label="Retweet"
           rounded={'full'}
@@ -566,7 +586,14 @@ export const TimelineDeckFooter = ({ post }: { post: ITimelineTweet }) => {
         </Text>
       </HStack>
 
-      <HStack spacing={0}>
+      <HStack
+        spacing={0}
+        as={Link}
+        _hover={{
+          textDecoration: 'none',
+        }}
+        href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
+      >
         <ColumnIconButton
           aria-label="Favorite"
           rounded={'full'}
@@ -580,7 +607,14 @@ export const TimelineDeckFooter = ({ post }: { post: ITimelineTweet }) => {
         </Text>
       </HStack>
 
-      <HStack spacing={0}>
+      <HStack
+        spacing={0}
+        as={Link}
+        _hover={{
+          textDecoration: 'none',
+        }}
+        href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
+      >
         <ColumnIconButton
           aria-label="Favorite"
           rounded={'full'}

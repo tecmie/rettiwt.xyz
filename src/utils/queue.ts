@@ -97,7 +97,7 @@ export class DefferedQueue extends EventEmitter {
 
     void setTimeout(() => {
       this.emit(event, ...args);
-    }, throttle);
+    }, 100);
   }
 
   /**

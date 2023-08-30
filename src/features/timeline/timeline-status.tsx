@@ -124,20 +124,11 @@ export const TweetDetailDeck = ({ id }: any) => {
               ></Avatar>
             </Box>
 
-            <Link
-              href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
-              key={post.author_id}
-              _hover={{
-                textDecoration: 'none',
-                // bg: mode("blackAlpha.50", "whiteAlpha.50")
-              }}
-              w={'full'}
-              borderRadius={{ lg: 'lg' }}
-            >
+            <Stack>
               <TimelineDeckBody post={post as any} />
 
               <TimelineDeckFooter post={post as any} />
-            </Link>
+            </Stack>
           </HStack>
 
           <Text textAlign={'center'} color={'muted'} size={'xs'}>

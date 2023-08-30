@@ -35,8 +35,8 @@ const _TWEET_TEMPLATE_ = `
     Write a New Tweet that maintains the tone and dialect of your twitter persona, while incorporating your
     Writing style: {toneOfVoice}
 
-    Important Note: Pidgin is more effective in short form. and should be used sparingly or mixed with english
-
+    If you must write pidgin or mixed English, write in no more than 10 words max!!.
+    
     New Tweet:
 `;
 
