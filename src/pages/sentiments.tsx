@@ -19,6 +19,8 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { SplitShell } from '@/layout/split-shell';
 import { RenderContentText } from '@/features/timeline';
 import { useProfilePersona } from '@/hooks/use-persona';
+import TimelineSlot from '@/layout/slots/TimelineSlot';
+import { env } from '@/env.mjs';
 
 export default function Page() {
   const { activeProfilePersona } = useProfilePersona();
@@ -51,7 +53,7 @@ export default function Page() {
 
   return (
     <Fragment>
-      <Center mt={6} overflow={'hidden'}>
+      <Center overflow={'hidden'}>
         <chakra.div
           id="scrollable_timeline"
           maxW={'4xl'}
@@ -82,7 +84,9 @@ export default function Page() {
               </Center>
             }
           >
-            <SentimentView data={sentiments.data} />
+            <TimelineSlot>
+              <SentimentView data={sentiments.data} />
+            </TimelineSlot>
           </InfiniteScroll>
         </chakra.div>
       </Center>
@@ -94,10 +98,10 @@ export const SentimentView = ({ data, ...rest }: any) => {
   return (
     <Stack
       spacing={{ base: '1px', lg: '1' }}
-      py="3"
-      flexWrap={'wrap'}
+      // py="3"
+      // flexWrap={'wrap'}
       rounded={'xl'}
-      mt={6}
+      // mt={6}
       divider={<StackDivider />}
       {...rest}
     >
@@ -183,23 +187,28 @@ export const SentimentalDeck = ({ sentiment }: any) => {
 export const QuoteDeckComponent = ({ post }: any) => {
   return (
     <Fragment>
-      <HStack spacing="1">
-        {/* <Text fontSize="sm" fontWeight="bold" color="emphasized">
-            {post.author.name}
+      <Link
+        href={`${env.NEXT_PUBLIC_BASE_URL}/status/${post.id}`}
+        key={post.id}
+        _hover={{
+          textDecoration: 'none',
+        }}
+        w={'full'}
+      >
+        <HStack spacing="1">
+          <Text fontSize="xs" opacity={0.6} color="muted">
+            @{post.author.handle}
           </Text>
-   */}
-        <Text fontSize="xs" opacity={0.6} color="muted">
-          @{post.author.handle}
-        </Text>
-        <Text opacity={0.6} color={'muted'} fontSize={'xs'}>
-          {' '}
-          • {post.timestamp && format(post.timestamp)}
-        </Text>
-      </HStack>
+          <Text opacity={0.6} color={'muted'} fontSize={'xs'}>
+            {' '}
+            • {post.timestamp && format(post.timestamp)}
+          </Text>
+        </HStack>
 
-      <Stack spacing="1" pb={2} pt={0.5} fontSize="xs" lineHeight="1.25rem">
-        <RenderContentText noOfLines={4} text={post.content} />
-      </Stack>
+        <Stack spacing="1" pb={2} pt={0.5} fontSize="xs" lineHeight="1.25rem">
+          <RenderContentText noOfLines={4} text={post.content} />
+        </Stack>
+      </Link>
     </Fragment>
   );
 };

@@ -12,6 +12,10 @@ import {
   ColumnHeading,
   ColumnButton,
 } from '@/layout/split-shell/Column';
+import { Link } from '@chakra-ui/next-js';
+import { useRouter } from 'next/router';
+import { FaBrain, FaComment, FaThinkPeaks } from 'react-icons/fa';
+import { BsHeadphones } from 'react-icons/bs';
 
 interface TimelineSlotProps {
   children: React.ReactNode;
@@ -23,7 +27,7 @@ const TimelineSlot: React.FC<TimelineSlotProps> = ({
   innerScrollRef,
 }) => {
   const [mainIsScrolled, setmMainIsScrolled] = useState(false);
-
+  const router = useRouter();
   return (
     <Box
       bg={mode('white', 'gray.900')}
@@ -40,18 +44,25 @@ const TimelineSlot: React.FC<TimelineSlotProps> = ({
         <HStack justify="space-between" width="full">
           <HStack spacing="3">
             <ColumnIconButton
+              onClick={() => router.push('/')}
               aria-label="Navigate back"
               icon={<FiArrowLeft />}
               display={{ base: 'inline-flex', md: 'none' }}
             />
             {mainIsScrolled && (
               <ColumnHeading>
-                <small>Knowledge Cutoff: Mon Aug 16 2023</small>
+                <small>Knowledge Cutoff: Mon Aug 16 '23</small>
               </ColumnHeading>
             )}
           </HStack>
           <chakra.small mr={2}>Knowledge Cutoff: Mon Aug 16 2023</chakra.small>
-          {/* <ColumnButton leftIcon={<FiHeart />}>12 Followers</ColumnButton> */}
+          <ColumnButton
+            onClick={() => router.push('/sentiments')}
+            aria-label="See my thoughts"
+            leftIcon={<BsHeadphones />}
+          >
+            Brain
+          </ColumnButton>
         </HStack>
       </ColumnHeader>
 
