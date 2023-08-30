@@ -18,10 +18,13 @@ import { Link } from '@chakra-ui/next-js';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { SplitShell } from '@/layout/split-shell';
 import { RenderContentText } from '@/features/timeline';
+import { useProfilePersona } from '@/hooks/use-persona';
 
 export default function Page() {
+  const { activeProfilePersona } = useProfilePersona();
   const sentiments = api.sentiment.list_all.useInfiniteQuery(
     {
+      persona: activeProfilePersona?.id as string,
       limit: 20,
     },
     {

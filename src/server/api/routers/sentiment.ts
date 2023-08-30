@@ -57,6 +57,7 @@ export const sentimentRouter = createTRPCRouter({
   list_all: publicProcedure
     .input(
       z.object({
+        persona: z.string(),
         limit: z.number().min(1).max(50).nullish(),
         cursor: z.number().nullish(),
       }),
@@ -69,6 +70,9 @@ export const sentimentRouter = createTRPCRouter({
         take: limit + 1, // get an extra item at the end which we'll use as next cursor,
         orderBy: {
           tweet_id: 'desc',
+        },
+        where: {
+          author_id: input.persona,
         },
         cursor: cursor,
         include: {

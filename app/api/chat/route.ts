@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
      * for tracing and debugging
      */
     openAIApiKey: env.OAK2,
-    verbose: true,
+    verbose: env.SANDBOX == 'enabled' && true,
   });
 
   /**

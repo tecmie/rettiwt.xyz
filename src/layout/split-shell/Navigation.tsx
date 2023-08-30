@@ -74,7 +74,7 @@ export const Navbar = (props: NavbarProps) => {
               Home
             </NavLink>
             <NavLink p={2} href="/sentiments" icon={MdInfoOutline}>
-              Logs
+              Brain
             </NavLink>
             <NavLink p={2} href="/" icon={MdPersonOutline}>
               Persona

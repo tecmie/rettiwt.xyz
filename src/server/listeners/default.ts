@@ -679,7 +679,8 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
          * We can choose between `structured-chat-zero-shot-react-description` and `openai-functions`
          */
         agentType: 'openai-functions',
-        verbose: true,
+        verbose: env.SANDBOX == 'enabled' && true,
+
         agentArgs: {
           prefix,
         },
