@@ -631,8 +631,8 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
        *
        * We should leave room for a +10% error margin
        */
-      const limit = 2;
-      const windowSizeInMinutes = 30;
+      const limit = env.XIMS_LIMITER_MAX_TOKENS;
+      const windowSizeInMinutes = env.XIMS_LIMITER_WINDOW_SIZE;
       const limiter = new RollingWindow(limit, windowSizeInMinutes);
 
       /**
@@ -1172,7 +1172,7 @@ async function rewriteText(author: Author, meta: Dictionary<string>) {
     const chat = new ChatOpenAI({
       modelName: _GPT4_MODEL_,
       temperature: _AI_TEMPERATURE_MEDIUM_,
-      openAIApiKey: env.OAK2,
+      openAIApiKey: env.OAK,
     });
 
     /**

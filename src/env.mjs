@@ -28,7 +28,14 @@ export const env = createEnv({
     OAK: z.string().startsWith('sk'),
     OAK2: z.string().startsWith('sk'),
     AUTH_EMAIL_SERVER: z.string().optional(),
-    GOOGLE_APPLICATION_KEY: z.string().min(50).optional(),
+    /**
+     * Application environment variables
+     * XIMS_LIMITER_WINDOW_SIZE: 10 minutes
+     * XIMS_MAX_THROTTLE: 450000 milliseconds
+     */
+    XIMS_MAX_THROTTLE: z.preprocess(Number, z.number().min(450000)),
+    XIMS_LIMITER_MAX_TOKENS: z.preprocess(Number, z.number().int().min(1)),
+    XIMS_LIMITER_WINDOW_SIZE: z.preprocess(Number, z.number().int().min(10)),
   },
 
   /**
@@ -52,6 +59,9 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    XIMS_MAX_THROTTLE: process.env.XIMS_MAX_THROTTLE,
+    XIMS_LIMITER_MAX_TOKENS: process.env.XIMS_LIMITER_MAX_TOKENS,
+    XIMS_LIMITER_WINDOW_SIZE: process.env.XIMS_LIMITER_WINDOW_SIZE,
 
     /** ----------------------------------------- */
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
@@ -60,7 +70,6 @@ export const env = createEnv({
     OAK: process.env.OAK,
     OAK2: process.env.OAK2,
     AUTH_EMAIL_SERVER: process.env.AUTH_EMAIL_SERVER,
-    GOOGLE_APPLICATION_KEY: process.env.GOOGLE_APPLICATION_KEY, // base64 encoded
     /** ----------------------------------------- */
 
     NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,

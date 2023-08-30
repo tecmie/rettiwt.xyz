@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { EventEmitter } from 'eventemitter3';
 import { randomInt } from '@/utils/values';
+import { env } from '@/env.mjs';
 
 /**
  * `object` should be in either of the following forms:
@@ -90,7 +91,8 @@ export class DefferedQueue extends EventEmitter {
      * delay numbers in function call, so we will randomize this between
      * 5 minutes and 20 minutes.
      */
-    const throttle = delay <= 180000 ? randomInt(450000, 1800000) : delay;
+    const throttle =
+      delay <= 180000 ? randomInt(450000, env.XIMS_MAX_THROTTLE) : delay;
     console.log(`[DefferedQueue] Scheduling ${String(event)} in ${throttle}ms`);
 
     void setTimeout(() => {
