@@ -631,8 +631,8 @@ queue.on(QueueTask.GlobalBroadcast, async (...[intent, payload]) => {
        *
        * We should leave room for a +10% error margin
        */
-      const limit = 5;
-      const windowSizeInMinutes = 10;
+      const limit = 2;
+      const windowSizeInMinutes = 30;
       const limiter = new RollingWindow(limit, windowSizeInMinutes);
 
       /**
