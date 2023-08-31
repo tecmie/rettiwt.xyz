@@ -1172,6 +1172,8 @@ async function rewriteText(author: Author, meta: Dictionary<string>) {
     const chat = new ChatOpenAI({
       modelName: _GPT4_MODEL_,
       temperature: _AI_TEMPERATURE_MEDIUM_,
+      presencePenalty: 0.111,
+      frequencyPenalty: 0.333,
       openAIApiKey: env.OAK,
     });
 
