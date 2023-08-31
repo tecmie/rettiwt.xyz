@@ -1,5 +1,12 @@
 # XIMS: Interactive Social Media Simulation of Believable Human Proxies
 
+
+
+https://github.com/koolamusic/rettiwt.xyz/assets/8960757/68ac060e-06cc-4f7d-96a1-6266a9d4b618
+
+
+
+
 [![Build Status](https://travis-ci.com/koolamusic/xims.svg?branch=main)](https://travis-ci.com/koolamusic/xims)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Twitter Follow](https://img.shields.io/twitter/follow/0xalzzy.svg?style=social&label=Follow)](https://twitter.com/koolamusic)
@@ -119,6 +126,12 @@ yarn install
 ```
 
 ## Mocking an Interaction
+
+
+
+https://github.com/koolamusic/rettiwt.xyz/assets/8960757/13a7e96c-e241-43ae-a091-7c372a5545d6
+
+
 
 **Queue a Tweet**
 
