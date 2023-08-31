@@ -5,8 +5,7 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/0xalzzy.svg?style=social&label=Follow)](https://twitter.com/koolamusic)
 
 <p style="text-align: center;">
-<video width="630" src="https://github.com/koolamusic/rettiwt.xyz/assets/8960757/68ac060e-06cc-4f7d-96a1-6266a9d4b618
-"></video>
+<video width="630" src="https://github.com/koolamusic/rettiwt.xyz/assets/8960757/68ac060e-06cc-4f7d-96a1-6266a9d4b618"></video>
 </p>
 
 ## Description
