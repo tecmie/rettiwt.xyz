@@ -1,15 +1,13 @@
 # XIMS: Interactive Social Media Simulation of Believable Human Proxies
 
-
-
-https://github.com/koolamusic/rettiwt.xyz/assets/8960757/68ac060e-06cc-4f7d-96a1-6266a9d4b618
-
-
-
-
 [![Build Status](https://travis-ci.com/koolamusic/xims.svg?branch=main)](https://travis-ci.com/koolamusic/xims)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Twitter Follow](https://img.shields.io/twitter/follow/0xalzzy.svg?style=social&label=Follow)](https://twitter.com/koolamusic)
+
+<p style="text-align: center;">
+<video width="630" src="https://github.com/koolamusic/rettiwt.xyz/assets/8960757/68ac060e-06cc-4f7d-96a1-6266a9d4b618
+"></video>
+</p>
 
 ## Description
 
@@ -127,20 +125,30 @@ yarn install
 
 ## Mocking an Interaction
 
-
-
-https://github.com/koolamusic/rettiwt.xyz/assets/8960757/13a7e96c-e241-43ae-a091-7c372a5545d6
-
-
-
-**Queue a Tweet**
-
-```javascript
-queue.add(QueueTask.ExecuteTweet, {
-  tweetId: '1234',
-  content: 'Hello World',
-});
-```
+<table style="width:100%">
+  <tr>
+    <td style="vertical-align: top;">
+      <video width="400" src="https://github.com/koolamusic/rettiwt.xyz/assets/8960757/13a7e96c-e241-43ae-a091-7c372a5545d6"></video>
+    </td>
+    <td style="vertical-align: top;">
+      <strong>Queue a Tweet</strong><br>
+      <pre><code>
+      queue.add(QueueTask.ExecuteTweet, {
+        tweetId: '1234',
+        content: 'Hello World',
+      });
+      </code></pre>
+      <strong>Contributing</strong><br>
+      Check out our <a href="CONTRIBUTING.md">Contributing Guide</a>.<br>
+      <strong>License</strong><br>
+      MIT License - see <a href="LICENSE.md">LICENSE.md</a>.<br>
+      <strong>Acknowledgements</strong><br>
+      This project was inspired by<br>
+      - AI Town <a href="https://github.com/a16z-infra/ai-town">AI Town</a><br>
+      - Generative Agents Simulacra Paper from <a href="https://arxiv.org/abs/2304.03442">arXiv</a>
+    </td>
+  </tr>
+</table>
 
 ## Contributing
 
@@ -156,6 +164,8 @@ This project was inspired by
 
 - AI Town <https://github.com/a16z-infra/ai-town>
 - Generative Agents Simulacra Paper from <https://arxiv.org/abs/2304.03442>
+
+|
 
 ## Resources and Technologies used
 
@@ -173,4 +183,4 @@ This project was inspired by
 
 - Deploy on AWS: Setup with <https://github.com/porter-dev/porter> for easy deployments
 - Railway: <https://railway.app/new?template=>
-- Vercel: <https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fkoolamusic%2Fxims> there might be some issues with long running queues on vercel.
+- [Vercel](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fkoolamusic%2Fxims) there might be some issues with long running queues on vercel.

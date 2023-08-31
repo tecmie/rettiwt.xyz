@@ -12,9 +12,7 @@ import {
   ColumnHeading,
   ColumnButton,
 } from '@/layout/split-shell/Column';
-import { Link } from '@chakra-ui/next-js';
 import { useRouter } from 'next/router';
-import { FaBrain, FaComment, FaThinkPeaks } from 'react-icons/fa';
 import { BsHeadphones } from 'react-icons/bs';
 
 interface TimelineSlotProps {
@@ -51,7 +49,7 @@ const TimelineSlot: React.FC<TimelineSlotProps> = ({
             />
             {mainIsScrolled && (
               <ColumnHeading>
-                <small>Knowledge Cutoff: Mon Aug 16 '23</small>
+                <small>Knowledge Cutoff: Mon Aug 16 &apos;23</small>
               </ColumnHeading>
             )}
           </HStack>
