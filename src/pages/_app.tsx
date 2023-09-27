@@ -11,7 +11,7 @@ import { ChakraBaseProvider } from '@chakra-ui/react';
 import { theme } from '@/theme/index';
 
 /* -------- Analytics ---------- */
-// import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from '@vercel/analytics/react';
 /* -------- Analytics ---------- */
 
 import type { NextAppProps, NextPageView } from 'next/page';
@@ -30,7 +30,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           <MetaSeo />
           {/* <GoogleAnalytics strategy="lazyOnload" trackPageViews /> */}
           {renderGetLayout(<Component {...pageProps} />)}
-          {/* <Analytics /> */}
+          <Analytics />
         </ChakraBaseProvider>
       </Suspense>
     </SessionProvider>
