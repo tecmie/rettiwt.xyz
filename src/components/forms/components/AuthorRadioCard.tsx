@@ -27,7 +27,7 @@ export interface AuthorRadioCardProps {
   /** Field label. */
   label?: string;
   withName?: boolean;
-  outerProps?: PropsWithoutRef<any>;
+  outerProps?: PropsWithoutRef<Record<string, unknown>>;
   labelProps?: ComponentPropsWithoutRef<'label'>;
   options: CardOptions[];
 }
@@ -62,7 +62,6 @@ const AuthorRadioCard = forwardRef<HTMLInputElement, AuthorRadioCardProps>(
           render={({ field }) => (
             <RadioCardGroup
               defaultValue={options[0]?.value || ''}
-              spacing="3"
               {...field}
             >
               {options.map((option) => (
@@ -74,10 +73,8 @@ const AuthorRadioCard = forwardRef<HTMLInputElement, AuthorRadioCardProps>(
                   <HStack color="emphasized" fontWeight="medium" fontSize="sm">
                     <Box w={'40px'} mr={1} px={2}>
                       <Avatar.Root boxSize="6">
-                        <Avatar.Image src={option.avatar || undefined} />
-                        <Avatar.Fallback fontWeight={'700'}>
-                          {option.name.split(' ')[0]?.charAt(0)}
-                        </Avatar.Fallback>
+                        <Avatar.Image alt={option.name} src={option.avatar || undefined} />
+                        <Avatar.Fallback name={option.name} fontWeight={'700'} />
                       </Avatar.Root>
                     </Box>
 
@@ -104,7 +101,9 @@ const AuthorRadioCard = forwardRef<HTMLInputElement, AuthorRadioCardProps>(
         />
 
         {error && (
-          <Field.ErrorText fontSize="sm" color="red.500" text={error.toString()} />
+          <Field.ErrorText fontSize="sm" color="red.500">
+            {error.toString()}
+          </Field.ErrorText>
         )}
       </Field.Root>
     );

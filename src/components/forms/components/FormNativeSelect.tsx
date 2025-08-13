@@ -66,7 +66,9 @@ const FormNativeSelect = forwardRef<HTMLInputElement, FormNativeSelectProps>(
             </Select>
           )}
         />
-        <Field.ErrorText fontSize="sm" text={error?.toString()} />
+        <Field.ErrorText fontSize="sm">
+          {error?.toString()}
+        </Field.ErrorText>
       </Field.Root>
     );
   },

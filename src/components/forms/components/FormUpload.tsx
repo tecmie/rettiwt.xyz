@@ -16,8 +16,7 @@ import {
   Image,
   Spinner,
   Text,
-  FormControl,
-  FormLabel,
+  Field,
 } from '@chakra-ui/react';
 import { BsTrash } from 'react-icons/bs';
 import { CgFileDocument } from 'react-icons/cg';
@@ -146,16 +145,16 @@ const FormUpload = forwardRef<HTMLInputElement, Props>(
     );
 
     return (
-      <FormControl
+      <Field.Root
         ref={ref}
-        isRequired={required}
+        required={required}
         onMouseLeave={() => isTouched}
       >
-        <FormLabel fontSize="sm" {...labelProps}>
+        <Field.Label fontSize="sm" {...labelProps}>
           {label}
-        </FormLabel>
+        </Field.Label>
         <HStack spacing="1.5rem">
-          <FormLabel
+          <Field.Label
             minW={'full'}
             display="flex"
             w="full"
@@ -181,10 +180,10 @@ const FormUpload = forwardRef<HTMLInputElement, Props>(
                 <Icon as={HiOutlineCloudUpload} boxSize={5} />
               </Flex>
             )}
-          </FormLabel>
+          </Field.Label>
           <Box></Box>
         </HStack>
-      </FormControl>
+      </Field.Root>
     );
   },
 );

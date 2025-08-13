@@ -3,7 +3,6 @@ import {
   HStack,
   Box,
   Drawer,
-  DrawerOverlay,
   DrawerContent,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
@@ -48,7 +47,6 @@ const SidebarSlot: React.FC<SidebarSlotProps> = ({ children }) => {
               display={{ md: 'inline-flex', lg: 'none' }}
             />
             <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
-              <DrawerOverlay />
               <DrawerContent>
                 <Navbar onClose={onClose} />
               </DrawerContent>

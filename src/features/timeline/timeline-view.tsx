@@ -20,10 +20,9 @@ import {
 import Link from 'next/link';
 import { env } from '@/env.mjs';
 import { api } from '@/utils/api';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { format } from 'timeago.js';
 import { ColumnIconButton } from '@/layout/split-shell/Column';
-import { useChat } from 'ai/react';
 
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import {
@@ -131,18 +130,51 @@ export const NewTimelinePost = () => {
   const router = useRouter();
   const disclosure = useDisclosure();
   const { handle, name, activeProfilePersona } = useProfilePersona();
-  const {
-    messages,
-    isLoading,
-    setMessages,
-    input,
-    handleInputChange,
-    handleSubmit,
-  } = useChat({
-    body: {
-      author: activeProfilePersona,
-    },
-  });
+  // Simple state management instead of useChat
+  const [input, setInput] = useState('');
+  const [messages, setMessages] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+  };
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...messages, { role: 'user', content: input }],
+          author: activeProfilePersona,
+        }),
+      });
+      
+      if (!response.ok) throw new Error('Failed to generate');
+      
+      const result = await response.text();
+      const newMessage = { role: 'assistant', content: result };
+      setMessages(prev => [...prev, { role: 'user', content: input }, newMessage]);
+      setInput('');
+    } catch (err) {
+      console.error('Chat error:', err);
+      toast({
+        title: 'We had an issue generating your tweet',
+        description: 'Request temporarily failed - please try again.',
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // setMessages is already available from useState
 
   const write = api.tweet.create.useMutation();
   // Simple toast replacement

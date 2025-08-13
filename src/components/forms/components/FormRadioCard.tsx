@@ -155,7 +155,9 @@ const FormRadioCard = forwardRef<HTMLInputElement, FormRadioCardProps>(
         />
 
         {error && (
-          <Field.ErrorText fontSize="sm" color="red.500" text={error.toString()} />
+          <Field.ErrorText fontSize="sm" color="red.500">
+            {error.toString()}
+          </Field.ErrorText>
         )}
       </Field.Root>
     );

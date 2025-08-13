@@ -28,8 +28,8 @@ export const FollowRecommendation = () => (
               <Stack direction="row" justify="space-between" gap="4">
                 <HStack gap="3">
                   <Avatar.Root boxSize="10">
-                    <Avatar.Image src={member.avatarUrl} />
-                    <Avatar.Fallback>{member.name.charAt(0)}</Avatar.Fallback>
+                    <Avatar.Image alt={member.name} src={member.avatarUrl} />
+                    <Avatar.Fallback name={member.name} />
                   </Avatar.Root>
                   <Box>
                     <Text fontWeight="medium" color="fg.emphasized">

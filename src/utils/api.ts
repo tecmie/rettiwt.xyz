@@ -18,14 +18,8 @@ const getBaseUrl = () => {
 
 /** A set of type-safe react-query hooks for your tRPC API. */
 export const api = createTRPCNext<AppRouter>({
-  config(opts) {
+  config() {
     return {
-      /**
-       * Transformer used for data de-serialization from the server.
-       *
-       * @see https://trpc.io/docs/data-transformers
-       */
-      transformer: superjson,
       /**
        * Links used to determine request flow from client to server.
        *
@@ -38,21 +32,8 @@ export const api = createTRPCNext<AppRouter>({
             (opts.direction === 'down' && opts.result instanceof Error),
         }),
         httpBatchLink({
+          transformer: superjson,
           url: `${getBaseUrl()}/api/trpc`,
-          /**
-           * Set custom request headers on every request from tRPC
-           * @link https://trpc.io/docs/v10/header
-           */
-          headers() {
-            if (!opts.ctx?.req?.headers) {
-              return {};
-            }
-            // To use SSR properly, you need to forward client headers to the server
-            // This is so you can pass through things like cookies when we're server-side rendering
-            return {
-              cookie: opts.ctx.req.headers.cookie,
-            };
-          },
         }),
       ],
     };
@@ -63,6 +44,7 @@ export const api = createTRPCNext<AppRouter>({
    * @see https://trpc.io/docs/nextjs#ssr-boolean-default-false
    */
   ssr: false,
+  transformer: superjson,
 });
 
 /**

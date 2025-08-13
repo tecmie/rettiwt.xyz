@@ -27,7 +27,7 @@ export interface InputFieldArrayProps {
   /** Field type. Doesn't include radio buttons and checkboxes */
   type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'file';
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements['div']>;
-  labelProps?: any;
+  labelProps?: Record<string, unknown>;
   leftElement?: boolean;
   icon?: ComponentWithAs<'svg', IconProps>;
   props?: InputProps;
@@ -125,7 +125,9 @@ export const FormInputArray = forwardRef<
             {addMoreText ?? '+'}
           </Button>
         </Stack>
-        <Field.ErrorText fontSize="sm" text={error?.toString()} />
+        <Field.ErrorText fontSize="sm">
+          {error?.toString()}
+        </Field.ErrorText>
       </Field.Root>
     );
   },

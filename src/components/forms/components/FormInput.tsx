@@ -16,7 +16,7 @@ export interface LabeledTextFieldProps extends InputElementProps {
   label?: string;
   /** Field type. Doesn't include radio buttons and checkboxes */
   type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'date' | 'file';
-  outerProps?: PropsWithoutRef<any>;
+  outerProps?: PropsWithoutRef<Record<string, unknown>>;
   labelProps?: ComponentPropsWithoutRef<'label'>;
   leftElement?: boolean;
   rightElement?: boolean;
@@ -29,7 +29,7 @@ export const FormInput = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
     {
       label,
       outerProps,
-      type,
+      _type,
       icon,
       labelProps,
       name,
@@ -70,7 +70,7 @@ export const FormInput = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
               //   valueAsNumber: type === "number",
               // }
             )}
-            placeholder={{ fontSize: 'sm' } as any}
+            placeholder={{ fontSize: 'sm' } as Record<string, unknown>}
             fontSize="sm"
             {...props}
           />
@@ -80,7 +80,9 @@ export const FormInput = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
             </InputGroup.Addon>
           )}
         </InputGroup>
-        <Field.ErrorText fontSize="xs" text={error?.toString()} />
+        <Field.ErrorText fontSize="xs">
+          {error?.toString()}
+        </Field.ErrorText>
       </Field.Root>
     );
   },

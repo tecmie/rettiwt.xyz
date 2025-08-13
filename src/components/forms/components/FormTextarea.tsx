@@ -50,7 +50,9 @@ export const FormTextarea = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
           {...props}
         />
         {error && (
-          <Field.ErrorText fontSize="sm" text={error.toString()} />
+          <Field.ErrorText fontSize="sm">
+            {error.toString()}
+          </Field.ErrorText>
         )}
       </Field.Root>
     );

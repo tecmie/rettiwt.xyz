@@ -1,12 +1,8 @@
 import * as React from 'react';
 import {
-  ComponentWithAs,
   type EditableInputProps,
-  IconProps,
   Editable,
   Field,
-  Input,
-  ScaleFade,
 } from '@chakra-ui/react';
 import type { ComponentPropsWithoutRef, PropsWithoutRef } from 'react';
 import { forwardRef } from 'react';
@@ -19,12 +15,12 @@ export interface LabeledTextFieldProps extends EditableInputProps {
   label?: string;
   /** Field type. Doesn't include radio buttons and checkboxes */
   type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'date' | 'file';
-  outerProps?: PropsWithoutRef<any>;
+  outerProps?: PropsWithoutRef<Record<string, unknown>>;
   labelProps?: ComponentPropsWithoutRef<'label'>;
   leftElement?: boolean;
   rightElement?: boolean;
   textSize?: string;
-  props?: ComponentPropsWithoutRef<typeof Input>;
+  props?: ComponentPropsWithoutRef<'input'>;
 }
 
 export const FormEditableInput = forwardRef<
@@ -43,7 +39,7 @@ export const FormEditableInput = forwardRef<
   ) => {
     const {
       register,
-      formState: { isSubmitting, errors },
+      formState: { errors },
     } = useFormContext();
 
     const error = Array.isArray(errors)
@@ -111,7 +107,9 @@ export const FormEditableInput = forwardRef<
           />
         </Editable.Root>
 
-        <Field.ErrorText fontSize="xs" text={error?.toString()} />
+        <Field.ErrorText fontSize="xs">
+          {error?.toString()}
+        </Field.ErrorText>
       </Field.Root>
     );
   },

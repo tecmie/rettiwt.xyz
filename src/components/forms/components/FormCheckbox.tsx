@@ -35,10 +35,10 @@ const FormCheckbox = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
             <Checkbox.Root
               {...field}
               checked={field.value}
-              onCheckedChange={(checked) => field.onChange(checked)}
+              onCheckedChange={(details) => field.onChange(details.checked)}
             >
               <Checkbox.Control />
-              <Checkbox.Label>
+              <Checkbox.Label asChild>
                 <Text fontSize="sm">
                   {label ?? 'I agree to the Terms of use and Privacy Policy'}
                 </Text>
@@ -47,7 +47,9 @@ const FormCheckbox = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
           )}
         />
         {error && (
-          <Field.ErrorText fontSize="sm" color="red.500" text={error.toString()} />
+          <Field.ErrorText fontSize="sm" color="red.500">
+            {error.toString()}
+          </Field.ErrorText>
         )}
       </Field.Root>
     );
