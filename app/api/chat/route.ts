@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { env } from '@/env.mjs';
 import { type NextRequest } from 'next/server';
 import { connect, MetricType, OpenAIEmbeddingFunction } from 'vectordb';
-import { StreamingTextResponse } from 'ai';
+import { streamText } from 'ai';
 import { prompt } from './prompt';
 
 import { ChatOpenAI } from 'langchain/chat_models/openai';
@@ -121,5 +121,5 @@ export async function POST(req: NextRequest) {
     actor: `${author.name} (${author.handle})`,
   });
 
-  return new StreamingTextResponse(stream);
+  return new Response(stream);
 }

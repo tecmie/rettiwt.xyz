@@ -1,16 +1,11 @@
-import {
-  FormControl,
-  FormLabel,
-  type FormLabelProps,
-} from '@chakra-ui/form-control';
-import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';
 import type { ComponentWithAs, IconProps, InputProps } from '@chakra-ui/react';
 import {
   Button,
-  FormErrorMessage,
+  Field,
   Icon,
-  InputLeftElement,
-  Stack, // InputProps,
+  Input,
+  InputGroup,
+  Stack,
 } from '@chakra-ui/react';
 import type { PropsWithoutRef } from 'react';
 import { forwardRef } from 'react';
@@ -32,7 +27,7 @@ export interface InputFieldArrayProps {
   /** Field type. Doesn't include radio buttons and checkboxes */
   type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'file';
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements['div']>;
-  labelProps?: FormLabelProps;
+  labelProps?: any;
   leftElement?: boolean;
   icon?: ComponentWithAs<'svg', IconProps>;
   props?: InputProps;
@@ -79,31 +74,31 @@ export const FormInputArray = forwardRef<
     const isErrorInField = errors[name] ? true : false;
 
     return (
-      <FormControl ref={ref} {...outerProps} isInvalid={isErrorInField}>
+      <Field.Root ref={ref} {...outerProps} invalid={isErrorInField}>
         {label && (
-          <FormLabel color="default" fontSize="sm" {...labelProps}>
+          <Field.Label color="default" fontSize="sm" {...labelProps}>
             {label}
-          </FormLabel>
+          </Field.Label>
         )}
         <Stack>
           {fields.map((field, index) => (
             <fieldset key={field.id}>
               <InputGroup>
                 {leftElement && (
-                  <InputLeftElement>
+                  <InputGroup.Addon placement="start">
                     <Icon as={icon} color="primary.500" />
-                  </InputLeftElement>
+                  </InputGroup.Addon>
                 )}
                 <Input
                   size="lg"
                   fontSize="md"
                   _placeholder={{ fontSize: 'sm' }}
-                  isDisabled={isSubmitting}
+                  disabled={isSubmitting}
                   {...register(`${name}.${index}`)}
                   {...props}
                 />
 
-                <InputRightElement>
+                <InputGroup.Addon placement="end">
                   <Icon
                     p={1}
                     fontSize="lg"
@@ -114,13 +109,13 @@ export const FormInputArray = forwardRef<
                     onClick={() => remove(index)}
                     as={CgClose}
                   />
-                </InputRightElement>
+                </InputGroup.Addon>
               </InputGroup>
             </fieldset>
           ))}
           <Button
             size="sm"
-            isDisabled={fields.length == limit}
+            disabled={fields.length == limit}
             variant="ghost"
             justifySelf="flex-end"
             justifyContent="flex-end"
@@ -130,10 +125,10 @@ export const FormInputArray = forwardRef<
             {addMoreText ?? '+'}
           </Button>
         </Stack>
-        <FormErrorMessage fontSize="sm" role="alert">
+        <Field.ErrorText fontSize="sm">
           {error?.toString()}
-        </FormErrorMessage>
-      </FormControl>
+        </Field.ErrorText>
+      </Field.Root>
     );
   },
 );

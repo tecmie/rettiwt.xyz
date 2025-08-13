@@ -1,7 +1,6 @@
-import { FormControl, FormLabel } from '@chakra-ui/form-control';
 import {
+  Field,
   Flex,
-  FormErrorMessage,
   Textarea,
   type TextareaProps,
 } from '@chakra-ui/react';
@@ -32,12 +31,12 @@ export const FormTextarea = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
     const isErrorInField = errors[name] ? true : false;
 
     return (
-      <FormControl ref={ref} {...outerProps} isInvalid={isErrorInField}>
+      <Field.Root ref={ref} {...outerProps} invalid={isErrorInField}>
         <Flex align="center" justify="space-between">
           {label && (
-            <FormLabel fontSize="sm" {...labelProps}>
+            <Field.Label fontSize="sm" {...labelProps}>
               {label}
-            </FormLabel>
+            </Field.Label>
           )}
         </Flex>
         <Textarea
@@ -51,11 +50,11 @@ export const FormTextarea = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
           {...props}
         />
         {error && (
-          <FormErrorMessage fontSize="sm" role="alert">
+          <Field.ErrorText fontSize="sm">
             {error.toString()}
-          </FormErrorMessage>
+          </Field.ErrorText>
         )}
-      </FormControl>
+      </Field.Root>
     );
   },
 );

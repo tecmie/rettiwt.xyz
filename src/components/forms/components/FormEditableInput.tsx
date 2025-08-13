@@ -1,15 +1,11 @@
 import * as React from 'react';
-import type { FormControlProps } from '@chakra-ui/form-control';
-import { FormControl } from '@chakra-ui/form-control';
-import { Input } from '@chakra-ui/input';
 import {
   ComponentWithAs,
   type EditableInputProps,
   IconProps,
   Editable,
-  EditableInput,
-  EditablePreview,
-  FormErrorMessage,
+  Field,
+  Input,
   ScaleFade,
 } from '@chakra-ui/react';
 import type { ComponentPropsWithoutRef, PropsWithoutRef } from 'react';
@@ -23,7 +19,7 @@ export interface LabeledTextFieldProps extends EditableInputProps {
   label?: string;
   /** Field type. Doesn't include radio buttons and checkboxes */
   type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'date' | 'file';
-  outerProps?: PropsWithoutRef<FormControlProps>;
+  outerProps?: PropsWithoutRef<any>;
   labelProps?: ComponentPropsWithoutRef<'label'>;
   leftElement?: boolean;
   rightElement?: boolean;
@@ -59,26 +55,25 @@ export const FormEditableInput = forwardRef<
     const baseBorder = '0.25px solid';
 
     return (
-      <FormControl
+      <Field.Root
         display={'inline'}
         ref={ref}
         {...outerProps}
-        isInvalid={isErrorInField}
+        invalid={isErrorInField}
       >
-        <Editable
+        <Editable.Root
           color={'gray.700'}
           pr={1}
           display={'inline'}
           defaultValue={label}
         >
-          <EditablePreview
+          <Editable.Preview
             w={'fit-content'}
             textDecoration={'underline'}
             // borderBottom={"1px solid"}
             // borderRadius={'none'}
           />
-          <Input
-            as={EditableInput}
+          <Editable.Input
             {...register(name)}
             // {...props}
             outline={'none'}
@@ -114,12 +109,12 @@ export const FormEditableInput = forwardRef<
             display={'inline'}
             name={name}
           />
-        </Editable>
+        </Editable.Root>
 
-        <FormErrorMessage fontSize="xs" role="alert">
+        <Field.ErrorText fontSize="xs">
           {error?.toString()}
-        </FormErrorMessage>
-      </FormControl>
+        </Field.ErrorText>
+      </Field.Root>
     );
   },
 );

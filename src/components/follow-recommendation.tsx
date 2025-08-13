@@ -1,12 +1,11 @@
 import {
   Avatar,
-  AvatarBadge,
   Box,
   Center,
   HStack,
   Heading,
   Stack,
-  StackDivider,
+  Separator,
   Text,
 } from '@chakra-ui/react';
 
@@ -16,33 +15,30 @@ export const FollowRecommendation = () => (
       <Heading as="h2" fontSize="lg">
         Your Followers
       </Heading>
-      <Stack divider={<StackDivider />} spacing="4" pb={6}>
-        {authors.map((member) => (
-          <Stack
-            key={member.id}
-            cursor={'pointer'}
-            fontSize="sm"
-            px="4"
-            spacing="4"
-          >
-            <Stack direction="row" justify="space-between" spacing="4">
-              <HStack spacing="3">
-                <Avatar src={member.avatarUrl} boxSize="10">
-                  <AvatarBadge
-                    boxSize="4"
-                    bg={member.status === 'active' ? 'success' : 'subtle'}
-                  />
-                </Avatar>
-                <Box>
-                  <Text fontWeight="medium" color="fg.emphasized">
-                    {member.name}
-                  </Text>
-                  <Text color="fg.muted">{member.handle}</Text>
-                </Box>
-              </HStack>
-              <Text color="fg.muted">{member.lastSeen}</Text>
+      <Stack gap="4" pb={6}>
+        {authors.map((member, index) => (
+          <Box key={member.id}>
+            {index > 0 && <Separator />}
+            <Stack
+              cursor={'pointer'}
+              fontSize="sm"
+              px="4"
+              gap="4"
+            >
+              <Stack direction="row" justify="space-between" gap="4">
+                <HStack gap="3">
+                  <Avatar src={member.avatarUrl} boxSize="10" />
+                  <Box>
+                    <Text fontWeight="medium" color="fg.emphasized">
+                      {member.name}
+                    </Text>
+                    <Text color="fg.muted">{member.handle}</Text>
+                  </Box>
+                </HStack>
+                <Text color="fg.muted">{member.lastSeen}</Text>
+              </Stack>
             </Stack>
-          </Stack>
+          </Box>
         ))}
       </Stack>
     </Box>

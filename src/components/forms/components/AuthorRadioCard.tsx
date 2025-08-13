@@ -1,9 +1,7 @@
 import {
-  FormControl,
+  Field,
   Box,
-  FormLabel,
   Text,
-  FormErrorMessage,
   Avatar,
   HStack,
 } from '@chakra-ui/react';
@@ -29,7 +27,7 @@ export interface AuthorRadioCardProps {
   /** Field label. */
   label?: string;
   withName?: boolean;
-  outerProps?: PropsWithoutRef<JSX.IntrinsicElements['div']>;
+  outerProps?: PropsWithoutRef<any>;
   labelProps?: ComponentPropsWithoutRef<'label'>;
   options: CardOptions[];
 }
@@ -48,16 +46,16 @@ const AuthorRadioCard = forwardRef<HTMLInputElement, AuthorRadioCardProps>(
     const flex = 'flex-start';
 
     return (
-      <FormControl
+      <Field.Root
         ref={ref}
         display="flex"
         flexDirection="column"
         alignItems={flex}
         justifyContent={flex}
         {...outerProps}
-        isInvalid={isErrorInField}
+        invalid={isErrorInField}
       >
-        <FormLabel {...labelProps}>{label}</FormLabel>
+        <Field.Label {...labelProps}>{label}</Field.Label>
         <Controller
           name={name}
           control={control}
@@ -87,7 +85,7 @@ const AuthorRadioCard = forwardRef<HTMLInputElement, AuthorRadioCardProps>(
                       color="emphasized"
                       fontWeight="medium"
                       fontSize="sm"
-                      noOfLines={1}
+                      lineClamp={1}
                       maxW={'xs'}
                     >
                       @{option.value}
@@ -106,11 +104,11 @@ const AuthorRadioCard = forwardRef<HTMLInputElement, AuthorRadioCardProps>(
         />
 
         {error && (
-          <FormErrorMessage fontSize="sm" role="alert" color="red.500">
+          <Field.ErrorText fontSize="sm" color="red.500">
             {error.toString()}
-          </FormErrorMessage>
+          </Field.ErrorText>
         )}
-      </FormControl>
+      </Field.Root>
     );
   },
 );

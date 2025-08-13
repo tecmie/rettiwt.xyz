@@ -26,7 +26,7 @@ const config = {
   parserOptions: {
     project: path.join(__dirname, 'tsconfig.json'),
   },
-  plugins: ['@typescript-eslint'],
+  plugins: { '@typescript-eslint': require('@typescript-eslint/eslint-plugin') },
   extends: ['next/core-web-vitals', 'plugin:@typescript-eslint/recommended'],
   rules: {
     '@typescript-eslint/consistent-type-imports': [

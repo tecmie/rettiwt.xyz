@@ -1,8 +1,6 @@
 import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Select,
+  Field,
+  NativeSelect as Select,
 } from '@chakra-ui/react';
 import type { ComponentPropsWithoutRef, PropsWithoutRef } from 'react';
 import { forwardRef } from 'react';
@@ -38,18 +36,18 @@ const FormNativeSelect = forwardRef<HTMLInputElement, FormNativeSelectProps>(
     const flex = 'flex-start';
 
     return (
-      <FormControl
+      <Field.Root
         ref={ref}
         display="flex"
         flexDirection="column"
-        isInvalid={isErrorInField}
+        invalid={isErrorInField}
         alignItems={flex}
         justifyContent={flex}
         {...outerProps}
       >
-        <FormLabel {...labelProps} fontSize={'sm'}>
+        <Field.Label {...labelProps} fontSize={'sm'}>
           {label}
-        </FormLabel>
+        </Field.Label>
         <Controller
           name={name}
           control={control}
@@ -68,10 +66,10 @@ const FormNativeSelect = forwardRef<HTMLInputElement, FormNativeSelectProps>(
             </Select>
           )}
         />
-        <FormErrorMessage fontSize="sm" role="alert">
+        <Field.ErrorText fontSize="sm">
           {error?.toString()}
-        </FormErrorMessage>
-      </FormControl>
+        </Field.ErrorText>
+      </Field.Root>
     );
   },
 );

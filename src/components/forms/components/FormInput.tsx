@@ -1,13 +1,10 @@
 import * as React from 'react';
-import type { FormControlProps } from '@chakra-ui/form-control';
-import { FormControl, FormLabel } from '@chakra-ui/form-control';
-import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';
 import type {
   ComponentWithAs,
   IconProps,
   InputElementProps,
 } from '@chakra-ui/react';
-import { FormErrorMessage, Icon, InputLeftElement } from '@chakra-ui/react';
+import { Field, Input, InputGroup, Icon } from '@chakra-ui/react';
 import type { ComponentPropsWithoutRef, PropsWithoutRef } from 'react';
 import { forwardRef } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -19,7 +16,7 @@ export interface LabeledTextFieldProps extends InputElementProps {
   label?: string;
   /** Field type. Doesn't include radio buttons and checkboxes */
   type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'date' | 'file';
-  outerProps?: PropsWithoutRef<FormControlProps>;
+  outerProps?: PropsWithoutRef<any>;
   labelProps?: ComponentPropsWithoutRef<'label'>;
   leftElement?: boolean;
   rightElement?: boolean;
@@ -53,40 +50,40 @@ export const FormInput = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
     const isErrorInField = errors[name] ? true : false;
 
     return (
-      <FormControl ref={ref} {...outerProps} isInvalid={isErrorInField}>
+      <Field.Root ref={ref} {...outerProps} invalid={isErrorInField}>
         {label && (
-          <FormLabel fontSize="sm" {...labelProps}>
+          <Field.Label fontSize="sm" {...labelProps}>
             {label}
-          </FormLabel>
+          </Field.Label>
         )}
         <InputGroup>
           {leftElement && (
-            <InputLeftElement>
+            <InputGroup.Addon placement="start">
               <Icon as={icon} color="primary.500" />
-            </InputLeftElement>
+            </InputGroup.Addon>
           )}
           <Input
-            isDisabled={isSubmitting}
+            disabled={isSubmitting}
             {...register(
               name,
               //   {
               //   valueAsNumber: type === "number",
               // }
             )}
-            _placeholder={{ fontSize: 'sm' }}
+            placeholder={{ fontSize: 'sm' } as any}
             fontSize="sm"
             {...props}
           />
           {rightElement && (
-            <InputRightElement>
+            <InputGroup.Addon placement="end">
               <Icon as={icon} color="primary.500" />
-            </InputRightElement>
+            </InputGroup.Addon>
           )}
         </InputGroup>
-        <FormErrorMessage fontSize="xs" role="alert">
+        <Field.ErrorText fontSize="xs">
           {error?.toString()}
-        </FormErrorMessage>
-      </FormControl>
+        </Field.ErrorText>
+      </Field.Root>
     );
   },
 );

@@ -14,7 +14,7 @@ import {
   Stack,
   StackDivider,
 } from '@chakra-ui/react';
-import { Link } from '@chakra-ui/next-js';
+import Link from 'next/link';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { SplitShell } from '@/layout/split-shell';
 import { RenderContentText } from '@/features/timeline';

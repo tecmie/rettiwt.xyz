@@ -1,35 +1,32 @@
 import 'focus-visible/dist/focus-visible';
-import base from '@chakra-ui/theme';
-import { type ThemeConfig, extendTheme } from '@chakra-ui/react';
+import { createSystem, defaultConfig, defineConfig } from '@chakra-ui/react';
 import * as components from './components';
 import * as foundations from './foundations';
 
 // 2. Add your color mode config
-const config: ThemeConfig = {
-  initialColorMode: 'dark',
-  cssVarPrefix: 'xims',
-  useSystemColorMode: false,
-};
-
-export const theme: Record<string, any> = extendTheme({
-  config,
-  ...foundations,
-  components: { ...components },
-  colors: {
-    black: '#414141',
-    brand: base.colors.twitter,
-    gray: {
-      '50': '#F2F2F2',
-      '100': '#DBDBDB',
-      '200': '#CACACA',
-      '300': '#ADADAD',
-      '400': '#969696',
-      '500': '#838383',
-      '600': '#666666',
-      // "700": "#414141",0px solid #
-      '700': '#333333',
-      '800': '#16181c',
-      '900': '#000000',
+const config = defineConfig({
+  theme: {
+    ...foundations,
+    tokens: {
+      colors: {
+        black: { value: '#414141' },
+        brand: { value: '#1DA1F2' },
+        gray: {
+          '50': { value: '#F2F2F2' },
+          '100': { value: '#DBDBDB' },
+          '200': { value: '#CACACA' },
+          '300': { value: '#ADADAD' },
+          '400': { value: '#969696' },
+          '500': { value: '#838383' },
+          '600': { value: '#666666' },
+          '700': { value: '#333333' },
+          '800': { value: '#16181c' },
+          '900': { value: '#000000' },
+        },
+      },
     },
   },
+  cssVarsPrefix: 'xims',
 });
+
+export const theme = createSystem(defaultConfig, config);

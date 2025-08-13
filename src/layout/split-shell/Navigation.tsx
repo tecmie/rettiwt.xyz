@@ -26,7 +26,8 @@ import {
 import { ColumnHeader, ColumnIconButton } from './Column';
 import XLogo from '@/components/logo';
 import { MdHome, MdInfoOutline, MdPersonOutline } from 'react-icons/md';
-import { Link, type LinkProps } from '@chakra-ui/next-js';
+import Link from 'next/link';
+import type { LinkProps } from 'next/link';
 
 interface NavbarProps extends FlexProps {
   onClose?: () => void;

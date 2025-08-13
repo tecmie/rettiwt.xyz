@@ -7,7 +7,7 @@ import '@/styles/globals.css';
 
 import MetaSeo from '@/components/seo-meta';
 import { NextProgressRouter } from '@/components/progress-router';
-import { ChakraBaseProvider } from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/react';
 import { theme } from '@/theme/index';
 
 /* -------- Analytics ---------- */
@@ -25,13 +25,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <Suspense fallback={<div>Loading...</div>}>
-        <ChakraBaseProvider theme={theme}>
+        <ChakraProvider value={theme}>
           <NextProgressRouter router={router} />
           <MetaSeo />
           {/* <GoogleAnalytics strategy="lazyOnload" trackPageViews /> */}
           {renderGetLayout(<Component {...pageProps} />)}
           <Analytics />
-        </ChakraBaseProvider>
+        </ChakraProvider>
       </Suspense>
     </SessionProvider>
   );

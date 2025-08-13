@@ -1,7 +1,5 @@
-import { mode, type StyleFunctionProps } from '@chakra-ui/theme-tools';
-
 export default {
-  global: (props: StyleFunctionProps) => ({
+  global: {
     body: {
       color: 'default',
       bg: 'bg-canvas',
@@ -11,7 +9,7 @@ export default {
       color: 'subtle',
     },
     '*, *::before, &::after': {
-      borderColor: mode('gray.200', 'gray.700')(props),
+      borderColor: 'gray.200',
     },
-  }),
+  },
 };

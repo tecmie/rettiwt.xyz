@@ -11,7 +11,7 @@ import {
   Stack,
   StackDivider,
 } from '@chakra-ui/react';
-import { Link } from '@chakra-ui/next-js';
+import Link from 'next/link';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import TimelineView, {
   TimelineDeckBody,

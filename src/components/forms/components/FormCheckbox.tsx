@@ -1,8 +1,7 @@
 /* eslint-disable import/default */
-import { FormControl } from '@chakra-ui/form-control';
 import {
   Checkbox,
-  FormErrorMessage,
+  Field,
   type InputProps,
   Text,
 } from '@chakra-ui/react';
@@ -28,7 +27,7 @@ const FormCheckbox = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
     const isErrorInField = errors[name] ? true : false;
 
     return (
-      <FormControl ref={ref} {...props} isInvalid={isErrorInField}>
+      <Field.Root ref={ref} {...props} invalid={isErrorInField}>
         <Controller
           name={name}
           control={control}
@@ -44,11 +43,11 @@ const FormCheckbox = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
           )}
         />
         {error && (
-          <FormErrorMessage fontSize="sm" role="alert" color="red.500">
+          <Field.ErrorText fontSize="sm" color="red.500">
             {error.toString()}
-          </FormErrorMessage>
+          </Field.ErrorText>
         )}
-      </FormControl>
+      </Field.Root>
     );
   },
 );

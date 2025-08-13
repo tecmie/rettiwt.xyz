@@ -26,7 +26,7 @@ const EmptyPage = ({ message = '', account = false }) => {
       {account && (
         <Stack pt="2">
           <Button
-            variant="gradient"
+            variant="solid"
             rounded={'3xl'}
             style={{ borderRadius: '100px' }}
             onClick={() => router.push('/link-account')}

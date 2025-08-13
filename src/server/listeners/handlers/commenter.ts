@@ -70,7 +70,7 @@ async function commentExecutor(
 export const xcommenter = new DynamicStructuredTool({
   name: 'TweetCommenter',
   description: tweetDescription(),
-  schema: commentExecutorSchema,
+  schema: commentExecutorSchema as any,
   func: commentExecutor,
 });
 

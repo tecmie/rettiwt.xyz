@@ -7,7 +7,7 @@ import {
   Icon,
   Input,
   Stack,
-  StackDivider,
+  Separator,
   type StackProps,
   Text,
   Textarea,
@@ -17,13 +17,13 @@ import {
   type TextProps,
   useToast,
 } from '@chakra-ui/react';
-import { Link } from '@chakra-ui/next-js';
+import Link from 'next/link';
 import { env } from '@/env.mjs';
 import { api } from '@/utils/api';
 import { Fragment } from 'react';
 import { format } from 'timeago.js';
 import { ColumnIconButton } from '@/layout/split-shell/Column';
-import { useChat } from 'ai/react';
+import { useChat } from 'ai';
 
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import {
@@ -58,8 +58,7 @@ export const TimelineView = ({ tweets, ...rest }: TimelineViewProps) => {
     <Stack
       spacing={{ base: '1px', lg: '1' }}
       py="3"
-      divider={<StackDivider />}
-      {...rest}
+            {...rest}
     >
       {tweets.pages.flatMap((page: PagedTweet) => {
         return page.tweets.map((post: ITimelineTweet) => {
@@ -81,7 +80,7 @@ export const TimelineView = ({ tweets, ...rest }: TimelineViewProps) => {
           );
         });
       })}
-      <StackDivider />
+      <Separator />
     </Stack>
   );
 };
@@ -183,7 +182,7 @@ export const NewTimelinePost = () => {
       {/* Inject our persona modal below */}
       <PersonaModal disclosure={disclosure} />
 
-      <Stack divider={<StackDivider />} spacing={0} mt={3}>
+      <Stack gap={0} mt={3}>
         <HStack align="start" px={3}>
           <Stack w={'full'}>
             <Button

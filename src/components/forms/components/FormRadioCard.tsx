@@ -2,13 +2,12 @@
 
 /* eslint-disable react/display-name */
 import * as React from 'react';
+import { useId } from 'react';
 import {
   Box,
   type BoxProps,
   Circle,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
+  Field,
   HStack,
   Icon,
   Stack,
@@ -16,10 +15,7 @@ import {
   Text,
   type UseRadioProps,
   chakra,
-  useId,
-  useRadio,
-  useRadioGroup,
-  useStyleConfig,
+  RadioGroup,
 } from '@chakra-ui/react';
 import {
   type ComponentPropsWithoutRef,
@@ -58,32 +54,20 @@ export interface FormRadioCardProps {
 export const RadioCardGroup = forwardRef(
   <T extends string>(props: RadioCardGroupProps<T>, ref: any) => {
     const { children, name, defaultValue, value, onChange, ...rest } = props;
-    const { getRootProps, getRadioProps } = useRadioGroup({
-      name,
-      defaultValue,
-      value,
-      onChange,
-    });
-
-    const cards = React.useMemo(
-      () =>
-        React.Children.toArray(children)
-          .filter<React.ReactElement<RadioCardProps>>(React.isValidElement)
-          .map((card) => {
-            return React.cloneElement(card, {
-              radioProps: getRadioProps({
-                value: card.props.value,
-              }),
-            });
-          }),
-      [children, getRadioProps],
-    );
 
     return (
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      <Stack ref={ref} {...getRootProps(rest)} w="full" rounded="3xl">
-        {cards}
-      </Stack>
+      <RadioGroup.Root
+        ref={ref}
+        name={name}
+        defaultValue={defaultValue}
+        value={value}
+        onChange={onChange}
+        {...rest}
+      >
+        <Stack w="full" rounded="3xl">
+          {children}
+        </Stack>
+      </RadioGroup.Root>
     );
   },
 );
@@ -95,42 +79,30 @@ interface RadioCardProps extends BoxProps {
 
 export const RadioCard = (props: RadioCardProps) => {
   const { radioProps, children, ...rest } = props;
-  const { getInputProps, getCheckboxProps, getLabelProps, state } =
-    useRadio(radioProps);
-  const id = useId(undefined, 'radio-button');
+  const id = useId();
 
-  const styles = useStyleConfig('RadioCard', props);
-  const inputProps = getInputProps();
-  const checkboxProps = getCheckboxProps();
-  const labelProps = getLabelProps();
+  const styles = { p: 4, borderWidth: '1px', borderRadius: 'md' };
   return (
-    <Box
-      as="label"
-      cursor="pointer"
-      {...labelProps}
-      sx={{
-        '.focus-visible + [data-focus]': {
-          boxShadow: 'outline',
-          zIndex: 1,
-        },
-      }}
+    <RadioGroup.Item
+      value={props.value}
+      asChild
     >
-      <chakra.input {...inputProps} aria-labelledby={id} />
-      <Box sx={styles} {...checkboxProps} {...rest}>
+      <Box
+        as="label"
+        cursor="pointer"
+        sx={styles}
+        {...rest}
+      >
         <Stack direction="row" align={'center'}>
-          {state.isChecked ? (
-            <Circle size="4">
-              <Icon as={CheckCircleIcon} boxSize="4" color="link" />
-            </Circle>
-          ) : (
-            <Circle borderWidth="2px" size="4" />
-          )}
+          <RadioGroup.ItemIndicator>
+            <Icon as={CheckCircleIcon} boxSize="4" color="link" />
+          </RadioGroup.ItemIndicator>
           <HStack flex={1} justify="space-between">
             {children}
           </HStack>
         </Stack>
       </Box>
-    </Box>
+    </RadioGroup.Item>
   );
 };
 
@@ -148,16 +120,16 @@ const FormRadioCard = forwardRef<HTMLInputElement, FormRadioCardProps>(
     const flex = 'flex-start';
 
     return (
-      <FormControl
+      <Field.Root
         ref={ref}
         display="flex"
         flexDirection="column"
         alignItems={flex}
         justifyContent={flex}
         {...outerProps}
-        isInvalid={isErrorInField}
+        invalid={isErrorInField}
       >
-        <FormLabel {...labelProps}>{label}</FormLabel>
+        <Field.Label {...labelProps}>{label}</Field.Label>
         <Controller
           name={name}
           control={control}
@@ -183,11 +155,11 @@ const FormRadioCard = forwardRef<HTMLInputElement, FormRadioCardProps>(
         />
 
         {error && (
-          <FormErrorMessage fontSize="sm" role="alert" color="red.500">
+          <Field.ErrorText fontSize="sm" color="red.500">
             {error.toString()}
-          </FormErrorMessage>
+          </Field.ErrorText>
         )}
-      </FormControl>
+      </Field.Root>
     );
   },
 );

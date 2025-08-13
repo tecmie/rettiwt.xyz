@@ -12,9 +12,8 @@ import {
   Stack,
   useCheckbox,
   useCheckboxGroup,
-  useId,
-  useStyleConfig,
 } from '@chakra-ui/react';
+import { useId } from 'react';
 import * as React from 'react';
 
 type CheckboxCardGroupProps = StackProps & UseCheckboxGroupProps;
@@ -53,8 +52,8 @@ export const FormCheckboxCard = (props: RadioCardProps) => {
   const { checkboxProps, children, ...rest } = props;
   const { getInputProps, getCheckboxProps, getLabelProps, state } =
     useCheckbox(checkboxProps);
-  const id = useId(undefined, 'checkbox-card');
-  const styles = useStyleConfig('RadioCard', props);
+  const id = useId();
+  const styles = { p: 4, borderWidth: '1px', borderRadius: 'md' };
 
   return (
     <Box
@@ -74,8 +73,8 @@ export const FormCheckboxCard = (props: RadioCardProps) => {
           <Box flex="1">{children}</Box>
           <Checkbox
             pointerEvents="none"
-            isFocusable={false}
-            isChecked={state.isChecked}
+            focusable={false}
+            checked={state.isChecked}
             alignSelf="start"
           />
         </Stack>

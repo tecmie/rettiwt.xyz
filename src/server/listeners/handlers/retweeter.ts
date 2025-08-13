@@ -64,7 +64,7 @@ async function retweetExecutor(
 export const xretweeter = new DynamicStructuredTool({
   name: 'TweetRetweeter',
   description: retweetDescription(),
-  schema: retweetExecutorSchema,
+  schema: retweetExecutorSchema as any,
   func: retweetExecutor,
 });
 
