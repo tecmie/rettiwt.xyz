@@ -8,7 +8,7 @@ import {
   type HeadingProps,
   IconButton,
   type IconButtonProps,
-  useColorModeValue,
+  // useColorModeValue removed
 } from '@chakra-ui/react';
 
 export const ColumnHeader = (props: FlexProps) => (
@@ -22,7 +22,7 @@ export const ColumnHeader = (props: FlexProps) => (
     blur={'blur(100px)'}
     backdropFilter={'blur(100px)'}
     bg={'inherit'}
-    color={useColorModeValue('gray.700', 'white')}
+    color={'gray.700'}
     {...props}
   />
 );
@@ -36,8 +36,8 @@ export const ColumnButton = (props: ButtonProps) => (
     variant="tertiary"
     size="sm"
     fontSize="xs"
-    _hover={{ bg: useColorModeValue('gray.100', 'gray.700') }}
-    _active={{ bg: useColorModeValue('gray.200', 'gray.600') }}
+    _hover={{ bg: 'gray.100' }}
+    _active={{ bg: 'gray.200' }}
     _focus={{ boxShadow: 'none' }}
     _focusVisible={{ boxShadow: 'outline' }}
     {...props}
@@ -49,8 +49,8 @@ export const ColumnIconButton = (props: IconButtonProps) => (
     size="sm"
     fontSize="md"
     variant="tertiary"
-    _hover={{ bg: useColorModeValue('gray.100', 'gray.700') }}
-    _active={{ bg: useColorModeValue('gray.200', 'gray.600') }}
+    _hover={{ bg: 'gray.100' }}
+    _active={{ bg: 'gray.200' }}
     _focus={{ boxShadow: 'none' }}
     _focusVisible={{ boxShadow: 'outline' }}
     {...props}

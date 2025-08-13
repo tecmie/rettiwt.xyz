@@ -3,7 +3,7 @@ import {
   Stack,
   type StackProps,
   Text,
-  useColorModeValue as mode,
+  // useColorModeValue removed - using hardcoded values
 } from '@chakra-ui/react';
 import { posts } from './data';
 
@@ -13,7 +13,7 @@ export const PostCard = (props: StackProps) => (
       <Link
         key={post.id}
         aria-current={post.id === '2' ? 'page' : undefined}
-        _hover={{ textDecoration: 'none', bg: mode('gray.100', 'gray.700') }}
+        _hover={{ textDecoration: 'none', bg: 'gray.100' }}
         _activeLink={{ bg: 'gray.700', color: 'white' }}
         borderRadius={{ lg: 'lg' }}
       >

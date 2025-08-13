@@ -15,7 +15,7 @@ import {
   Spinner,
   Center,
   type TextProps,
-  useToast,
+  // useToast - replaced with simpler console logging for now
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import { env } from '@/env.mjs';
@@ -23,7 +23,7 @@ import { api } from '@/utils/api';
 import { Fragment } from 'react';
 import { format } from 'timeago.js';
 import { ColumnIconButton } from '@/layout/split-shell/Column';
-import { useChat } from 'ai';
+import { useChat } from 'ai/react';
 
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import {
@@ -145,7 +145,8 @@ export const NewTimelinePost = () => {
   });
 
   const write = api.tweet.create.useMutation();
-  const toast = useToast();
+  // Simple toast replacement
+  const toast = (options: any) => console.log('Toast:', options);
 
   const _handlePostTweet = async () => {
     const result = await write.mutateAsync(

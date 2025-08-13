@@ -12,7 +12,7 @@ import {
   HStack,
   Spinner,
   Stack,
-  StackDivider,
+  Separator,
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -98,7 +98,6 @@ export const SentimentView = ({ data, ...rest }: any) => {
       flexWrap={'wrap'}
       rounded={'xl'}
       mt={6}
-      divider={<StackDivider />}
       {...rest}
     >
       {data.pages.flatMap((page: any) => {
@@ -123,7 +122,7 @@ export const SentimentView = ({ data, ...rest }: any) => {
           );
         });
       })}
-      <StackDivider />
+      <Separator />
     </Stack>
   );
 };

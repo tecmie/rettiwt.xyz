@@ -73,12 +73,12 @@ const AuthorRadioCard = forwardRef<HTMLInputElement, AuthorRadioCardProps>(
                 >
                   <HStack color="emphasized" fontWeight="medium" fontSize="sm">
                     <Box w={'40px'} mr={1} px={2}>
-                      <Avatar
-                        src={option.avatar || undefined}
-                        fontWeight={'700'}
-                        name={option.name.split(' ')[0]}
-                        boxSize="6"
-                      ></Avatar>
+                      <Avatar.Root boxSize="6">
+                        <Avatar.Image src={option.avatar || undefined} />
+                        <Avatar.Fallback fontWeight={'700'}>
+                          {option.name.split(' ')[0]?.charAt(0)}
+                        </Avatar.Fallback>
+                      </Avatar.Root>
                     </Box>
 
                     <Text
@@ -104,9 +104,7 @@ const AuthorRadioCard = forwardRef<HTMLInputElement, AuthorRadioCardProps>(
         />
 
         {error && (
-          <Field.ErrorText fontSize="sm" color="red.500">
-            {error.toString()}
-          </Field.ErrorText>
+          <Field.ErrorText fontSize="sm" color="red.500" text={error.toString()} />
         )}
       </Field.Root>
     );

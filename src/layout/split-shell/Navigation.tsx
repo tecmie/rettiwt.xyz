@@ -10,9 +10,9 @@ import {
   Stack,
   Text,
   type TextProps,
-  useColorModeValue as mode,
-  useColorMode,
-  useColorModeValue,
+  // useColorModeValue removed
+  // useColorMode removed
+  // useColorModeValue removed
 } from '@chakra-ui/react';
 import {
   FiArrowUpRight,
@@ -34,9 +34,9 @@ interface NavbarProps extends FlexProps {
 }
 
 export const Navbar = (props: NavbarProps) => {
-  const { toggleColorMode } = useColorMode();
-  const ToggleIcon = useColorModeValue(FiMoon, FiSun);
-  const toggleText = `${useColorModeValue('Dark', 'Light')} Theme`;
+  // Color mode toggle removed
+  const ToggleIcon = FiMoon; // Default to moon icon
+  const toggleText = 'Dark Theme'; // Hardcoded for now
 
   return (
     <Flex
@@ -105,7 +105,7 @@ export const Navbar = (props: NavbarProps) => {
               pl={2}
               size={'sm'}
               leftIcon={<Icon mr={1} as={ToggleIcon} />}
-              onClick={toggleColorMode}
+              onClick={() => console.log('Color mode toggle disabled')}
             >
               {toggleText}
             </NavButton>
@@ -136,8 +136,8 @@ const NavButton = (props: ButtonProps) => (
     variant="tertiary"
     size="lg"
     fontSize="sm"
-    _hover={{ bg: mode('blackAlpha.200', 'whiteAlpha.200') }}
-    _active={{ bg: mode('gray.200', 'gray.600') }}
+    _hover={{ bg: 'blackAlpha.200' }}
+    _active={{ bg: 'gray.200' }}
     _focus={{ boxShadow: 'none' }}
     _focusVisible={{ boxShadow: 'outline' }}
     {...props}
@@ -155,9 +155,9 @@ export const NavLink = (props: NavLinkProps & { isExternal?: boolean }) => {
       px="2"
       py="1.5"
       borderRadius="md"
-      _hover={{ bg: mode('blackAlpha.200', 'whiteAlpha.200') }}
+      _hover={{ bg: 'blackAlpha.200' }}
       _activeLink={{
-        bg: mode('blackAlpha.200', 'whiteAlpha.100'),
+        bg: 'blackAlpha.200',
         fontWeight: 'bold',
         color: 'emphasized',
       }}
@@ -174,7 +174,7 @@ export const NavLink = (props: NavLinkProps & { isExternal?: boolean }) => {
           <Icon
             as={FiArrowUpRight}
             boxSize="4"
-            color={mode('gray.600', 'gray.400')}
+            color={'gray.600'}
           />
         )}
       </HStack>
@@ -189,7 +189,7 @@ export const NavHeading = (props: TextProps) => (
     fontWeight="semibold"
     px="2"
     lineHeight="1.25"
-    color={mode('gray.600', 'gray.400')}
+    color={'gray.600'}
     {...props}
   />
 );

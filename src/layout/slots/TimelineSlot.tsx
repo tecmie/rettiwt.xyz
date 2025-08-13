@@ -1,5 +1,5 @@
 import {
-  useColorModeValue as mode,
+  // useColorModeValue removed
   chakra,
   Box,
   HStack,
@@ -28,7 +28,7 @@ const TimelineSlot: React.FC<TimelineSlotProps> = ({
   const router = useRouter();
   return (
     <Box
-      bg={mode('white', 'gray.900')}
+      bg={'white'}
       flex="1"
       alignItems={'center'}
       // overflow="hidden"

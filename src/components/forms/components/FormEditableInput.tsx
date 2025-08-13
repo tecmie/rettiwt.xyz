@@ -111,9 +111,7 @@ export const FormEditableInput = forwardRef<
           />
         </Editable.Root>
 
-        <Field.ErrorText fontSize="xs">
-          {error?.toString()}
-        </Field.ErrorText>
+        <Field.ErrorText fontSize="xs" text={error?.toString()} />
       </Field.Root>
     );
   },

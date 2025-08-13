@@ -71,12 +71,14 @@ export const FormCheckboxCard = (props: RadioCardProps) => {
       <Box sx={styles} {...getCheckboxProps()} {...rest}>
         <Stack direction="row">
           <Box flex="1">{children}</Box>
-          <Checkbox
+          <Checkbox.Root
             pointerEvents="none"
             focusable={false}
             checked={state.isChecked}
             alignSelf="start"
-          />
+          >
+            <Checkbox.Control />
+          </Checkbox.Root>
         </Stack>
       </Box>
     </Box>

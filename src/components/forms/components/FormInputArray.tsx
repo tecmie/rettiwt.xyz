@@ -125,9 +125,7 @@ export const FormInputArray = forwardRef<
             {addMoreText ?? '+'}
           </Button>
         </Stack>
-        <Field.ErrorText fontSize="sm">
-          {error?.toString()}
-        </Field.ErrorText>
+        <Field.ErrorText fontSize="sm" text={error?.toString()} />
       </Field.Root>
     );
   },

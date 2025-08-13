@@ -6,13 +6,7 @@ import { api } from '@/utils/api';
 import {
   type useDisclosure,
   Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
+  Dialog,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useForm } from '@/components/forms';
@@ -54,40 +48,40 @@ export function PersonaModal({ disclosure }: PersonaModalProps) {
   });
 
   return (
-    <Modal
+    <Dialog.Root
       size={'sm'}
-      // scrollBehavior="inside"
-      onClose={onClose}
-      isOpen={isOpen}
-      isCentered
-      motionPreset="slideInBottom"
+      onOpenChange={(details) => !details.open && onClose()}
+      open={isOpen}
+      placement="center"
     >
-      <ModalOverlay
+      <Dialog.Backdrop
         bg="blackAlpha.300"
         backdropFilter="blur(1px) hue-rotate(10deg)"
       />
       {renderForm(
-        <ModalContent rounded={'2xl'} bg={'bg-surface'} w={'full'}>
-          <ModalHeader>Switch Profiles</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
+        <Dialog.Content rounded={'2xl'} bg={'bg-surface'} w={'full'}>
+          <Dialog.Header>
+            <Dialog.Title>Switch Profiles</Dialog.Title>
+            <Dialog.CloseTrigger />
+          </Dialog.Header>
+          <Dialog.Body>
             <SelectPersonaForm />
-          </ModalBody>
-          <ModalFooter mb={2}>
+          </Dialog.Body>
+          <Dialog.Footer mb={2}>
             <Button
               size={'lg'}
               rightIcon={<BsArrowRightCircle />}
-              isDisabled={!isDirty}
+              disabled={!isDirty}
               w={'full'}
               type="submit"
               colorScheme="blue"
             >
               Continue with Persona
             </Button>
-          </ModalFooter>
-        </ModalContent>,
+          </Dialog.Footer>
+        </Dialog.Content>,
       )}
-    </Modal>
+    </Dialog.Root>
   );
 }
 

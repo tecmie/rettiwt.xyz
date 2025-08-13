@@ -9,7 +9,7 @@ import {
   HStack,
   Spinner,
   Stack,
-  StackDivider,
+  Separator,
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -113,7 +113,6 @@ export const TweetDetailDeck = ({ id }: any) => {
         <Stack
           spacing={{ base: '1px', lg: '1' }}
           py="3"
-          divider={<StackDivider />}
         >
           <HStack align="start" key={post.id} px={4} pt={2} mr={3}>
             <Box w={'40px'} mr={1} px={0}>
@@ -134,7 +133,7 @@ export const TweetDetailDeck = ({ id }: any) => {
           <Text textAlign={'center'} color={'muted'} size={'xs'}>
             Other users response to the tweet above
           </Text>
-          <StackDivider />
+          <Separator />
         </Stack>
       </Fragment>
     )

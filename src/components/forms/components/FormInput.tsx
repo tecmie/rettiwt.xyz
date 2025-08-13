@@ -80,9 +80,7 @@ export const FormInput = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
             </InputGroup.Addon>
           )}
         </InputGroup>
-        <Field.ErrorText fontSize="xs">
-          {error?.toString()}
-        </Field.ErrorText>
+        <Field.ErrorText fontSize="xs" text={error?.toString()} />
       </Field.Root>
     );
   },
