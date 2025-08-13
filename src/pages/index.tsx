@@ -28,22 +28,48 @@ export default function RouterPage() {
   const { activeProfilePersona, setNewProfilePersona } = useProfilePersona();
 
   const handleOnSubmit = async (data: z.infer<typeof personaFormSchema>) => {
-    const author = JSON.parse(data.personaProfile);
+    try {
+      // Comment out JSON.parse - the data might already be an object
+      // const author = JSON.parse(data.personaProfile);
+      const author = data.personaProfile;
 
-    setNewProfilePersona(author);
+      console.log({ usePersonaActor: author, rawData: data.personaProfile });
 
-    console.log({ usePersonaActor: author });
+      // If author is a string (JSON), parse it; otherwise use as-is
+      const authorObj = typeof author === 'string' ? JSON.parse(author) : author;
 
-    await router.push('/home');
+      // Ensure the author object has the expected structure
+      if (authorObj && (authorObj.handle || authorObj.value)) {
+        const personaData = {
+          ...authorObj,
+          handle: authorObj.handle || authorObj.value, // Use handle if available, otherwise use value
+        };
+
+        setNewProfilePersona(personaData);
+        await router.push('/home');
+      } else {
+        console.error('Invalid persona data:', authorObj);
+        alert('Please select a valid persona');
+      }
+    } catch (error) {
+      console.error('Error processing persona data:', error);
+      alert('Error processing selection. Please try again.');
+    }
   };
 
-  const { renderForm } = useForm<z.infer<typeof personaFormSchema>>({
+  const { renderForm, formState, watchForm } = useForm<z.infer<typeof personaFormSchema>>({
     onSubmit: handleOnSubmit,
     schema: personaFormSchema,
     defaultValues: {
-      personaProfile: '@0xalzzy',
+      personaProfile: '',
     },
   });
+
+  // Watch the personaProfile field to enable/disable the button
+  const selectedPersona = watchForm('personaProfile');
+  
+  // Check if form is valid (has a selected persona)
+  const isFormValid = selectedPersona && selectedPersona.trim() !== '';
 
   /** @note It's important for us to call this query after the form hook */
 
@@ -92,7 +118,8 @@ export default function RouterPage() {
       >
         <Center minW={'200px'}>
           <Button
-            disabled
+            disabled={!isFormValid || formState.isSubmitting}
+            loading={formState.isSubmitting}
             w={'full'}
             variant={'solid'}
             type="submit"

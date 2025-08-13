@@ -4,6 +4,7 @@ import {
   Text,
   Avatar,
   HStack,
+  RadioCard,
 } from '@chakra-ui/react';
 import {
   type ComponentPropsWithoutRef,
@@ -11,7 +12,6 @@ import {
   forwardRef,
 } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
-import { RadioCardGroup, RadioCard } from './FormRadioCard';
 
 export interface CardOptions {
   name: string;
@@ -43,60 +43,64 @@ const AuthorRadioCard = forwardRef<HTMLInputElement, AuthorRadioCardProps>(
       : errors[name]?.message?.toString();
     const isErrorInField = errors[name] ? true : false;
 
-    const flex = 'flex-start';
-
     return (
       <Field.Root
-        ref={ref}
         display="flex"
         flexDirection="column"
-        alignItems={flex}
-        justifyContent={flex}
+        alignItems="flex-start"
+        justifyContent="flex-start"
         {...outerProps}
         invalid={isErrorInField}
       >
-        <Field.Label {...labelProps}>{label}</Field.Label>
+        {label && <Field.Label {...labelProps}>{label}</Field.Label>}
         <Controller
           name={name}
           control={control}
           render={({ field }) => (
-            <RadioCardGroup
-              defaultValue={options[0]?.value || ''}
+            <RadioCard.Root
               {...field}
             >
-              {options.map((option) => (
-                <RadioCard
-                  key={option.value}
-                  // This is unsafe, value is a string, but we want an object returned
-                  value={JSON.stringify(option)}
-                >
-                  <HStack color="emphasized" fontWeight="medium" fontSize="sm">
-                    <Box w={'40px'} mr={1} px={2}>
-                      <Avatar.Root boxSize="6">
-                        <Avatar.Image alt={option.name} src={option.avatar || undefined} />
-                        <Avatar.Fallback name={option.name} fontWeight={'700'} />
-                      </Avatar.Root>
-                    </Box>
+              <HStack align="stretch" spacing="3" flexWrap="wrap">
+                {options.map((option) => (
+                  <RadioCard.Item
+                    key={option.value}
+                    // This is unsafe, value is a string, but we want an object returned
+                    value={JSON.stringify(option)}
+                  >
+                    <RadioCard.ItemHiddenInput ref={ref} />
+                    <RadioCard.ItemControl>
+                      <RadioCard.ItemContent>
+                        <HStack color="emphasized" fontWeight="medium" fontSize="sm">
+                          <Box w={'40px'} mr={1} px={2}>
+                            <Avatar.Root boxSize="6">
+                              <Avatar.Image alt={option.name} src={option.avatar || undefined} />
+                              <Avatar.Fallback name={option.name} fontWeight={'700'} />
+                            </Avatar.Root>
+                          </Box>
 
-                    <Text
-                      color="emphasized"
-                      fontWeight="medium"
-                      fontSize="sm"
-                      lineClamp={1}
-                      maxW={'xs'}
-                    >
-                      @{option.value}
-                    </Text>
-                  </HStack>
+                          <Text
+                            color="emphasized"
+                            fontWeight="medium"
+                            fontSize="sm"
+                            lineClamp={1}
+                            maxW={'xs'}
+                          >
+                            @{option.value}
+                          </Text>
+                        </HStack>
 
-                  <Box textAlign={'right'}>
-                    <Text color="muted" fontSize="sm">
-                      {withName && option.name}
-                    </Text>
-                  </Box>
-                </RadioCard>
-              ))}
-            </RadioCardGroup>
+                        <Box textAlign={'right'}>
+                          <Text color="muted" fontSize="sm">
+                            {withName && option.name}
+                          </Text>
+                        </Box>
+                      </RadioCard.ItemContent>
+                      <RadioCard.ItemIndicator />
+                    </RadioCard.ItemControl>
+                  </RadioCard.Item>
+                ))}
+              </HStack>
+            </RadioCard.Root>
           )}
         />
 

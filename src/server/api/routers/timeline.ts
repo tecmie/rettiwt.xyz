@@ -29,14 +29,19 @@ export const timelineRouter = createTRPCRouter({
         },
       });
 
-      console.log();
+      console.log('Timeline API - Looking for actor with handle:', input.actorHandle);
+      console.log('Timeline API - Found actor:', actor?.handle, actor?.id);
 
-      const influencers = actor?.following.map(
+      if (!actor) {
+        throw new Error(`Author with handle "${input.actorHandle}" not found`);
+      }
+
+      const influencers = actor.following.map(
         (val) => val.follower_id,
       ) as string[];
 
       /* Author activity should be included too */
-      influencers.push(actor?.id as string);
+      influencers.push(actor.id);
 
       const posts = await ctx.prisma.tweet.findMany({
         take: limit + 1, // get an extra item at the end which we'll use as next cursor,

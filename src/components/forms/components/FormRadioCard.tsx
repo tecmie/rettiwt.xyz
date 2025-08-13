@@ -2,20 +2,11 @@
 
 /* eslint-disable react/display-name */
 import * as React from 'react';
-import { useId } from 'react';
 import {
-  Box,
-  type BoxProps,
-  Circle,
   Field,
   HStack,
-  Icon,
-  Stack,
-  type StackProps,
+  RadioCard,
   Text,
-  type UseRadioProps,
-  chakra,
-  RadioGroup,
 } from '@chakra-ui/react';
 import {
   type ComponentPropsWithoutRef,
@@ -23,14 +14,6 @@ import {
   forwardRef,
 } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { AiFillCheckCircle as CheckCircleIcon } from 'react-icons/ai';
-
-interface RadioCardGroupProps<T> extends Omit<StackProps, 'onChange'> {
-  name?: string;
-  value?: T;
-  defaultValue?: string;
-  onChange?: (value: T) => void;
-}
 
 export interface FormRadioCardOptionProps {
   name: string;
@@ -51,61 +34,6 @@ export interface FormRadioCardProps {
   options: FormRadioCardOptionProps[];
 }
 
-export const RadioCardGroup = forwardRef(
-  <T extends string>(props: RadioCardGroupProps<T>, ref: any) => {
-    const { children, name, defaultValue, value, onChange, ...rest } = props;
-
-    return (
-      <RadioGroup.Root
-        ref={ref}
-        name={name}
-        defaultValue={defaultValue}
-        value={value}
-        onChange={onChange}
-        {...rest}
-      >
-        <Stack w="full" rounded="3xl">
-          {children}
-        </Stack>
-      </RadioGroup.Root>
-    );
-  },
-);
-
-interface RadioCardProps extends BoxProps {
-  value: string;
-  radioProps?: UseRadioProps;
-}
-
-export const RadioCard = (props: RadioCardProps) => {
-  const { radioProps, children, ...rest } = props;
-  const id = useId();
-
-  const styles = { p: 4, borderWidth: '1px', borderRadius: 'md' };
-  return (
-    <RadioGroup.Item
-      value={props.value}
-      asChild
-    >
-      <Box
-        as="label"
-        cursor="pointer"
-        sx={styles}
-        {...rest}
-      >
-        <Stack direction="row" align={'center'}>
-          <RadioGroup.ItemIndicator>
-            <Icon as={CheckCircleIcon} boxSize="4" color="link" />
-          </RadioGroup.ItemIndicator>
-          <HStack flex={1} justify="space-between">
-            {children}
-          </HStack>
-        </Stack>
-      </Box>
-    </RadioGroup.Item>
-  );
-};
-
 const FormRadioCard = forwardRef<HTMLInputElement, FormRadioCardProps>(
   ({ name, label, options, outerProps, labelProps }, ref) => {
     const {
@@ -117,40 +45,44 @@ const FormRadioCard = forwardRef<HTMLInputElement, FormRadioCardProps>(
       : errors[name]?.message?.toString();
     const isErrorInField = errors[name] ? true : false;
 
-    const flex = 'flex-start';
-
     return (
       <Field.Root
-        ref={ref}
         display="flex"
         flexDirection="column"
-        alignItems={flex}
-        justifyContent={flex}
+        alignItems="flex-start"
+        justifyContent="flex-start"
         {...outerProps}
         invalid={isErrorInField}
       >
-        <Field.Label {...labelProps}>{label}</Field.Label>
+        {label && <Field.Label {...labelProps}>{label}</Field.Label>}
         <Controller
           name={name}
           control={control}
           render={({ field }) => (
-            <RadioCardGroup
-              defaultValue={options[0]?.value || ''}
-              spacing="3"
+            <RadioCard.Root
               {...field}
             >
-              {options.map((option) => (
-                <RadioCard key={option.value} value={option.value}>
-                  <Text color="muted" fontSize="sm">
-                    {option.name}
-                  </Text>
-                  <Text color="emphasized" fontWeight="medium" fontSize="sm">
-                    {/* Metadata is a React component, can be a react node to allow for flexibility */}
-                    {option.extra}
-                  </Text>
-                </RadioCard>
-              ))}
-            </RadioCardGroup>
+              <HStack align="stretch" spacing="3">
+                {options.map((option) => (
+                  <RadioCard.Item key={option.value} value={option.value}>
+                    <RadioCard.ItemHiddenInput ref={ref} />
+                    <RadioCard.ItemControl>
+                      <RadioCard.ItemContent>
+                        <RadioCard.ItemText color="muted" fontSize="sm">
+                          {option.name}
+                        </RadioCard.ItemText>
+                        {option.extra && (
+                          <Text color="emphasized" fontWeight="medium" fontSize="sm">
+                            {option.extra}
+                          </Text>
+                        )}
+                      </RadioCard.ItemContent>
+                      <RadioCard.ItemIndicator />
+                    </RadioCard.ItemControl>
+                  </RadioCard.Item>
+                ))}
+              </HStack>
+            </RadioCard.Root>
           )}
         />
 

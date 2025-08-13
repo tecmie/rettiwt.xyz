@@ -15,7 +15,7 @@ import { api } from '@/utils/api';
 import { appRouter } from '@/server/api/root';
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import { NewTimelinePost, TimelineView } from '@/features/timeline';
-import { Center, chakra, Spinner } from '@chakra-ui/react';
+import { Center, chakra, Spinner, Text } from '@chakra-ui/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { type DehydratedState } from '@tanstack/react-query';
 
@@ -29,6 +29,8 @@ type RouterPageProps = {
 };
 
 export default function RouterPage({ persona }: RouterPageProps) {
+  console.log('Home page rendering with persona:', persona);
+
   const tweets = api.timeline.list.useInfiniteQuery(
     {
       actorHandle: persona,
@@ -36,8 +38,34 @@ export default function RouterPage({ persona }: RouterPageProps) {
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
+      onError: (error) => {
+        console.error('Timeline query error:', error);
+      },
+      onSuccess: (data) => {
+        console.log('Timeline query success:', data);
+      },
     },
   );
+
+  if (tweets.error) {
+    return (
+      <>
+        <TimelineSlot>
+          <Center h={'100vh'} w={'full'} flexDirection="column">
+            <Text color="red.500" mb={4}>
+              Error loading timeline: {tweets.error.message}
+            </Text>
+            <Text color="gray.500" fontSize="sm">
+              Persona: {persona}
+            </Text>
+          </Center>
+        </TimelineSlot>
+        <SidebarSlot>
+          <FollowRecommendation />
+        </SidebarSlot>
+      </>
+    );
+  }
 
   if (tweets.isLoading || !tweets.data) {
     return (
@@ -106,7 +134,8 @@ export default function RouterPage({ persona }: RouterPageProps) {
       </chakra.div>
 
       <SidebarSlot>
-        <TimelineStatDeck />
+        {/* Temporarily comment out to isolate the error */}
+        {/* <TimelineStatDeck /> */}
         <FollowRecommendation />
       </SidebarSlot>
     </Fragment>
@@ -121,6 +150,9 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const cookies = nookies.get(ctx);
   const persona = cookies['persona'];
 
+  console.log('Home page getServerSideProps - persona cookie:', persona);
+  console.log('All cookies:', cookies);
+
   const helpers = createServerSideHelpers({
     router: appRouter,
     ctx: createInnerTRPCContext({ session: null }),
@@ -128,6 +160,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   });
 
   if (!persona) {
+    console.log('No persona found, redirecting to /');
     return {
       redirect: {
         destination: '/',

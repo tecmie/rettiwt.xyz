@@ -38,8 +38,17 @@ export const useProfilePersona = () => {
 
   // @ts-ignore
   const setNewProfilePersona = (newProfilePersona) => {
+    const handle = newProfilePersona.handle || newProfilePersona.value;
+    
+    if (!handle) {
+      console.error('No handle found in persona data:', newProfilePersona);
+      return;
+    }
+
+    console.log('Setting persona cookie with handle:', handle);
+
     // Set a cookie to store the profile information
-    setCookie(null, 'persona', newProfilePersona.handle, {
+    setCookie(null, 'persona', handle, {
       maxAge: 30 * 24 * 60 * 60,
       path: '/',
     });
