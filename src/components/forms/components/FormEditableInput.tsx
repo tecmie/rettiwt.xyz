@@ -1,7 +1,6 @@
 import * as React from 'react';
-import type { FormControlProps } from '@chakra-ui/form-control';
-import { FormControl } from '@chakra-ui/form-control';
-import { Input } from '@chakra-ui/input';
+import type { FormControlProps } from '@chakra-ui/react';
+import { FormControl, Input } from '@chakra-ui/react';
 import {
   ComponentWithAs,
   type EditableInputProps,

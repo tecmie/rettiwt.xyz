@@ -1,4 +1,4 @@
-import { FormControl, FormLabel } from '@chakra-ui/form-control';
+import { FormControl, FormLabel } from '@chakra-ui/react';
 import {
   Flex,
   FormErrorMessage,

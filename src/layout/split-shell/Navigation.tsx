@@ -1,5 +1,5 @@
+import { type ElementType } from 'react';
 import {
-  type As,
   Box,
   Button,
   type ButtonProps,
@@ -144,7 +144,7 @@ const NavButton = (props: ButtonProps) => (
 );
 
 interface NavLinkProps extends LinkProps {
-  icon: As;
+  icon: ElementType;
 }
 
 export const NavLink = (props: NavLinkProps & { isExternal?: boolean }) => {

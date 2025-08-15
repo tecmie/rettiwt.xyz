@@ -16,8 +16,9 @@ import {
   UseFormProps,
   FieldValues,
   SubmitErrorHandler,
+  Mode,
+  CriteriaMode,
 } from 'react-hook-form';
-import { CriteriaMode, Mode } from 'react-hook-form/dist/types/form';
 import { z, ZodTypeAny, ZodSchema, ZodObject } from 'zod';
 
 type FormProps = {
@@ -121,12 +122,11 @@ export default function useForm<T extends FieldValues>(
     };
   }, [withDevTool]);
 
-  // @ts-ignore
   const useFormReactHookFormPayload = useFormReactHookForm<T>({
     ...defaultFormParams,
     ...otherParams,
     resolver: schema ? zodResolver(schema) : undefined,
-  });
+  } as any);
 
   const {
     handleSubmit,
@@ -145,7 +145,7 @@ export default function useForm<T extends FieldValues>(
   const { errors } = formState ?? {};
 
   const handleSubmitBound = onSubmit
-    ? handleSubmit(onSubmit, onError)
+    ? handleSubmit(onSubmit as any, onError)
     : // Would be undefined traditionally, but let's make this more developer friendly
       () =>
         console.error(
@@ -160,7 +160,9 @@ export default function useForm<T extends FieldValues>(
   const renderForm = (children: React.ReactNode, formProps = {}) => (
     <FormProviderReactHookForm {...useFormReactHookFormPayload}>
       {/* we are adding the DevTools by default to every form */}
-      {withDevTool && <DevTool control={control} placement="bottom-left" />}
+      {withDevTool && (
+        <DevTool control={control as any} placement="bottom-left" />
+      )}
 
       <form
         onSubmit={
@@ -184,7 +186,7 @@ export default function useForm<T extends FieldValues>(
     getFormValues: getValues,
     validateForm: trigger,
     formState,
-    control,
+    control: control as any,
     renderForm,
     watchForm: watch,
     setFormError: setFormErrorFactory(setError as TSetErrorFunc),

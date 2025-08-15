@@ -95,13 +95,13 @@ interface RadioCardProps extends BoxProps {
 
 export const RadioCard = (props: RadioCardProps) => {
   const { radioProps, children, ...rest } = props;
-  const { getInputProps, getCheckboxProps, getLabelProps, state } =
+  const { getInputProps, getRadioProps, getLabelProps, state } =
     useRadio(radioProps);
   const id = useId(undefined, 'radio-button');
 
   const styles = useStyleConfig('RadioCard', props);
   const inputProps = getInputProps();
-  const checkboxProps = getCheckboxProps();
+  const radioStyleProps = getRadioProps();
   const labelProps = getLabelProps();
   return (
     <Box
@@ -116,7 +116,7 @@ export const RadioCard = (props: RadioCardProps) => {
       }}
     >
       <chakra.input {...inputProps} aria-labelledby={id} />
-      <Box sx={styles} {...checkboxProps} {...rest}>
+      <Box sx={styles} {...radioStyleProps} {...rest}>
         <Stack direction="row" align={'center'}>
           {state.isChecked ? (
             <Circle size="4">

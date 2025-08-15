@@ -1,7 +1,12 @@
 import * as React from 'react';
-import type { FormControlProps } from '@chakra-ui/form-control';
-import { FormControl, FormLabel } from '@chakra-ui/form-control';
-import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';
+import type { FormControlProps } from '@chakra-ui/react';
+import {
+  FormControl,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputRightElement,
+} from '@chakra-ui/react';
 import type {
   ComponentWithAs,
   IconProps,

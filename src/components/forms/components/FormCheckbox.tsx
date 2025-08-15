@@ -1,5 +1,5 @@
 /* eslint-disable import/default */
-import { FormControl } from '@chakra-ui/form-control';
+import { FormControl } from '@chakra-ui/react';
 import {
   Checkbox,
   FormErrorMessage,

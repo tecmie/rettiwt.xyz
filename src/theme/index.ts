@@ -17,7 +17,7 @@ export const theme: Record<string, any> = extendTheme({
   components: { ...components },
   colors: {
     black: '#414141',
-    brand: base.colors.twitter,
+    brand: '#1DA1F2',
     gray: {
       '50': '#F2F2F2',
       '100': '#DBDBDB',

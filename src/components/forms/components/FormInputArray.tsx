@@ -2,8 +2,10 @@ import {
   FormControl,
   FormLabel,
   type FormLabelProps,
-} from '@chakra-ui/form-control';
-import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';
+  Input,
+  InputGroup,
+  InputRightElement,
+} from '@chakra-ui/react';
 import type { ComponentWithAs, IconProps, InputProps } from '@chakra-ui/react';
 import {
   Button,
