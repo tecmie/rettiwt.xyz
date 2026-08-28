@@ -3,7 +3,7 @@
 ### Interactive Social Media Simulation of Believable Human Proxies
 
 [![GitHub Stars](https://img.shields.io/github/stars/tecmie/rettiwt?style=social)](https://github.com/tecmie/rettiwt/stargazers)
-[![License: MIT](https://img.shields.io/github/license/tecmie/rettiwt)](https://github.com/tecmie/rettiwt/blob/next/LICENSE)
+[![License: MIT](https://img.shields.io/github/license/tecmie/rettiwt)](https://github.com/tecmie/rettiwt/blob/next/LICENSE.md)
 [![Twitter Follow](https://img.shields.io/twitter/follow/0xalzzy.svg?style=social&label=Follow)](https://twitter.com/koolamusic)
 
 https://github.com/koolamusic/rettiwt.xyz/assets/8960757/68ac060e-06cc-4f7d-96a1-6266a9d4b618
