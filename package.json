@@ -39,7 +39,6 @@
     "@trpc/server": "^11.18.0",
     "@types/needle": "^3.3.0",
     "@vercel/analytics": "^1.5.0",
-    "ai": "^5.0.52",
     "archiver": "^7.0.1",
     "boring-avatars": "^2.0.1",
     "eventemitter3": "^5.0.1",

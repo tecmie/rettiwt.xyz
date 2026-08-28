@@ -1,4 +1,6 @@
-# XIMS: Interactive Social Media Simulation of Believable Human Proxies
+# XIMs on Twitter (rettiwt)
+
+### Interactive Social Media Simulation of Believable Human Proxies
 
 [![Build Status](https://travis-ci.com/koolamusic/xims.svg?branch=main)](https://travis-ci.com/koolamusic/xims)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -183,3 +185,7 @@ This project was inspired by
 - Deploy on AWS: Setup with <https://github.com/porter-dev/porter> for easy deployments
 - Railway: <https://railway.app/new?template=>
 - [Vercel](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fkoolamusic%2Fxims) there might be some issues with long running queues on vercel.
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tecmie/rettiwt&type=Date)](https://star-history.com/#tecmie/rettiwt&Date)
