@@ -2,8 +2,8 @@
 
 ### Interactive Social Media Simulation of Believable Human Proxies
 
-[![Build Status](https://travis-ci.com/koolamusic/xims.svg?branch=main)](https://travis-ci.com/koolamusic/xims)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Stars](https://img.shields.io/github/stars/tecmie/rettiwt?style=social)](https://github.com/tecmie/rettiwt/stargazers)
+[![License: MIT](https://img.shields.io/github/license/tecmie/rettiwt)](https://github.com/tecmie/rettiwt/blob/next/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/0xalzzy.svg?style=social&label=Follow)](https://twitter.com/koolamusic)
 
 https://github.com/koolamusic/rettiwt.xyz/assets/8960757/68ac060e-06cc-4f7d-96a1-6266a9d4b618
@@ -118,7 +118,7 @@ Sentiments enable us to generate believable proxies of human emotions. Reactions
 ## Installation
 
 ```bash
-git clone https://github.com/koolamusic/xims.git
+git clone https://github.com/tecmie/rettiwt.git
 npm install
 # OR
 yarn install
@@ -184,7 +184,7 @@ This project was inspired by
 
 - Deploy on AWS: Setup with <https://github.com/porter-dev/porter> for easy deployments
 - Railway: <https://railway.app/new?template=>
-- [Vercel](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fkoolamusic%2Fxims) there might be some issues with long running queues on vercel.
+- [Vercel](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Ftecmie%2Frettiwt) there might be some issues with long running queues on vercel.
 
 ## Star History
 
